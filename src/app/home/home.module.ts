@@ -1,26 +1,37 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { CoreModule } from '@app/core';
 import { SharedModule } from '@app/shared';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
-import { QuoteService } from './quote.service';
+import { PlayersListComponent } from './components/playersList/playersList.component';
+import { MatSelectModule, MatSnackBarModule } from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { DataService } from './services/data.service';
+import { SnackBarService } from './services/snack-bar.service';
 
 @NgModule({
   imports: [
     CommonModule,
-    TranslateModule,
     CoreModule,
     SharedModule,
-    HomeRoutingModule
+    FormsModule,
+    ReactiveFormsModule,
+    HomeRoutingModule,
+    MatSelectModule,
+    MatSnackBarModule,
+    BrowserAnimationsModule,
   ],
   declarations: [
-    HomeComponent
+    HomeComponent,
+    PlayersListComponent,
   ],
   providers: [
-    QuoteService
+    DataService,
+    SnackBarService,
   ]
 })
 export class HomeModule { }

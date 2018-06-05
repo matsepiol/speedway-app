@@ -2,10 +2,10 @@ import { TestBed, inject, async } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { CoreModule, HttpCacheService } from '@app/core';
-import { QuoteService } from './quote.service';
+import { DataService } from './data.service';
 
-describe('QuoteService', () => {
-  let quoteService: QuoteService;
+describe('DataService', () => {
+  let dataService: DataService;
   let httpMock: HttpTestingController;
 
   beforeEach(async(() => {
@@ -16,20 +16,20 @@ describe('QuoteService', () => {
       ],
       providers: [
         HttpCacheService,
-        QuoteService
+        DataService
       ]
     });
   }));
 
   beforeEach(inject([
     HttpCacheService,
-    QuoteService,
+    DataService,
     HttpTestingController
   ], (htttpCacheService: HttpCacheService,
-      _quoteService: QuoteService,
+      _DataService: DataService,
       _httpMock: HttpTestingController) => {
 
-    quoteService = _quoteService;
+    dataService = _DataService;
     httpMock = _httpMock;
 
     htttpCacheService.cleanCache();
@@ -45,7 +45,7 @@ describe('QuoteService', () => {
       const mockQuote = { value: 'a random quote' };
 
       // Act
-      const randomQuoteSubscription = quoteService.getRandomQuote({ category: 'toto' });
+      const randomQuoteSubscription = dataService.getData();
 
       // Assert
       randomQuoteSubscription.subscribe((quote: string) => {
@@ -56,7 +56,7 @@ describe('QuoteService', () => {
 
     it('should return a string in case of error', () => {
       // Act
-      const randomQuoteSubscription = quoteService.getRandomQuote({ category: 'toto' });
+      const randomQuoteSubscription = dataService.getData();
 
       // Assert
       randomQuoteSubscription.subscribe((quote: string) => {

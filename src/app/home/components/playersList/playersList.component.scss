@@ -1,0 +1,60 @@
+.availablePlayers,
+.selectedPlayers {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+
+.card {
+  margin: 5px;
+  width: 90%;
+  .card-body {
+    cursor: pointer;
+  }
+
+  img {
+    top: 10px;
+    position: absolute;
+    right: 10px;
+  }
+}
+
+.filter-wrapper {
+  display: flex;
+  flex-direction: row;
+  width: 80%;
+  mat-form-field {
+    margin: 10px;
+  }
+}
+
+.ksm-counter {
+  background-color: green;
+  border-radius: 35px;
+  font-size: 26px;
+  height: 70px;
+  position: relative;
+  width: 70px;
+
+  span {
+    position: relative;
+    color: #fff;
+    top: 15px;
+    width: 70px;
+    display: block;
+    text-align: center;
+  }
+
+  p {
+    font-size: 22px;
+    font-weight: 700;
+    left: 80px;
+    position: absolute;
+    top: 15px;
+    width: 300px;
+  }
+
+  &.is-wrong {
+    background-color: red;
+  }
+}

@@ -1,0 +1,50 @@
+<div class="container row">
+
+  <div class="filter-wrapper">
+    <mat-form-field>
+      <mat-select multiple placeholder="Filtruj drużyny" [(ngModel)]="filter.team">
+        <mat-option *ngFor="let team of teamFilters" [value]="team">{{team}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-select multiple placeholder="Filtruj typ zawodnika" [(ngModel)]="filter.type">
+        <mat-option *ngFor="let type of typeFilters" [value]="type">{{type}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-select placeholder="Sortuj według" [(ngModel)]="filter.sort">
+        <mat-option [value]="'team'">Klubu</mat-option>
+        <mat-option [value]="'ksm'">KSMu</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+  </div>
+
+  <div class="ksm-counter" [ngClass]="{ 'is-wrong': ksmSum > 45 }">
+    <span>{{ksmSum}}</span>
+    <p>Pozostały KSM: {{ksmLeft}}</p>
+  </div>
+
+
+  <div class="availablePlayers col-xs-6">
+    <div *ngFor="let player of availablePlayers | filter: filter" class="card">
+      <div class="card-body" (click)="selectPlayer(player)">
+        <h5 class="card-title">{{player.name}}</h5>
+        <p class="card-text">{{player.type}} KSM:
+          <b>{{player.ksm}}</b>
+        </p>
+        <img src="../../../../assets/logos/{{ player.team }}.jpg" />
+      </div>
+    </div>
+  </div>
+  <div class="selectedPlayers col-xs-6">
+    <div *ngFor="let player of selectedPlayers" class="card">
+      <div class="card-body" (click)="unselectPlayer(player)">
+        <h5 class="card-title">{{player.name}}</h5>
+        <p class="card-text">{{player.type}} {{player.ksm}}</p>
+        <img src="../../../../assets/logos/{{ player.team }}.jpg" />
+      </div>
+    </div>
+  </div>
+</div>

@@ -48,7 +48,7 @@
     </div>
   </div>
   <div class="selected-players col-xs-6">
-    <div class="selected-player" *ngFor="let player of selectedPlayers | async; let i = index">
+    <div class="selected-player" *ngFor="let player of selectedPlayers; let i = index">
       <span class="player-counter">{{i + 1 }}.</span>
       <div class="card" [ngClass]="{ 'placeholder': player.placeholder }">
 

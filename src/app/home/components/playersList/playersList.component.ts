@@ -1,4 +1,4 @@
-import { countBy, orderBy } from 'lodash';
+import { clone, countBy, orderBy } from 'lodash';
 import { BehaviorSubject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
@@ -28,7 +28,8 @@ export class PlayersListComponent implements OnInit {
   public filter: Filter = { team: [], type: [], sort: 'team', searchQuery: '' };
   public ksmSum = 0;
   public ksmLeft = 45;
-  public selectedPlayers: BehaviorSubject<Player[]> = new BehaviorSubject([]);
+  public selectedPlayersSubject: BehaviorSubject<Player[]> = new BehaviorSubject([]);
+  public selectedPlayers: Player[] = [];
   private fullSquadQuantity = 7;
 
 
@@ -45,7 +46,7 @@ export class PlayersListComponent implements OnInit {
 
   public init(): void {
 
-    this.selectedPlayers.next(teamPlaceholder);
+    this.selectedPlayersSubject.next(clone(teamPlaceholder));
     this.dataService.getData()
     .pipe(finalize(() => { this.isLoading = false; }))
     .subscribe((data: Player[]) => {
@@ -53,28 +54,25 @@ export class PlayersListComponent implements OnInit {
       this.prepareFiltering();
     });
 
-    this.selectedPlayers.subscribe( (selected) => {
+    this.selectedPlayersSubject.subscribe( (selected) => {
+      this.selectedPlayers = selected;
       this.calculateKsmSum();
     });
   }
 
   public selectPlayer(player: Player): void {
-    // if (!this.checkSquadRequirements(player)) {
-    //   return;
-    // }
-
-    const selectedPlayers = this.selectedPlayers.getValue();
+    const selectedPlayers = this.selectedPlayers;
     const index = this.findSquadIndex(player);
     if (index === -1) { return; }
 
     selectedPlayers[index] = player;
-    this.selectedPlayers.next(selectedPlayers);
+    this.selectedPlayersSubject.next(selectedPlayers);
 
     this.availablePlayers = this.availablePlayers.filter((p) => p.name !== player.name);
   }
 
   public unselectPlayer(player: Player, index: number): void {
-    const selectedPlayers = this.selectedPlayers.getValue();
+    const selectedPlayers = this.selectedPlayers;
     this.availablePlayers.push(player);
 
     if (index === 0 || index === 4) {
@@ -85,13 +83,12 @@ export class PlayersListComponent implements OnInit {
       selectedPlayers[index] = zagranicznyPlaceholder;
     }
 
-    this.selectedPlayers.next(selectedPlayers);
+    this.selectedPlayersSubject.next(selectedPlayers);
 
   }
 
   public calculateKsmSum(): void {
-    const selectedPlayers = this.selectedPlayers.getValue();
-    console.log(selectedPlayers);
+    const selectedPlayers = this.selectedPlayers;
 
     this.ksmSum = selectedPlayers.length
       ? parseFloat(selectedPlayers.map(item => item.ksm || 0).reduce((a, b) => a + b).toFixed(2))
@@ -100,41 +97,12 @@ export class PlayersListComponent implements OnInit {
     this.ksmLeft = parseFloat((45 - this.ksmSum).toFixed(2));
   }
 
-  private checkSquadRequirements(player: Player): boolean {
-    const selectedPlayers = this.selectedPlayers.getValue();
-    const playersCount = countBy(selectedPlayers, 'type');
-
-    if (selectedPlayers.length >= this.fullSquadQuantity) {
-      this.snackBarService.messageError('Skład jest kompletny');
-      return false;
-    }
-
-    if (player.type === PlayerType.ZAGRANICZNY) {
-      if (playersCount.Zagraniczny >= 3) {
-        this.snackBarService.messageError('Za dużo zagranicznych');
-        return false;
-      }
-
-      if (playersCount.Zagraniczny + (playersCount.Senior || 0) >= 5) {
-        this.snackBarService.messageError('Musisz dodać juniora');
-        return false;
-      }
-    }
-
-    if (player.type === PlayerType.SENIOR && playersCount.Senior + (playersCount.Zagraniczny || 0) >= 5) {
-      this.snackBarService.messageError('Musisz dodać juniora');
-      return false;
-    }
-
-    return true;
-  }
-
   public clearFilters(): void {
     this.filter = { team: [], type: [], sort: 'team', searchQuery: '' };
   }
 
   public clearSquad(): void {
-    this.selectedPlayers.next([]);
+    this.selectedPlayersSubject.next(clone(teamPlaceholder));
     this.init();
   }
 
@@ -147,7 +115,7 @@ export class PlayersListComponent implements OnInit {
   }
 
   private findSquadIndex(player: Player): number {
-    const selectedPlayers = this.selectedPlayers.getValue();
+    const selectedPlayers = this.selectedPlayers;
     let index;
 
     if (player.type === PlayerType.ZAGRANICZNY) {

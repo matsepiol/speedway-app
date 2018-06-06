@@ -13,9 +13,11 @@ export class FilterPipe implements PipeTransform {
       if (term.searchQuery.length) {
         tempItems = tempItems.filter( (player) => player.name.toLowerCase().includes(term.searchQuery.toLowerCase()));
       }
+
       if (term.team.length) {
         tempItems = tempItems.filter((player) => term.team.indexOf(player.team) >= 0);
       }
+
       if (term.type.length) {
         tempItems = tempItems.filter((player) => term.type.indexOf(player.type) >= 0);
       }

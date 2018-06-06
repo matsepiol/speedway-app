@@ -7,7 +7,7 @@ import { SharedModule } from '@app/shared';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import { PlayersListComponent } from './components/playersList/playersList.component';
-import { MatSelectModule, MatSnackBarModule } from '@angular/material';
+import { MatButtonModule, MatInputModule, MatSelectModule, MatSnackBarModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { DataService } from './services/data.service';
@@ -15,15 +15,17 @@ import { SnackBarService } from './services/snack-bar.service';
 
 @NgModule({
   imports: [
+    BrowserAnimationsModule,
     CommonModule,
     CoreModule,
-    SharedModule,
     FormsModule,
-    ReactiveFormsModule,
     HomeRoutingModule,
+    MatButtonModule,
+    MatInputModule,
     MatSelectModule,
     MatSnackBarModule,
-    BrowserAnimationsModule,
+    ReactiveFormsModule,
+    SharedModule,
   ],
   declarations: [
     HomeComponent,

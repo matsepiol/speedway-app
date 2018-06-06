@@ -1,11 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { orderBy } from 'lodash';
-
-interface Filter {
-  team: string[];
-  type: string[];
-  sort: string;
-}
+import { Filter } from '../../home/home.model';
 
 @Pipe({
     name: 'filter',
@@ -14,6 +9,10 @@ interface Filter {
 export class FilterPipe implements PipeTransform {
     transform(items: any[], term: Filter): any {
       let tempItems = items;
+
+      if (term.searchQuery.length) {
+        tempItems = tempItems.filter( (player) => player.name.toLowerCase().includes(term.searchQuery.toLowerCase()));
+      }
       if (term.team.length) {
         tempItems = tempItems.filter((player) => term.team.indexOf(player.team) >= 0);
       }

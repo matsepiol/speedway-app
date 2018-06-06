@@ -1,31 +1,74 @@
-.availablePlayers,
-.selectedPlayers {
+.available-players,
+.selected-players {
   display: flex;
   flex-direction: column;
   width: 50%;
 }
 
+.selected-player {
+  display: flex;
+
+  .player-counter {
+    line-height: 80px;
+    vertical-align: middle;
+  }
+}
+
 .card {
+  height: 80px;
   margin: 5px;
   width: 90%;
+
+  .card-title {
+    font-size: 16px;
+    margin-bottom: 0.5rem;
+  }
+
+  &.placeholder {
+    border-style: dashed;
+
+    .card-text {
+      line-height: 80px;
+      opacity: .5;
+      text-align: center;
+      vertical-align: middle;
+    }
+  }
+
   .card-body {
     cursor: pointer;
   }
 
   img {
+    height: 60px;
     top: 10px;
     position: absolute;
     right: 10px;
   }
 }
 
-.filter-wrapper {
+.filter-wrapper, .search {
   display: flex;
   flex-direction: row;
   width: 80%;
+
+}
+.filter-wrapper {
   mat-form-field {
     margin: 10px;
+    width: 18%;
   }
+}
+
+.search {
+  mat-form-field {
+    width: 100%;
+    margin-left: 10px;
+  }
+}
+
+button {
+  margin: 15px 0 0 5px;
 }
 
 .ksm-counter {
@@ -33,6 +76,7 @@
   border-radius: 35px;
   font-size: 26px;
   height: 70px;
+  margin-left: 10px;
   position: relative;
   width: 70px;
 

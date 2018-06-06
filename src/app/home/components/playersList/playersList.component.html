@@ -19,31 +19,50 @@
       </mat-select>
     </mat-form-field>
 
+    <div class="button-row">
+      <button mat-raised-button color="primary" (click)="clearFilters()">Wyczyść filtry</button>
+      <button mat-raised-button color="primary" (click)="clearSquad()">Wyczyść skład</button>
+    </div>
+
+    <div class="ksm-counter" [ngClass]="{ 'is-wrong': ksmSum > 45 }">
+      <span>{{ksmSum}}</span>
+      <p>Pozostały KSM: {{ksmLeft}}</p>
+    </div>
   </div>
 
-  <div class="ksm-counter" [ngClass]="{ 'is-wrong': ksmSum > 45 }">
-    <span>{{ksmSum}}</span>
-    <p>Pozostały KSM: {{ksmLeft}}</p>
+  <div class="search">
+    <mat-form-field>
+      <input matInput [(ngModel)]="filter.searchQuery" placeholder="Szukaj zawodnika">
+    </mat-form-field>
   </div>
 
-
-  <div class="availablePlayers col-xs-6">
+  <div class="available-players col-xs-6">
     <div *ngFor="let player of availablePlayers | filter: filter" class="card">
       <div class="card-body" (click)="selectPlayer(player)">
-        <h5 class="card-title">{{player.name}}</h5>
-        <p class="card-text">{{player.type}} KSM:
+        <h5 class="card-title">{{player.name}} KSM:
           <b>{{player.ksm}}</b>
-        </p>
+        </h5>
+        <p class="card-text">{{player.type}}</p>
         <img src="../../../../assets/logos/{{ player.team }}.jpg" />
       </div>
     </div>
   </div>
-  <div class="selectedPlayers col-xs-6">
-    <div *ngFor="let player of selectedPlayers" class="card">
-      <div class="card-body" (click)="unselectPlayer(player)">
-        <h5 class="card-title">{{player.name}}</h5>
-        <p class="card-text">{{player.type}} {{player.ksm}}</p>
-        <img src="../../../../assets/logos/{{ player.team }}.jpg" />
+  <div class="selected-players col-xs-6">
+    <div class="selected-player" *ngFor="let player of selectedPlayers | async; let i = index">
+      <span class="player-counter">{{i + 1 }}.</span>
+      <div class="card" [ngClass]="{ 'placeholder': player.placeholder }">
+
+        <div *ngIf="player.placeholder">
+          <p class="card-text">{{player.type}}</p>
+        </div>
+
+        <div class="card-body" *ngIf="!player.placeholder" (click)="unselectPlayer(player, i)">
+          <h5 class="card-title">{{player.name}} KSM:
+            <b>{{player.ksm}}</b>
+          </h5>
+          <p class="card-text">{{player.type}}</p>
+          <img src="../../../../assets/logos/{{ player.team }}.jpg" />
+        </div>
       </div>
     </div>
   </div>

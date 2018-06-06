@@ -50,25 +50,30 @@
 .filter-wrapper, .search {
   display: flex;
   flex-direction: row;
-  width: 80%;
-
+  justify-content: space-between;
 }
+
 .filter-wrapper {
   mat-form-field {
     margin: 10px;
-    width: 18%;
   }
 }
 
 .search {
+  width: 55%;
+
   mat-form-field {
     width: 100%;
     margin-left: 10px;
   }
 }
 
-button {
-  margin: 15px 0 0 5px;
+.button-row {
+  margin-left: 70px;
+
+  button {
+    margin: 5px;
+  }
 }
 
 .ksm-counter {
@@ -76,7 +81,7 @@ button {
   border-radius: 35px;
   font-size: 26px;
   height: 70px;
-  margin-left: 10px;
+  margin-left: 60px;
   position: relative;
   width: 70px;
 
@@ -102,3 +107,55 @@ button {
     background-color: red;
   }
 }
+
+@media (max-width: 768px) {
+  .card-title, .card-text {
+    font-size: 12px !important;
+  }
+
+  .available-players {
+    width: 100%;
+  }
+
+  .mobile-selected-players {
+    display: flex;
+    flex-flow: wrap;
+    position: fixed;
+    background: #fff;
+    bottom: 0;
+    left: 0;
+    height: 180px;
+    width: 100%;
+
+    .mobile-selected-player {
+      width: 25%;
+
+      .card-title, .card-text {
+        font-size: 10px !important;
+
+        span {
+          display: block;
+          margin-top: 5px;
+        }
+      }
+
+      .card-body {
+        padding: 10px;
+      }
+    }
+
+    .ksm-counter {
+      margin: 5px 0 0 5px;
+    }
+  }
+
+  .jumbotron, .selected-players, .filter-wrapper, .button-row, .search, img {
+    display: none;
+  }
+ }
+
+ @media (min-width: 769px) {
+   .mobile-selected-players {
+     display: none;
+   }
+ }

@@ -19,11 +19,6 @@
       </mat-select>
     </mat-form-field>
 
-    <div class="button-row">
-      <button mat-raised-button color="primary" (click)="clearFilters()">Wyczyść filtry</button>
-      <button mat-raised-button color="primary" (click)="clearSquad()">Wyczyść skład</button>
-    </div>
-
     <div class="ksm-counter" [ngClass]="{ 'is-wrong': ksmSum > 45 }">
       <span>{{ksmSum}}</span>
       <p>Pozostały KSM: {{ksmLeft}}</p>
@@ -34,6 +29,11 @@
     <mat-form-field>
       <input matInput [(ngModel)]="filter.searchQuery" placeholder="Szukaj zawodnika">
     </mat-form-field>
+  </div>
+
+  <div class="button-row">
+    <button mat-raised-button color="primary" (click)="clearFilters()">Wyczyść filtry</button>
+    <button mat-raised-button color="primary" (click)="clearSquad()">Wyczyść skład</button>
   </div>
 
   <div class="available-players col-xs-6">
@@ -65,5 +65,25 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <div class="mobile-selected-players">
+    <div class="mobile-selected-player" *ngFor="let player of selectedPlayers; let i = index">
+      <div class="card" [ngClass]="{ 'placeholder': player.placeholder }">
+
+        <div *ngIf="player.placeholder">
+          <p class="card-text">{{player.type}}</p>
+        </div>
+
+        <div class="card-body" *ngIf="!player.placeholder" (click)="unselectPlayer(player, i)">
+          <h5 class="card-title">{{player.name}} <span>KSM:<b>{{player.ksm}}</b></span></h5>
+        </div>
+      </div>
+    </div>
+
+    <div class="ksm-counter" [ngClass]="{ 'is-wrong': ksmSum > 45 }">
+      <span>{{ksmSum}}</span>
+    </div>
+
   </div>
 </div>

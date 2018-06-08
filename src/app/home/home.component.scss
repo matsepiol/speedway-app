@@ -30,7 +30,8 @@ q {
     }
   }
 
-  .container-fluid, .container {
-    height: 100%;
+  .container-fluid {
+    height: calc(100% - 255px);
+    overflow-y: auto;
   }
 }

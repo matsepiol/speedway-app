@@ -1,4 +1,4 @@
-<div class="container row">
+<div class="container row player-list">
 
   <div class="filter-wrapper">
     <mat-form-field>
@@ -67,23 +67,27 @@
     </div>
   </div>
 
-  <div class="mobile-selected-players">
-    <div class="mobile-selected-player" *ngFor="let player of selectedPlayers; let i = index">
-      <div class="card" [ngClass]="{ 'placeholder': player.placeholder }">
+</div>
+<div class="mobile-selected-players">
+  <div class="mobile-selected-player" *ngFor="let player of selectedPlayers; let i = index">
+    <div class="card" [ngClass]="{ 'placeholder': player.placeholder }">
 
-        <div *ngIf="player.placeholder">
-          <p class="card-text">{{player.type}}</p>
-        </div>
+      <div *ngIf="player.placeholder">
+        <p class="card-text">{{player.type}}</p>
+      </div>
 
-        <div class="card-body" *ngIf="!player.placeholder" (click)="unselectPlayer(player, i)">
-          <h5 class="card-title">{{player.name}} <span>KSM:<b>{{player.ksm}}</b></span></h5>
-        </div>
+      <div class="card-body" *ngIf="!player.placeholder" (click)="unselectPlayer(player, i)">
+        <h5 class="card-title">{{player.name}}
+          <span>KSM:
+            <b>{{player.ksm}}</b>
+          </span>
+        </h5>
       </div>
     </div>
-
-    <div class="ksm-counter" [ngClass]="{ 'is-wrong': ksmSum > 45 }">
-      <span>{{ksmSum}}</span>
-    </div>
-
   </div>
+
+  <div class="ksm-counter" [ngClass]="{ 'is-wrong': ksmSum > 45 }">
+    <span>{{ksmSum}}</span>
+  </div>
+
 </div>

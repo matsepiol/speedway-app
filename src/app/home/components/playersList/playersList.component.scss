@@ -109,8 +109,34 @@
 }
 
 @media (max-width: 768px) {
-  .card-title, .card-text {
-    font-size: 12px !important;
+  .card {
+    width: 100%;
+
+    .card-title, .card-text {
+      font-size: 12px !important;
+    }
+  }
+
+  .filter-wrapper {
+    font-size: 12px;
+    flex-direction: column;
+  }
+
+  .button-row {
+    text-align: center;
+    font-size: 12px;
+    margin: 0 0 10px 0;
+  }
+
+  .search {
+    font-size: 12px;
+    width: 90%;
+  }
+
+  .player-list {
+    margin: 0;
+    overflow-y: auto;
+    height: calc(100% - 180px);
   }
 
   .available-players {
@@ -128,14 +154,18 @@
     width: 100%;
 
     .mobile-selected-player {
-      width: 25%;
+      width: 23%;
+      margin: 3px;
 
-      .card-title, .card-text {
-        font-size: 10px !important;
+      .card {
+        margin: 0;
+        .card-title, .card-text {
+          font-size: 10px !important;
 
-        span {
-          display: block;
-          margin-top: 5px;
+          span {
+            display: block;
+            margin-top: 5px;
+          }
         }
       }
 
@@ -149,7 +179,11 @@
     }
   }
 
-  .jumbotron, .selected-players, .filter-wrapper, .button-row, .search, img {
+  .selected-players, img {
+    display: none;
+  }
+
+  .filter-wrapper .ksm-counter {
     display: none;
   }
  }

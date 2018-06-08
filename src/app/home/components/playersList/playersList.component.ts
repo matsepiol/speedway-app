@@ -76,8 +76,26 @@ export class PlayersListComponent implements OnInit {
     this.availablePlayers.push(player);
 
     if (index === 0 || index === 4) {
+      for (let i = 1; i < 4; i++) {
+        if (selectedPlayers[i].type === PlayerType.SENIOR) {
+          selectedPlayers[index] = selectedPlayers[i];
+          selectedPlayers[i] = zagranicznyPlaceholder;
+          return;
+        }
+      }
       selectedPlayers[index] = seniorPlaceholder;
     } else if (index > 4) {
+      for (let i = 0; i <= 4; i++) {
+        if (selectedPlayers[i].type === PlayerType.JUNIOR) {
+          selectedPlayers[index] = selectedPlayers[i];
+          if (i === 0 || i === 4) {
+            selectedPlayers[i] = seniorPlaceholder;
+          } else {
+            selectedPlayers[i] = zagranicznyPlaceholder;
+          }
+          return;
+        }
+      }
       selectedPlayers[index] = juniorPlaceholder;
     } else {
       selectedPlayers[index] = zagranicznyPlaceholder;

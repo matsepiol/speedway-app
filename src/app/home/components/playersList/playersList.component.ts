@@ -80,6 +80,7 @@ export class PlayersListComponent implements OnInit {
         if (selectedPlayers[i].type === PlayerType.SENIOR) {
           selectedPlayers[index] = selectedPlayers[i];
           selectedPlayers[i] = zagranicznyPlaceholder;
+          this.selectedPlayersSubject.next(selectedPlayers);
           return;
         }
       }
@@ -93,6 +94,7 @@ export class PlayersListComponent implements OnInit {
           } else {
             selectedPlayers[i] = zagranicznyPlaceholder;
           }
+          this.selectedPlayersSubject.next(selectedPlayers);
           return;
         }
       }
@@ -102,7 +104,6 @@ export class PlayersListComponent implements OnInit {
     }
 
     this.selectedPlayersSubject.next(selectedPlayers);
-
   }
 
   public calculateKsmSum(): void {

@@ -1,31 +1,31 @@
 {
   "data": [{
       "name": "Leon Madsen",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 8.65,
       "team": "Częstochowa"
     },
     {
       "name": "Fredrik Lingren",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 10.0,
       "team": "Częstochowa"
     },
     {
       "name": "Matej Zagar",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 6.71,
       "team": "Częstochowa"
     },
     {
       "name": "Andriej Kudriaszow",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 6.50,
       "team": "Częstochowa"
     },
     {
       "name": "Andreas Lyager",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 2.50,
       "team": "Częstochowa"
     },
@@ -85,31 +85,31 @@
     },
     {
       "name": "Tai Woffinden",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 9.0,
       "team": "Wrocław"
     },
     {
       "name": "Max Fricke",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 6.91,
       "team": "Wrocław"
     },
     {
       "name": "Andrzej Lebiediew",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 6.50,
       "team": "Wrocław"
     },
     {
       "name": "Vaclav Milik",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 6.45,
       "team": "Wrocław"
     },
     {
       "name": "Gleb Czugunow",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 2.50,
       "team": "Wrocław"
     },
@@ -163,25 +163,25 @@
     },
     {
       "name": "Michael Jepsen Jensen",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 7.67,
       "team": "Zielona Góra"
     },
     {
       "name": "Martin Smolinski",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 6.50,
       "team": "Zielona Góra"
     },
     {
       "name": "Jacob Thorssell",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 4.95,
       "team": "Zielona Góra"
     },
     {
       "name": "Mads Hansen",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 2.50,
       "team": "Zielona Góra"
     },
@@ -241,25 +241,25 @@
     },
     {
       "name": "Artiom Łaguta",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 8.42,
       "team": "Grudziądz"
     },
     {
       "name": "Antonio Lindbaeck",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 6.00,
       "team": "Grudziądz"
     },
     {
       "name": "Kai Huckenbeck",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 6.00,
       "team": "Grudziądz"
     },
     {
       "name": "Roman Lachbaum",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 2.50,
       "team": "Grudziądz"
     },
@@ -307,13 +307,13 @@
     },
     {
       "name": "Martin Vaculik",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 6.50,
       "team": "Gorzów"
     },
     {
       "name": "Linus Sundstroem",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 4.89,
       "team": "Gorzów"
     },
@@ -355,25 +355,25 @@
     },
     {
       "name": "Kenneth Bjerre",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 7.67,
       "team": "Tarnów"
     },
     {
       "name": "Nicki Pedersen",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 10.60,
       "team": "Tarnów"
     },
     {
       "name": "Peter Kildemand",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 5.22,
       "team": "Tarnów"
     },
     {
       "name": "Wiktor Kułakow",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 6.50,
       "team": "Tarnów"
     },
@@ -433,19 +433,19 @@
     },
     {
       "name": "Emil Sajfutdinow",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 8.94,
       "team": "Leszno"
     },
     {
       "name": "Brady Kurtz",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 6.71,
       "team": "Leszno"
     },
     {
       "name": "Jaimon Lidsey",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 2.50,
       "team": "Leszno"
     },
@@ -505,25 +505,25 @@
     },
     {
       "name": "Jason Doyle",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 7.75,
       "team": "Toruń"
     },
     {
       "name": "Niels Kristian Iversen",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 5.48,
       "team": "Toruń"
     },
     {
       "name": "Jack Holder",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 5.60,
       "team": "Toruń"
     },
     {
       "name": "Chris Holder",
-      "type": "Zagraniczny",
+      "type": "Obcokrajowiec",
       "ksm": 6.77,
       "team": "Toruń"
     },

@@ -34,7 +34,7 @@
   <div class="button-row">
 
     <mat-checkbox [(ngModel)]="filter.showPossiblePlayers">
-      Pokaż możliwe wybory
+      Pokaż dostępnych zawodników
     </mat-checkbox>
 
     <button mat-raised-button color="primary" (click)="clearFilters()">Wyczyść filtry</button>
@@ -92,8 +92,8 @@
     </div>
   </div>
 
-  <div class="ksm-counter" [ngClass]="{ 'is-wrong': ksmSum > 45 }">
-    <span>{{ksmSum}}</span>
+  <div class="ksm-counter" [ngClass]="{ 'is-wrong': (dataService.getKsmSum() | async) > 45 }">
+    <span>{{ dataService.getKsmSum() | async}}</span>
   </div>
 
 </div>

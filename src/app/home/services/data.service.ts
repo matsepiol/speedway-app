@@ -1,9 +1,12 @@
-import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
-import { Player, PlayerType, juniorPlaceholder, seniorPlaceholder, zagranicznyPlaceholder } from '../home.model';
+import { Injectable } from '@angular/core';
+
+import {
+    juniorPlaceholder, obcokrajowiecPlaceholder, Player, PlayerType, seniorPlaceholder
+} from '../home.model';
 import { SnackBarService } from '../services/snack-bar.service';
 
 const routes = {
@@ -62,7 +65,7 @@ export class DataService {
       for (let i = 1; i < 4; i++) {
         if (selectedPlayers[i].type === PlayerType.SENIOR) {
           selectedPlayers[index] = selectedPlayers[i];
-          selectedPlayers[i] = zagranicznyPlaceholder;
+          selectedPlayers[i] = obcokrajowiecPlaceholder;
           this.setSelection(selectedPlayers);
           return;
         }
@@ -75,7 +78,7 @@ export class DataService {
           if (i === 0 || i === 4) {
             selectedPlayers[i] = seniorPlaceholder;
           } else {
-            selectedPlayers[i] = zagranicznyPlaceholder;
+            selectedPlayers[i] = obcokrajowiecPlaceholder;
           }
           this.setSelection(selectedPlayers);
           return;
@@ -83,7 +86,7 @@ export class DataService {
       }
       selectedPlayers[index] = juniorPlaceholder;
     } else {
-      selectedPlayers[index] = zagranicznyPlaceholder;
+      selectedPlayers[index] = obcokrajowiecPlaceholder;
     }
 
     this.setSelection(selectedPlayers);
@@ -107,17 +110,17 @@ export class DataService {
     const selectedPlayers = this.selectedPlayersSubject.getValue();
     let index;
 
-    if (player.type === PlayerType.ZAGRANICZNY) {
-      index = selectedPlayers.findIndex(item => item.type === PlayerType.ZAGRANICZNY && item.placeholder);
+    if (player.type === PlayerType.OBCOKRAJOWIEC) {
+      index = selectedPlayers.findIndex(item => item.type === PlayerType.OBCOKRAJOWIEC && item.placeholder);
       if (index === -1) {
-        this.snackBarService.messageError('Za dużo zagranicznych');
+        this.snackBarService.messageError('Za dużo obcokrajowców');
       }
     }
 
     if (player.type === PlayerType.SENIOR) {
       index = selectedPlayers.findIndex(item => item.type === PlayerType.SENIOR && item.placeholder);
       if (index === -1) {
-        index = selectedPlayers.findIndex(item => item.type === PlayerType.ZAGRANICZNY && item.placeholder);
+        index = selectedPlayers.findIndex(item => item.type === PlayerType.OBCOKRAJOWIEC && item.placeholder);
         if (index === -1) {
           this.snackBarService.messageError('Musisz dodać juniora');
         }

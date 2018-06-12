@@ -1,6 +1,6 @@
 export enum PlayerType {
   SENIOR = 'Senior',
-  ZAGRANICZNY = 'Zagraniczny',
+  OBCOKRAJOWIEC = 'Obcokrajowiec',
   JUNIOR = 'Junior',
 }
 
@@ -25,8 +25,8 @@ export const seniorPlaceholder: Player = {
   placeholder: true
 };
 
-export const zagranicznyPlaceholder: Player = {
-  type: PlayerType.ZAGRANICZNY,
+export const obcokrajowiecPlaceholder: Player = {
+  type: PlayerType.OBCOKRAJOWIEC,
   placeholder: true
 };
 
@@ -37,9 +37,9 @@ export const juniorPlaceholder: Player = {
 
 export const teamPlaceholder: Player[] = [
   seniorPlaceholder,
-  zagranicznyPlaceholder,
-  zagranicznyPlaceholder,
-  zagranicznyPlaceholder,
+  obcokrajowiecPlaceholder,
+  obcokrajowiecPlaceholder,
+  obcokrajowiecPlaceholder,
   seniorPlaceholder,
   juniorPlaceholder,
   juniorPlaceholder

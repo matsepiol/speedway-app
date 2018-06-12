@@ -24,7 +24,7 @@ export class PlayersListComponent implements OnInit {
   public isLoading: boolean;
   public teamFilters: string[] = [];
   public typeFilters: string[] = [];
-  public filter: Filter = { team: [], type: [], sort: 'team', searchQuery: '', showPossiblePlayers: false };
+  public filter: Filter = { team: [], type: [], sort: 'ksm', searchQuery: '', showPossiblePlayers: false };
   public ksmSum = 0;
   public selectedPlayers: Player[] = [];
 

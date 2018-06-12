@@ -20,15 +20,15 @@ export class FilterPipe implements PipeTransform {
       .subscribe(([selected, ksmLeft]) => {
 
         const selection = countBy(selected.filter((item) => !item.placeholder), 'type');
-        if (selection.Zagraniczny === 3) {
-          tempItems = tempItems.filter((player) => PlayerType.ZAGRANICZNY.indexOf(player.type) === -1);
+        if (selection.Obcokrajowiec === 3) {
+          tempItems = tempItems.filter((player) => PlayerType.OBCOKRAJOWIEC.indexOf(player.type) === -1);
         }
 
-        if (selection.Zagraniczny + selection.Senior >= 5) {
+        if (selection.Obcokrajowiec + selection.Senior >= 5) {
           tempItems = tempItems.filter((player) => PlayerType.SENIOR.indexOf(player.type) === -1);
         }
 
-        if (selection.Zagraniczny + selection.Senior + selection.Junior >= 7) {
+        if (selection.Obcokrajowiec + selection.Senior + selection.Junior >= 7) {
           tempItems = tempItems.filter((player) => PlayerType.JUNIOR.indexOf(player.type) === -1);
         }
 

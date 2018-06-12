@@ -1,26 +1,31 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ClipboardModule } from 'ngx-clipboard';
 
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+    MatButtonModule, MatCheckboxModule, MatInputModule, MatSelectModule, MatSnackBarModule
+} from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CoreModule } from '@app/core';
 import { SharedModule } from '@app/shared';
+
+import { PlayersListComponent } from './components/playersList/playersList.component';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
-import { PlayersListComponent } from './components/playersList/playersList.component';
-import { MatButtonModule, MatInputModule, MatSelectModule, MatSnackBarModule } from '@angular/material';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 import { DataService } from './services/data.service';
 import { SnackBarService } from './services/snack-bar.service';
 
 @NgModule({
   imports: [
     BrowserAnimationsModule,
+    ClipboardModule,
     CommonModule,
     CoreModule,
     FormsModule,
     HomeRoutingModule,
     MatButtonModule,
+    MatCheckboxModule,
     MatInputModule,
     MatSelectModule,
     MatSnackBarModule,

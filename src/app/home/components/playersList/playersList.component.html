@@ -19,9 +19,9 @@
       </mat-select>
     </mat-form-field>
 
-    <div class="ksm-counter" [ngClass]="{ 'is-wrong': ksmSum > 45 }">
-      <span>{{ksmSum}}</span>
-      <p>Pozostały KSM: {{ksmLeft}}</p>
+    <div class="ksm-counter" [ngClass]="{ 'is-wrong': (dataService.getKsmSum() | async) > 45 }">
+      <span>{{ dataService.getKsmSum() | async}}</span>
+      <p>Pozostały KSM: {{ dataService.getKsmLeft() | async}}</p>
     </div>
   </div>
 
@@ -32,8 +32,14 @@
   </div>
 
   <div class="button-row">
+
+    <mat-checkbox [(ngModel)]="filter.showPossiblePlayers">
+      Pokaż możliwe wybory
+    </mat-checkbox>
+
     <button mat-raised-button color="primary" (click)="clearFilters()">Wyczyść filtry</button>
     <button mat-raised-button color="primary" (click)="clearSquad()">Wyczyść skład</button>
+    <button mat-raised-button color="primary" (click)="exportSquad()">Eksportuj skład</button>
   </div>
 
   <div class="available-players col-xs-6">

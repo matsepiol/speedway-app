@@ -17,6 +17,7 @@ export interface Filter {
   type: string[];
   sort: string;
   searchQuery: string;
+  showPossiblePlayers: boolean;
 }
 
 export const seniorPlaceholder: Player = {

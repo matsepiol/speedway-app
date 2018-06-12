@@ -1,14 +1,13 @@
-import { clone, countBy, orderBy } from 'lodash';
+import { clone, countBy } from 'lodash';
+import { ClipboardService } from 'ngx-clipboard';
 import { BehaviorSubject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
-import { Component, ErrorHandler, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 
-import { FilterPipe } from '../../../shared/filterPipe/filterPipe';
 import {
-    Filter, juniorPlaceholder, Player, PlayerType, seniorPlaceholder, teamPlaceholder,
-    zagranicznyPlaceholder,
+  Filter, Player, teamPlaceholder,
 } from '../../home.model';
 import { DataService } from '../../services/data.service';
 import { SnackBarService } from '../../services/snack-bar.service';
@@ -25,18 +24,15 @@ export class PlayersListComponent implements OnInit {
   public isLoading: boolean;
   public teamFilters: string[] = [];
   public typeFilters: string[] = [];
-  public filter: Filter = { team: [], type: [], sort: 'team', searchQuery: '' };
+  public filter: Filter = { team: [], type: [], sort: 'team', searchQuery: '', showPossiblePlayers: false };
   public ksmSum = 0;
-  public ksmLeft = 45;
-  public selectedPlayersSubject: BehaviorSubject<Player[]> = new BehaviorSubject([]);
   public selectedPlayers: Player[] = [];
-  private fullSquadQuantity = 7;
-
 
   constructor(
-    private dataService: DataService,
+    public dataService: DataService,
     private snackBarService: SnackBarService,
-    public snackBar: MatSnackBar
+    public snackBar: MatSnackBar,
+    public clipboardService: ClipboardService
   ) { }
 
   ngOnInit(): void {
@@ -45,83 +41,51 @@ export class PlayersListComponent implements OnInit {
   }
 
   public init(): void {
-
-    this.selectedPlayersSubject.next(clone(teamPlaceholder));
+    this.dataService.setSelection(clone(teamPlaceholder));
     this.dataService.getData()
-    .pipe(finalize(() => { this.isLoading = false; }))
-    .subscribe((data: Player[]) => {
-      this.availablePlayers = data;
-      this.prepareFiltering();
-    });
+      .pipe(finalize(() => { this.isLoading = false; }))
+      .subscribe((data: Player[]) => {
+        this.availablePlayers = data;
+        this.prepareFiltering();
+      });
 
-    this.selectedPlayersSubject.subscribe( (selected) => {
+    this.dataService.getSelection().subscribe((selected) => {
       this.selectedPlayers = selected;
-      this.calculateKsmSum();
     });
   }
 
   public selectPlayer(player: Player): void {
-    const selectedPlayers = this.selectedPlayers;
-    const index = this.findSquadIndex(player);
-    if (index === -1) { return; }
-
-    selectedPlayers[index] = player;
-    this.selectedPlayersSubject.next(selectedPlayers);
-
+    this.dataService.selectPlayer(player);
     this.availablePlayers = this.availablePlayers.filter((p) => p.name !== player.name);
   }
 
   public unselectPlayer(player: Player, index: number): void {
-    const selectedPlayers = this.selectedPlayers;
     this.availablePlayers.push(player);
-
-    if (index === 0 || index === 4) {
-      for (let i = 1; i < 4; i++) {
-        if (selectedPlayers[i].type === PlayerType.SENIOR) {
-          selectedPlayers[index] = selectedPlayers[i];
-          selectedPlayers[i] = zagranicznyPlaceholder;
-          this.selectedPlayersSubject.next(selectedPlayers);
-          return;
-        }
-      }
-      selectedPlayers[index] = seniorPlaceholder;
-    } else if (index > 4) {
-      for (let i = 0; i <= 4; i++) {
-        if (selectedPlayers[i].type === PlayerType.JUNIOR) {
-          selectedPlayers[index] = selectedPlayers[i];
-          if (i === 0 || i === 4) {
-            selectedPlayers[i] = seniorPlaceholder;
-          } else {
-            selectedPlayers[i] = zagranicznyPlaceholder;
-          }
-          this.selectedPlayersSubject.next(selectedPlayers);
-          return;
-        }
-      }
-      selectedPlayers[index] = juniorPlaceholder;
-    } else {
-      selectedPlayers[index] = zagranicznyPlaceholder;
-    }
-
-    this.selectedPlayersSubject.next(selectedPlayers);
-  }
-
-  public calculateKsmSum(): void {
-    const selectedPlayers = this.selectedPlayers;
-
-    this.ksmSum = selectedPlayers.length
-      ? parseFloat(selectedPlayers.map(item => item.ksm || 0).reduce((a, b) => a + b).toFixed(2))
-      : 0;
-
-    this.ksmLeft = parseFloat((45 - this.ksmSum).toFixed(2));
+    this.dataService.unselectPlayer(player, index);
   }
 
   public clearFilters(): void {
-    this.filter = { team: [], type: [], sort: 'team', searchQuery: '' };
+    this.filter = { team: [], type: [], sort: 'team', searchQuery: '', showPossiblePlayers: false };
+  }
+
+  public exportSquad(): void {
+    if ((countBy(this.selectedPlayers, 'placeholder').true)) {
+      this.snackBarService.messageError('Skład nie jest kompletny!');
+    } else if (this.dataService.ksmSumSubject.getValue() > 45) {
+      this.snackBarService.messageError('Skład przekracza dopuszczalny ksm!');
+    } else {
+      let textToCopy = '';
+      this.selectedPlayers.forEach((selected, index) => {
+        textToCopy += `${index + 1}. ${selected.name} `;
+      });
+      textToCopy += ` Ksm: ${this.dataService.ksmSumSubject.getValue()}`;
+      this.clipboardService.copyFromContent(textToCopy);
+      this.snackBarService.messageSuccess('Skład skopiowany do schowka!');
+    }
   }
 
   public clearSquad(): void {
-    this.selectedPlayersSubject.next(clone(teamPlaceholder));
+    this.dataService.setSelection(clone(teamPlaceholder));
     this.init();
   }
 
@@ -131,40 +95,6 @@ export class PlayersListComponent implements OnInit {
 
     this.typeFilters = this.availablePlayers.map(item => item.type)
       .filter((value, index, self) => self.indexOf(value) === index);
-  }
-
-  private findSquadIndex(player: Player): number {
-    const selectedPlayers = this.selectedPlayers;
-    let index;
-
-    if (player.type === PlayerType.ZAGRANICZNY) {
-      index = selectedPlayers.findIndex( item => item.type === PlayerType.ZAGRANICZNY && item.placeholder);
-      if (index === -1) {
-        this.snackBarService.messageError('Za dużo zagranicznych');
-      }
-    }
-
-    if (player.type === PlayerType.SENIOR) {
-      index = selectedPlayers.findIndex( item => item.type === PlayerType.SENIOR && item.placeholder);
-      if (index === -1) {
-        index = selectedPlayers.findIndex( item => item.type === PlayerType.ZAGRANICZNY && item.placeholder);
-        if (index === -1) {
-          this.snackBarService.messageError('Musisz dodać juniora');
-        }
-      }
-    }
-
-    if (player.type === PlayerType.JUNIOR) {
-      index = selectedPlayers.findIndex( item => item.type === PlayerType.JUNIOR && item.placeholder);
-
-      if (index === -1) {
-        index = selectedPlayers.findIndex( item => item.placeholder);
-        if (index === -1) {
-          this.snackBarService.messageError('Skład jest pełny');
-        }
-      }
-    }
-    return index;
   }
 
 }

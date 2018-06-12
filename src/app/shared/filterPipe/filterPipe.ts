@@ -1,35 +1,61 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { orderBy } from 'lodash';
-import { Filter } from '../../home/home.model';
+import { countBy, orderBy } from 'lodash';
+import { Filter, PlayerType, Player } from '../../home/home.model';
+import { DataService } from '../../home/services/data.service';
+import { combineLatest } from 'rxjs';
 
 @Pipe({
-    name: 'filter',
-    pure: false
+  name: 'filter',
+  pure: false
 })
+
 export class FilterPipe implements PipeTransform {
-    transform(items: any[], term: Filter): any {
-      let tempItems = items;
+  constructor(private dataService: DataService) { }
 
-      if (term.searchQuery.length) {
-        tempItems = tempItems.filter( (player) => player.name.toLowerCase().includes(term.searchQuery.toLowerCase()));
-      }
+  transform(items: any[], term: Filter): any {
+    let tempItems = items;
 
-      if (term.team.length) {
-        tempItems = tempItems.filter((player) => term.team.indexOf(player.team) >= 0);
-      }
+    if (term.showPossiblePlayers) {
+      combineLatest(this.dataService.getSelection(), this.dataService.getKsmLeft())
+      .subscribe(([selected, ksmLeft]) => {
 
-      if (term.type.length) {
-        tempItems = tempItems.filter((player) => term.type.indexOf(player.type) >= 0);
-      }
+        const selection = countBy(selected.filter((item) => !item.placeholder), 'type');
+        if (selection.Zagraniczny === 3) {
+          tempItems = tempItems.filter((player) => PlayerType.ZAGRANICZNY.indexOf(player.type) === -1);
+        }
 
-      if (term.sort === 'team') {
-        tempItems = orderBy(tempItems, ['team', 'ksm'], ['asc', 'desc']);
-      }
+        if (selection.Zagraniczny + selection.Senior >= 5) {
+          tempItems = tempItems.filter((player) => PlayerType.SENIOR.indexOf(player.type) === -1);
+        }
 
-      if (term.sort === 'ksm') {
-        tempItems = orderBy(tempItems, ['ksm', 'team'], ['desc', 'asc']);
-      }
+        if (selection.Zagraniczny + selection.Senior + selection.Junior >= 7) {
+          tempItems = tempItems.filter((player) => PlayerType.JUNIOR.indexOf(player.type) === -1);
+        }
 
-      return tempItems;
+        tempItems = tempItems.filter( (player) => player.ksm <= ksmLeft);
+      });
     }
+
+    if (term.searchQuery.length) {
+      tempItems = tempItems.filter((player) => player.name.toLowerCase().includes(term.searchQuery.toLowerCase()));
+    }
+
+    if (term.team.length) {
+      tempItems = tempItems.filter((player) => term.team.indexOf(player.team) >= 0);
+    }
+
+    if (term.type.length) {
+      tempItems = tempItems.filter((player) => term.type.indexOf(player.type) >= 0);
+    }
+
+    if (term.sort === 'team') {
+      tempItems = orderBy(tempItems, ['team', 'ksm'], ['asc', 'desc']);
+    }
+
+    if (term.sort === 'ksm') {
+      tempItems = orderBy(tempItems, ['ksm', 'team'], ['desc', 'asc']);
+    }
+
+    return tempItems;
+  }
 }

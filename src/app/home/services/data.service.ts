@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { Player } from '../home.model';
+import { BehaviorSubject } from 'rxjs';
+import { Player, PlayerType, juniorPlaceholder, seniorPlaceholder, zagranicznyPlaceholder } from '../home.model';
+import { SnackBarService } from '../services/snack-bar.service';
 
 const routes = {
   data: () => `/assets/data.json`
@@ -10,10 +12,31 @@ const routes = {
 
 @Injectable()
 export class DataService {
+  public maxKsm = 45;
+  public selectedPlayersSubject: BehaviorSubject<Player[]> = new BehaviorSubject([]);
+  public ksmSumSubject: BehaviorSubject<number> = new BehaviorSubject(0);
+  public ksmLeftSubject: BehaviorSubject<number> = new BehaviorSubject(this.maxKsm);
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private snackBarService: SnackBarService) { }
 
-  getData(): Observable<Player[]> {
+  public setSelection(selection: Player[]): void {
+    this.selectedPlayersSubject.next(selection);
+    this.calculateKsmSum();
+  }
+
+  public getSelection(): Observable<Player[]> {
+    return this.selectedPlayersSubject.asObservable();
+  }
+
+  public getKsmSum(): Observable<number> {
+    return this.ksmSumSubject.asObservable();
+  }
+
+  public getKsmLeft(): Observable<number> {
+    return this.ksmLeftSubject.asObservable();
+  }
+
+  public getData(): Observable<Player[]> {
     return this.httpClient
       .cache()
       .get(routes.data())
@@ -21,6 +44,97 @@ export class DataService {
         map((body: any) => body.data),
         catchError(() => of('Error'))
       );
+  }
+
+  public selectPlayer(player: Player): void {
+    const selectedPlayers = this.selectedPlayersSubject.getValue();
+    const index = this.findSquadIndex(player);
+    if (index === -1) { return; }
+
+    selectedPlayers[index] = player;
+    this.setSelection(selectedPlayers);
+  }
+
+  public unselectPlayer(player: Player, index: number): void {
+    const selectedPlayers = this.selectedPlayersSubject.getValue();
+
+    if (index === 0 || index === 4) {
+      for (let i = 1; i < 4; i++) {
+        if (selectedPlayers[i].type === PlayerType.SENIOR) {
+          selectedPlayers[index] = selectedPlayers[i];
+          selectedPlayers[i] = zagranicznyPlaceholder;
+          this.setSelection(selectedPlayers);
+          return;
+        }
+      }
+      selectedPlayers[index] = seniorPlaceholder;
+    } else if (index > 4) {
+      for (let i = 0; i <= 4; i++) {
+        if (selectedPlayers[i].type === PlayerType.JUNIOR) {
+          selectedPlayers[index] = selectedPlayers[i];
+          if (i === 0 || i === 4) {
+            selectedPlayers[i] = seniorPlaceholder;
+          } else {
+            selectedPlayers[i] = zagranicznyPlaceholder;
+          }
+          this.setSelection(selectedPlayers);
+          return;
+        }
+      }
+      selectedPlayers[index] = juniorPlaceholder;
+    } else {
+      selectedPlayers[index] = zagranicznyPlaceholder;
+    }
+
+    this.setSelection(selectedPlayers);
+
+  }
+
+  private calculateKsmSum(): void {
+    const selectedPlayers = this.selectedPlayersSubject.getValue();
+
+    const ksmSum = selectedPlayers.length
+      ? parseFloat(selectedPlayers.map(item => item.ksm || 0).reduce((a, b) => a + b).toFixed(2))
+      : 0;
+
+    const ksmLeft = parseFloat((this.maxKsm - ksmSum).toFixed(2));
+
+    this.ksmSumSubject.next(ksmSum);
+    this.ksmLeftSubject.next(ksmLeft);
+  }
+
+  private findSquadIndex(player: Player): number {
+    const selectedPlayers = this.selectedPlayersSubject.getValue();
+    let index;
+
+    if (player.type === PlayerType.ZAGRANICZNY) {
+      index = selectedPlayers.findIndex(item => item.type === PlayerType.ZAGRANICZNY && item.placeholder);
+      if (index === -1) {
+        this.snackBarService.messageError('Za dużo zagranicznych');
+      }
+    }
+
+    if (player.type === PlayerType.SENIOR) {
+      index = selectedPlayers.findIndex(item => item.type === PlayerType.SENIOR && item.placeholder);
+      if (index === -1) {
+        index = selectedPlayers.findIndex(item => item.type === PlayerType.ZAGRANICZNY && item.placeholder);
+        if (index === -1) {
+          this.snackBarService.messageError('Musisz dodać juniora');
+        }
+      }
+    }
+
+    if (player.type === PlayerType.JUNIOR) {
+      index = selectedPlayers.findIndex(item => item.type === PlayerType.JUNIOR && item.placeholder);
+
+      if (index === -1) {
+        index = selectedPlayers.findIndex(item => item.placeholder);
+        if (index === -1) {
+          this.snackBarService.messageError('Skład jest pełny');
+        }
+      }
+    }
+    return index;
   }
 
 }

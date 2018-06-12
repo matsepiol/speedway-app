@@ -60,7 +60,7 @@
 }
 
 .search {
-  width: 55%;
+  width: 40%;
 
   mat-form-field {
     width: 100%;
@@ -69,7 +69,9 @@
 }
 
 .button-row {
-  margin-left: 70px;
+  margin-left: 50px;
+  margin-top: 5px;
+  font-size: 13px;
 
   button {
     margin: 5px;

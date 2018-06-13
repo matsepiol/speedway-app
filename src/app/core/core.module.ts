@@ -1,6 +1,5 @@
 import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import { RouteReuseStrategy, RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -13,7 +12,6 @@ import { AuthenticationGuard } from './authentication/authentication.guard';
 @NgModule({
   imports: [
     CommonModule,
-    HttpClientModule,
     NgbModule,
     RouterModule
   ],

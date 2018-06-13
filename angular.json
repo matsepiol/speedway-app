@@ -24,8 +24,6 @@
             "polyfills": "src/polyfills.ts",
             "assets": [
               "src/favicon.ico",
-              "src/robots.txt",
-              "src/manifest.json",
               "src/assets"
             ],
             "styles": [
@@ -84,8 +82,6 @@
             ],
             "assets": [
               "src/favicon.ico",
-              "src/robots.txt",
-              "src/manifest.json",
               "src/assets"
             ]
           }

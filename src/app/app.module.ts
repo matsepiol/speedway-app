@@ -7,6 +7,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { environment } from '@env/environment';
 import { CoreModule } from '@app/core';
+
 import { SharedModule } from '@app/shared';
 import { HomeModule } from './home/home.module';
 import { AboutModule } from './about/about.module';
@@ -14,14 +15,19 @@ import { LoginModule } from './login/login.module';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
+import { AngularFireModule } from 'angularfire2';
+import { AngularFireDatabaseModule } from 'angularfire2/database';
+
 @NgModule({
   imports: [
+    AngularFireModule.initializeApp(environment.firebase, 'speedway-app'),
+    AngularFireDatabaseModule,
     BrowserModule,
-    ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production }),
     FormsModule,
     HttpClientModule,
     NgbModule.forRoot(),
     CoreModule,
+
     SharedModule,
     HomeModule,
     AboutModule,

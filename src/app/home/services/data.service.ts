@@ -1,17 +1,12 @@
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
 
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import {
-    juniorPlaceholder, obcokrajowiecPlaceholder, Player, PlayerType, seniorPlaceholder
+  juniorPlaceholder, obcokrajowiecPlaceholder, Player, PlayerType, seniorPlaceholder
 } from '../home.model';
 import { SnackBarService } from '../services/snack-bar.service';
-
-const routes = {
-  data: () => `/assets/data.json`
-};
+import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
 
 @Injectable()
 export class DataService {
@@ -20,7 +15,14 @@ export class DataService {
   public ksmSumSubject: BehaviorSubject<number> = new BehaviorSubject(0);
   public ksmLeftSubject: BehaviorSubject<number> = new BehaviorSubject(this.maxKsm);
 
-  constructor(private httpClient: HttpClient, private snackBarService: SnackBarService) { }
+  constructor(
+    private snackBarService: SnackBarService,
+    private db: AngularFireDatabase
+  ) {}
+
+  public getData(): AngularFireList<Player[]> {
+    return this.db.list<Player[]>('/data');
+  }
 
   public setSelection(selection: Player[]): void {
     this.selectedPlayersSubject.next(selection);
@@ -37,16 +39,6 @@ export class DataService {
 
   public getKsmLeft(): Observable<number> {
     return this.ksmLeftSubject.asObservable();
-  }
-
-  public getData(): Observable<Player[]> {
-    return this.httpClient
-      .cache()
-      .get(routes.data())
-      .pipe(
-        map((body: any) => body.data),
-        catchError(() => of('Error'))
-      );
   }
 
   public selectPlayer(player: Player): void {

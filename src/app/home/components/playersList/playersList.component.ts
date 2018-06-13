@@ -1,7 +1,5 @@
 import { clone, countBy } from 'lodash';
 import { ClipboardService } from 'ngx-clipboard';
-import { BehaviorSubject } from 'rxjs';
-import { finalize } from 'rxjs/operators';
 
 import { Component, Input, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
@@ -22,6 +20,7 @@ export class PlayersListComponent implements OnInit {
 
   @Input() public availablePlayers: Player[];
   public isLoading: boolean;
+  public loadingMessage = 'Wczytywanie...';
   public teamFilters: string[] = [];
   public typeFilters: string[] = [];
   public filter: Filter = { team: [], type: [], sort: 'ksm', searchQuery: '', showPossiblePlayers: false };
@@ -42,12 +41,12 @@ export class PlayersListComponent implements OnInit {
 
   public init(): void {
     this.dataService.setSelection(clone(teamPlaceholder));
-    this.dataService.getData()
-      .pipe(finalize(() => { this.isLoading = false; }))
-      .subscribe((data: Player[]) => {
-        this.availablePlayers = data;
-        this.prepareFiltering();
-      });
+
+    this.dataService.getData().valueChanges().subscribe( (data: any) => {
+      this.isLoading = false;
+      this.availablePlayers = data;
+      this.prepareFiltering();
+    });
 
     this.dataService.getSelection().subscribe((selected) => {
       this.selectedPlayers = selected;

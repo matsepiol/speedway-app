@@ -37,7 +37,7 @@ export class SnackBarService {
     this.notification.subscribe((status) => {
       window.setTimeout(() => {
         this.snackBar.open(status.message, null, {
-          duration: 40000,
+          duration: 4000,
           panelClass: status.type ? [status.type] : [],
         });
       });

@@ -23,7 +23,9 @@ export class PlayersListComponent implements OnInit {
   public loadingMessage = 'Wczytywanie...';
   public teamFilters: string[] = [];
   public typeFilters: string[] = [];
-  public filter: Filter = { team: [], type: [], sort: 'ksm', searchQuery: '', showPossiblePlayers: false };
+  public filter: Filter = {
+    team: [], type: [], sort: 'ksm', searchQuery: '', showPossiblePlayers: false, showMinimum: false
+  };
   public ksmSum = 0;
   public selectedPlayers: Player[] = [];
 
@@ -54,8 +56,11 @@ export class PlayersListComponent implements OnInit {
   }
 
   public selectPlayer(player: Player): void {
-    this.dataService.selectPlayer(player);
-    this.availablePlayers = this.availablePlayers.filter((p) => p.name !== player.name);
+    const selectionSuccess = this.dataService.selectPlayer(player);
+    if (selectionSuccess) {
+      this.availablePlayers = this.availablePlayers.filter((p) => p.name !== player.name);
+    }
+    this.filter.searchQuery = '';
   }
 
   public unselectPlayer(player: Player, index: number): void {
@@ -64,7 +69,14 @@ export class PlayersListComponent implements OnInit {
   }
 
   public clearFilters(): void {
-    this.filter = { team: [], type: [], sort: 'team', searchQuery: '', showPossiblePlayers: false };
+    this.filter = {
+      team: [],
+      type: [],
+      sort: 'ksm',
+      searchQuery: '',
+      showPossiblePlayers: false,
+      showMinimum: this.filter.showMinimum
+    };
   }
 
   public exportSquad(): void {

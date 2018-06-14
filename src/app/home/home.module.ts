@@ -3,6 +3,7 @@ import { ClipboardModule } from 'ngx-clipboard';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import {
     MatButtonModule, MatCheckboxModule, MatInputModule, MatSelectModule, MatSnackBarModule
 } from '@angular/material';

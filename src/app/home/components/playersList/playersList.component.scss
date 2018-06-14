@@ -19,6 +19,18 @@
   margin: 5px;
   width: 90%;
 
+  &.minimal {
+    height: 30px;
+
+    .card-title {
+      font-size: 14px;
+    }
+
+    .ksm {
+      float: right;
+    }
+  }
+
   .card-title {
     font-size: 16px;
     margin-bottom: 0.4rem;
@@ -54,9 +66,17 @@
   justify-content: space-between;
 }
 
+.filter-wrapper, .search {
+  font-size: 14px;
+}
+
 .filter-wrapper {
   mat-form-field {
     margin: 10px;
+  }
+
+  .mat-checkbox {
+    margin-top: 25px;
   }
 }
 
@@ -88,7 +108,7 @@
   border-radius: 35px;
   font-size: 26px;
   height: 70px;
-  margin-left: 60px;
+  margin-left: 10px;
   position: relative;
   width: 70px;
 
@@ -127,6 +147,11 @@
   .filter-wrapper {
     font-size: 12px;
     flex-direction: column;
+
+    .mat-checkbox {
+      margin-top: 0;
+      text-align: center;
+    }
   }
 
   .button-row {

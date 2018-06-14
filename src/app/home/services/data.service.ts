@@ -41,13 +41,16 @@ export class DataService {
     return this.ksmLeftSubject.asObservable();
   }
 
-  public selectPlayer(player: Player): void {
+  public selectPlayer(player: Player): boolean {
     const selectedPlayers = this.selectedPlayersSubject.getValue();
     const index = this.findSquadIndex(player);
-    if (index === -1) { return; }
+    if (index === -1) {
+      return false;
+    }
 
     selectedPlayers[index] = player;
     this.setSelection(selectedPlayers);
+    return true;
   }
 
   public unselectPlayer(player: Player, index: number): void {

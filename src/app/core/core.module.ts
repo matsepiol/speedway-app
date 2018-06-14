@@ -6,8 +6,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ShellComponent } from './shell/shell.component';
 import { HeaderComponent } from './shell/header/header.component';
 import { RouteReusableStrategy } from './route-reusable-strategy';
-import { AuthenticationService } from './authentication/authentication.service';
-import { AuthenticationGuard } from './authentication/authentication.guard';
+
 
 @NgModule({
   imports: [
@@ -20,8 +19,6 @@ import { AuthenticationGuard } from './authentication/authentication.guard';
     ShellComponent
   ],
   providers: [
-    AuthenticationService,
-    AuthenticationGuard,
     {
       provide: RouteReuseStrategy,
       useClass: RouteReusableStrategy

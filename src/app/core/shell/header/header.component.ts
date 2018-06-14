@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-
-import { AuthenticationService } from '../../authentication/authentication.service';
+import { AuthenticationService } from '../../../authentication/authentication.service';
 
 @Component({
   selector: 'app-header',
@@ -12,7 +10,7 @@ export class HeaderComponent implements OnInit {
 
   menuHidden = true;
 
-  constructor(private router: Router,
+  constructor(
               private authenticationService: AuthenticationService,
               ) { }
 
@@ -24,13 +22,11 @@ export class HeaderComponent implements OnInit {
 
 
   logout() {
-    this.authenticationService.logout()
-      .subscribe(() => this.router.navigate(['/login'], { replaceUrl: true }));
+    this.authenticationService.logout();
   }
 
   get username(): string | null {
-    const credentials = this.authenticationService.credentials;
-    return credentials ? credentials.username : null;
+    return this.authenticationService.userDetails ? this.authenticationService.userDetails.displayName : null;
   }
 
 }

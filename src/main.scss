@@ -16,9 +16,3 @@
 // Theme customization
 @import "theme/theme";
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
-
-@media (max-width: 768px) {
-  html, body {
-    height: 100%;
-  }
-}

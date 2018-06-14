@@ -3,3 +3,46 @@
  * Framework overrides and customization goes here.
  */
 
+ @media (max-width: 768px) {
+  html, body {
+    height: 100%;
+  }
+}
+
+ .cdk-overlay-container,
+ .cdk-global-overlay-wrapper {
+   pointer-events: none;
+   top: 0;
+   left: 0;
+   height: 100%;
+   width: 100%;
+ }
+
+ .cdk-global-overlay-wrapper {
+  justify-content: center;
+  align-items: flex-end;
+ }
+
+ .cdk-overlay-container {
+   position: fixed;
+   z-index: 1000;
+ }
+
+.mat-snack-bar-container {
+  &.error {
+    background-color: #dc3545;
+  }
+
+  &.warning {
+    background-color: #ffc107;
+  }
+
+  &.success {
+    background-color: #28a745;
+  }
+
+}
+
+ .mat-simple-snackbar {
+  justify-content: center !important;
+}

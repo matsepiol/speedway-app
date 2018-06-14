@@ -1,6 +1,6 @@
-<div class="login-container bg-light">
+<div class="login-container container-fluid bg-light">
   <div class="login-box">
-    <h1>Żużel app</h1>
+    <h1>Speedway app</h1>
 
     <div class="container">
       <div class="card col-md-6 mt-3 mx-auto">
@@ -8,42 +8,14 @@
           <h4 class="card-title text-center">
             <i class="far fa-3x fa-user-circle text-muted"></i>
           </h4>
-          <form (ngSubmit)="login()" [formGroup]="loginForm" novalidate>
-            <div class="alert alert-danger" [hidden]="!error || isLoading">
-              Username or password incorrect.
-            </div>
-            <div class="form-group">
-              <label class="d-block">
-                <input type="text" class="form-control" formControlName="username" autocomplete="username"
-                       placeholder="Username"/>
-                <span hidden>Username</span>
-                <small [hidden]="loginForm.controls.username.valid || loginForm.controls.username.untouched"
-                       class="text-danger">
-                  Username is required
-                </small>
-              </label>
-              <label class="d-block">
-                <input type="password" class="form-control" formControlName="password" autocomplete="current-password"
-                       placeholder="Password" required/>
-                <span hidden>Password</span>
-                <small [hidden]="loginForm.controls.password.valid || loginForm.controls.password.untouched"
-                       class="text-danger">
-                  Password is required
-                </small>
-              </label>
-              <div class="form-check">
-                <label class="form-check-label">
-                  <input type="checkbox" class="form-check-input" formControlName="remember"/>
-                  <span>Remember me</span>
-                </label>
-              </div>
-            </div>
-            <button class="btn btn-primary w-100" type="submit" [disabled]="loginForm.invalid || isLoading">
-              <i class="fas fa-cog fa-spin" [hidden]="!isLoading"></i>
-              <span>Login</span>
-            </button>
-          </form>
+
+          <button type="submit" class="btn btn-primary w-100" (click)="signInWithFacebook()">
+            <i class="fas fa-cog fa-spin" *ngIf="isLoading"></i>
+            Login with Facebook
+          </button>
         </div>
+
+        <p class="error-msg" *ngIf="error">{{error}}</p>
       </div>
     </div>
   </div>

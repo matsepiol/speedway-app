@@ -1,54 +1,60 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ChangeDetectorRef  } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { finalize } from 'rxjs/operators';
 
-import { environment } from '@env/environment';
-import { Logger, AuthenticationService } from '@app/core';
+import { AuthenticationService } from '../authentication/authentication.service';
 
-const log = new Logger('Login');
+const emailList = [
+  'matsepiol@interia.pl',
+  'szymon.sobol1996@gmail.com',
+  'ligieza.lukasz@gmail.com',
+  'Orlikowskimichal@wp.pl',
+  'zioma@o2.pl',
+  'aleksandra_nalepa@op.pl',
+  'areksuwalski@gmail.com',
+  'witek0709@poczta.onet.pl',
+  'riccaldi@gmail.com',
+  'smaciek1@op.pl',
+  'niemiec.agnieszka@interia.pl'
+];
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
 
   error: string;
-  loginForm: FormGroup;
   isLoading = false;
 
-  constructor(private router: Router,
-              private formBuilder: FormBuilder,
-              private authenticationService: AuthenticationService) {
-    this.createForm();
+  constructor(
+    private router: Router,
+    private authenticationService: AuthenticationService,
+    private cdr: ChangeDetectorRef
+  ) {
   }
 
-  ngOnInit() { }
-
-  login() {
+  public signInWithFacebook() {
     this.isLoading = true;
-    this.authenticationService.login(this.loginForm.value)
-      .pipe(finalize(() => {
-        this.loginForm.markAsPristine();
-        this.isLoading = false;
-      }))
-      .subscribe(credentials => {
-        log.debug(`${credentials.username} successfully logged in`);
-        this.router.navigate(['/'], { replaceUrl: true });
-      }, error => {
-        log.debug(`Login error: ${error}`);
-        this.error = error;
-      });
-  }
 
-  private createForm() {
-    this.loginForm = this.formBuilder.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required],
-      remember: true
-    });
+    this.authenticationService.signInWithFacebook()
+      .then((res) => {
+        if (emailList.indexOf(res.user.email) !== -1) {
+          this.isLoading = false;
+          this.error = null;
+          localStorage.setItem('currentUser', JSON.stringify(res));
+          this.router.navigate(['']);
+          window.location.reload();
+        } else {
+          this.isLoading = false;
+          this.error = 'You do not have access. Try again later.';
+          this.cdr.detectChanges();
+        }
+      })
+      .catch((err) => {
+        this.isLoading = false;
+        console.log(err);
+      });
   }
 
 }

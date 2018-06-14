@@ -19,10 +19,15 @@
       </mat-select>
     </mat-form-field>
 
+    <mat-checkbox [(ngModel)]="filter.showMinimum" title="Schowaj grafiki i typ zawodników">
+      Tryb minimalistyczny
+    </mat-checkbox>
+
     <div class="ksm-counter" [ngClass]="{ 'is-wrong': (dataService.getKsmSum() | async) > 45 }">
       <span>{{ dataService.getKsmSum() | async}}</span>
       <p>Pozostały KSM: {{ dataService.getKsmLeft() | async}}</p>
     </div>
+
   </div>
 
   <div class="search">
@@ -33,7 +38,7 @@
 
   <div class="button-row">
 
-    <mat-checkbox [(ngModel)]="filter.showPossiblePlayers">
+    <mat-checkbox [(ngModel)]="filter.showPossiblePlayers" title="Pokaż tylko zawodników, ktorzy pasują typem do składu i nie przekroczą wymagany KSM">
       Pokaż dostępnych zawodników
     </mat-checkbox>
 
@@ -45,13 +50,13 @@
   <div class="available-players col-xs-6">
     <app-loader [isLoading]="isLoading" [message]="loadingMessage"></app-loader>
 
-    <div *ngFor="let player of availablePlayers | filter: filter" class="card">
+    <div *ngFor="let player of availablePlayers | filter: filter" class="card" [ngClass]="{ 'minimal': filter.showMinimum }">
       <div class="card-body" (click)="selectPlayer(player)">
-        <h5 class="card-title">{{player.name}} KSM:
-          <b>{{player.ksm}}</b>
+        <h5 class="card-title">{{player.name}}
+          <span class="ksm">KSM: <b>{{player.ksm}}</b></span>
         </h5>
-        <p class="card-text">{{player.type}}</p>
-        <img src="../../../../assets/logos/{{ player.team }}.jpg" />
+        <p class="card-text" *ngIf="!filter.showMinimum">{{player.type}}</p>
+        <img *ngIf="!filter.showMinimum" src="../../../../assets/logos/{{ player.team }}.jpg" />
       </div>
     </div>
   </div>

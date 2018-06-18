@@ -1,0 +1,17 @@
+:host {
+  background-color: #fff;
+  display: block;
+  margin: 0 30%;
+  margin-top: 2rem;
+  padding: 10px;
+}
+
+h4 {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  :host {
+    display: none;
+  }
+}

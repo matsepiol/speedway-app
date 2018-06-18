@@ -189,6 +189,14 @@
 
       .card {
         margin: 0;
+        height: 75px;
+
+        &.placeholder {
+          .card-text {
+            line-height: 75px;
+          }
+        }
+
         .card-title, .card-text {
           font-size: 10px !important;
 

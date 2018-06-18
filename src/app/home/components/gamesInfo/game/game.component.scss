@@ -1,0 +1,23 @@
+:host {
+  display: flex;
+  padding: 10px;
+}
+
+.team {
+  display: inline-block;
+  font-weight: 500;
+  margin: 0 10px;
+  width: 300px;
+
+  &.home {
+    text-align: right;
+  }
+
+  &.away {
+    text-align: left;
+  }
+}
+
+img {
+  width: 30px;
+}

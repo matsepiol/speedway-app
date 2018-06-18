@@ -5,15 +5,16 @@ import { AuthenticationService } from '../authentication/authentication.service'
 
 const emailList = [
   'matsepiol@interia.pl',
-  'szymon.sobol1996@gmail.com',
+  'szymoneczek134@onet.pl',
   'ligieza.lukasz@gmail.com',
-  'Orlikowskimichal@wp.pl',
+  'orlikowskimichal@wp.pl',
   'zioma@o2.pl',
   'aleksandra_nalepa@op.pl',
-  'areksuwalski@gmail.com',
+  'oxloczekxo@o2.pl',
   'witek0709@poczta.onet.pl',
   'riccaldi@gmail.com',
   'smaciek1@op.pl',
+  'tomaszpawelbedkowski@gmail.com',
   'niemiec.agnieszka@interia.pl'
 ];
 
@@ -47,7 +48,7 @@ export class LoginComponent {
           window.location.reload();
         } else {
           this.isLoading = false;
-          this.error = 'You do not have access. Try again later.';
+          this.error = 'Nie masz uprawnień, by się zalogować. Skontaktuj się z administratorem.';
           this.cdr.detectChanges();
         }
       })

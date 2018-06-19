@@ -1,14 +1,15 @@
 import { clone, countBy } from 'lodash';
 import { ClipboardService } from 'ngx-clipboard';
 
-import { Component, Input, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 
-import {
-  Filter, Player, teamPlaceholder,
-} from '../../home.model';
+import { Filter, Player, teamPlaceholder } from '../../home.model';
 import { DataService } from '../../services/data.service';
 import { SnackBarService } from '../../services/snack-bar.service';
+import { ConfirmationDialogComponent } from '@app/home/components/confirmationDialog/confirmation-dialog.component';
+import { AngularFireDatabase } from 'angularfire2/database';
+import { AuthenticationService } from '@app/authentication/authentication.service';
 
 @Component({
   selector: 'app-players-list',
@@ -18,7 +19,7 @@ import { SnackBarService } from '../../services/snack-bar.service';
 
 export class PlayersListComponent implements OnInit {
 
-  @Input() public availablePlayers: Player[];
+  public availablePlayers: Player[];
   public isLoading: boolean;
   public loadingMessage = 'Wczytywanie...';
   public teamFilters: string[] = [];
@@ -28,12 +29,16 @@ export class PlayersListComponent implements OnInit {
   };
   public ksmSum = 0;
   public selectedPlayers: Player[] = [];
+  private confirmationDialog: MatDialogRef<ConfirmationDialogComponent>;
 
   constructor(
+    public authenticationService: AuthenticationService,
+    public clipboardService: ClipboardService,
     public dataService: DataService,
-    private snackBarService: SnackBarService,
+    public dialog: MatDialog,
     public snackBar: MatSnackBar,
-    public clipboardService: ClipboardService
+    private db: AngularFireDatabase,
+    private snackBarService: SnackBarService,
   ) { }
 
   ngOnInit(): void {
@@ -93,6 +98,26 @@ export class PlayersListComponent implements OnInit {
       this.clipboardService.copyFromContent(textToCopy);
       this.snackBarService.messageSuccess('Skład skopiowany do schowka!');
     }
+  }
+
+  public sendSquad(): void {
+    if ((countBy(this.selectedPlayers, 'placeholder').true)) {
+      this.snackBarService.messageError('Skład nie jest kompletny!');
+      return;
+    }
+
+    const playersToSend = this.selectedPlayers.map( (player) => {
+      return player['name'];
+    });
+
+    this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent, { width: '400px' });
+    this.confirmationDialog.afterClosed().subscribe(result => {
+      if (result) {
+        this.dataService.sendSquad(playersToSend).then(() => {
+          this.snackBarService.messageSuccess('Wyniki wysłane!');
+        });
+      }
+    });
   }
 
   public clearSquad(): void {

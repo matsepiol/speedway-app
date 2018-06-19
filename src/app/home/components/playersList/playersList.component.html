@@ -36,15 +36,15 @@
     </mat-form-field>
   </div>
 
-  <div class="button-row">
 
+  <div class="button-row">
     <mat-checkbox [(ngModel)]="filter.showPossiblePlayers" title="Pokaż tylko zawodników, ktorzy pasują typem do składu i nie przekroczą wymagany KSM">
       Pokaż dostępnych zawodników
     </mat-checkbox>
-
     <button mat-raised-button color="primary" (click)="clearFilters()">Wyczyść filtry</button>
     <button mat-raised-button color="primary" (click)="clearSquad()">Wyczyść skład</button>
     <button mat-raised-button color="primary" (click)="exportSquad()">Eksportuj skład</button>
+    <button mat-raised-button color="primary" (click)="sendSquad()">Wyślij skład</button>
   </div>
 
   <div class="available-players col-xs-6">

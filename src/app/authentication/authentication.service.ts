@@ -21,8 +21,6 @@ export class AuthenticationService {
   }
 
   signInRegular(email: string, password: string) {
-    const credential = firebase.auth.EmailAuthProvider.credential(email, password);
-
     return this._firebaseAuth.auth.signInWithEmailAndPassword(email, password);
   }
 
@@ -38,6 +36,11 @@ export class AuthenticationService {
     } else {
       return true;
     }
+  }
+
+  isAdmin() {
+    // admin id
+    return JSON.parse(localStorage.getItem('currentUser')).user.uid === '4h41P3l8XqYRW7YSBy3LA9pYGOt2';
   }
 
   logout() {

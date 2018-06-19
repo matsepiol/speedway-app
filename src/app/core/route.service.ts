@@ -1,7 +1,7 @@
 import { Route as ngRoute, Routes } from '@angular/router';
 
 import { ShellComponent } from './shell/shell.component';
-import { AuthenticationGuard } from '../authentication/authentication.guard';
+import { HomeGuard } from './../home/home.guard';
 
 /**
  * Provides helper methods to create routes.
@@ -18,7 +18,7 @@ export class Route {
       path: '',
       component: ShellComponent,
       children: routes,
-      canActivate: [AuthenticationGuard],
+      canActivate: [HomeGuard],
       data: { reuse: true }
     };
   }

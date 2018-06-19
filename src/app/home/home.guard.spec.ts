@@ -1,12 +1,12 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
-import { AuthenticationService } from './authentication.service';
-import { MockAuthenticationService } from './authentication.service.mock';
-import { AuthenticationGuard } from './authentication.guard';
+import { AuthenticationService } from '../authentication/authentication.service';
+import { MockAuthenticationService } from '../authentication/authentication.service.mock';
+import { HomeGuard } from './home.guard';
 
-describe('AuthenticationGuard', () => {
-  let authenticationGuard: AuthenticationGuard;
+describe('HomeGuard', () => {
+  let authenticationGuard: HomeGuard;
   let authenticationService: MockAuthenticationService;
   let mockRouter: any;
 
@@ -16,7 +16,7 @@ describe('AuthenticationGuard', () => {
     };
     TestBed.configureTestingModule({
       providers: [
-        AuthenticationGuard,
+        HomeGuard,
         { provide: AuthenticationService, useClass: MockAuthenticationService },
         { provide: Router, useValue: mockRouter },
       ]
@@ -24,9 +24,9 @@ describe('AuthenticationGuard', () => {
   });
 
   beforeEach(inject([
-    AuthenticationGuard,
+    HomeGuard,
     AuthenticationService
-  ], (_authenticationGuard: AuthenticationGuard,
+  ], (_authenticationGuard: HomeGuard,
       _authenticationService: MockAuthenticationService) => {
 
     authenticationGuard = _authenticationGuard;

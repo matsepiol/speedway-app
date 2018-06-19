@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
@@ -7,6 +7,7 @@ import {
 } from '../home.model';
 import { SnackBarService } from '../services/snack-bar.service';
 import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
+import { AuthenticationService } from '@app/authentication/authentication.service';
 
 @Injectable()
 export class DataService {
@@ -17,11 +18,24 @@ export class DataService {
 
   constructor(
     private snackBarService: SnackBarService,
+    private authenticationService: AuthenticationService,
     private db: AngularFireDatabase
   ) {}
 
   public getData(): AngularFireList<Player[]> {
     return this.db.list<Player[]>('/data');
+  }
+
+  public getRoundScore(round: number): AngularFireList<any> {
+    return this.db.list(`/scores/${round}`);
+  }
+
+  public saveResults(savedPlayers: any, round: any) {
+    return this.db.object(`scores/${round}`).set(savedPlayers);
+  }
+
+  public sendSquad(playersToSend: any) {
+    return this.db.object(`squads/${this.authenticationService.userDetails.uid}/10`).set(playersToSend);
   }
 
   public setSelection(selection: Player[]): void {

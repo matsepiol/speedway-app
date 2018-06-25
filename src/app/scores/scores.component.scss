@@ -3,18 +3,31 @@
   flex-wrap: wrap;
   align-items: flex-start;
 
+  button {
+    margin: 20px;
+  }
+
+  mat-select {
+    margin: 5px;
+  }
+
   .card {
     margin: 20px;
     width: 21%;
   }
 
   span {
-    width: 80%;
     display: inline-block;
+    font-size: 12px;
+    line-height: 11px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 60%;
   }
 
   form {
-    width: 30px;
+    width: 65px;
     display: inline-block;
 
     mat-form-field {

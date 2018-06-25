@@ -113,7 +113,7 @@ export class PlayersListComponent implements OnInit {
     this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent, { width: '400px' });
     this.confirmationDialog.afterClosed().subscribe(result => {
       if (result) {
-        this.dataService.sendSquad(playersToSend).then(() => {
+        this.dataService.sendSquad(playersToSend, 9).then(() => {
           this.snackBarService.messageSuccess('Wyniki wysłane!');
         });
       }

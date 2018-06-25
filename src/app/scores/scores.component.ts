@@ -14,7 +14,9 @@ import { DataService } from '../home/services/data.service';
 export class ScoresComponent implements OnInit {
   public teams: any;
   public isLoading: boolean;
-  public round = 8;
+  public currentRound = 9;
+  public roundsQuantity = 14;
+  public roundsIterable = Array(this.roundsQuantity).fill(0).map((x, i) => i + 1);
   public loadingMessage = 'Wczytywanie...';
 
   constructor(
@@ -40,14 +42,15 @@ export class ScoresComponent implements OnInit {
   private fetchRoundScore(): void {
     this.isLoading = true;
 
-    this.dataService.getRoundScore(this.round).valueChanges().subscribe((data) => {
+    this.dataService.getRoundScore(this.currentRound).valueChanges().subscribe((data) => {
       each(this.teams, (team) => {
         each(team, (player) => {
           player.score = 0;
-
+          player.bonus = 0;
           each(data, (score) => {
             if (score.name === player.name) {
               player.score = parseInt(score.score, 10);
+              player.bonus = parseInt(score.bonus, 10);
             }
           });
         });
@@ -59,10 +62,10 @@ export class ScoresComponent implements OnInit {
   public save(): void {
     const savedPlayers: any[] = [];
     each(flatten(this.teams), (player) => {
-      savedPlayers.push(pick(player, ['name', 'score']));
+      savedPlayers.push(pick(player, ['name', 'score', 'bonus']));
     });
 
-    this.dataService.saveResults(savedPlayers, this.round).then(() => {
+    this.dataService.saveResults(savedPlayers, this.currentRound).then(() => {
       this.snackBarService.messageSuccess('Wyniki zapisane');
     });
   }

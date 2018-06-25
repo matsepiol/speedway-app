@@ -14,6 +14,10 @@
         </a>
         <a class="nav-item nav-link text-uppercase" *ngIf="authenticationService.isAdmin()" routerLink="/scores" routerLinkActive="active">
           <i class="fas fa-chart-line"></i>
+          <span translate>Punktacja</span>
+        </a>
+        <a class="nav-item nav-link text-uppercase" routerLink="/results" routerLinkActive="active">
+          <i class="fas fa-chart-line"></i>
           <span translate>Wyniki</span>
         </a>
       </div>

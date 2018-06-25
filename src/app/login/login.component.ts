@@ -11,6 +11,7 @@ const emailList = [
   'zioma@o2.pl',
   'aleksandra_nalepa@op.pl',
   'oxloczekxo@o2.pl',
+  'areksuwalski@gmail.com',
   'witek0709@poczta.onet.pl',
   'riccaldi@gmail.com',
   'smaciek1@op.pl',

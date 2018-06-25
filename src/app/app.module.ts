@@ -13,6 +13,8 @@ import { AuthenticationService } from './authentication/authentication.service';
 import { SharedModule } from '@app/shared';
 import { HomeModule } from './home/home.module';
 import { ScoresModule } from './scores/scores.module';
+import { ResultsModule } from './results/results.module';
+
 import { LoginModule } from './login/login.module';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -35,6 +37,7 @@ import { AngularFireAuthModule } from 'angularfire2/auth';
     SharedModule,
     HomeModule,
     ScoresModule,
+    ResultsModule,
     LoginModule,
     AppRoutingModule
   ],

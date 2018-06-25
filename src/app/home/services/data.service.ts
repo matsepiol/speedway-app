@@ -30,12 +30,16 @@ export class DataService {
     return this.db.list(`/scores/${round}`);
   }
 
-  public saveResults(savedPlayers: any, round: any) {
+  public saveResults(savedPlayers: any, round: number) {
     return this.db.object(`scores/${round}`).set(savedPlayers);
   }
 
-  public sendSquad(playersToSend: any) {
-    return this.db.object(`squads/${this.authenticationService.userDetails.uid}/10`).set(playersToSend);
+  public getRoundSquads(round: number, id: string): AngularFireList<any> {
+    return this.db.list(`/squads/${round}/${id}`);
+  }
+
+  public sendSquad(playersToSend: any, round?) {
+    return this.db.object(`squads/${round}/${this.authenticationService.userDetails.uid}`).set(playersToSend);
   }
 
   public setSelection(selection: Player[]): void {

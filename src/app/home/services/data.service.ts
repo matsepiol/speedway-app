@@ -38,8 +38,16 @@ export class DataService {
     return this.db.list(`/squads/${round}/${id}`);
   }
 
-  public sendSquad(playersToSend: any, round?) {
+  public sendSquad(playersToSend: any, round: number) {
     return this.db.object(`squads/${round}/${this.authenticationService.userDetails.uid}`).set(playersToSend);
+  }
+
+  public getRoundResult(id: any) {
+    return this.db.list(`table/${id}`);
+  }
+
+  public setRoundResult(id: any, round: any, score: any) {
+    return this.db.object(`table/${id}/${round}`).set(score);
   }
 
   public setSelection(selection: Player[]): void {

@@ -3,30 +3,41 @@
     <h1>Wyniki</h1>
   </div>
 
-  <div class="container options">
-    <mat-form-field>
-
-      <mat-select [(ngModel)]="currentRound" (ngModelChange)="onRoundChange()">
-        <mat-option *ngFor="let number of roundsIterable" [value]="number">Kolejka {{number}}</mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
-
   <div class="container">
-    <app-loader [isLoading]="isLoading" [message]="loadingMessage"></app-loader>
+    <mat-tab-group>
+      <mat-tab label="Składy">
+        <div class="container options">
+          <mat-form-field>
 
-    <mat-expansion-panel [expanded]="true" *ngFor="let squad of squads" class="card">
-      <mat-expansion-panel-header>{{users[squad.userId]}}</mat-expansion-panel-header>
-      <div *ngFor="let result of squad.results">
-        <span>{{result.name}}</span>
-        <span>{{result.score}}</span>
-        <span>{{result.bonus}}</span>
+            <mat-select [(ngModel)]="currentRound" (ngModelChange)="onRoundChange()">
+              <mat-option *ngFor="let number of roundsIterable" [value]="number">Kolejka {{number}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
 
-        <mat-divider></mat-divider>
-      </div>
-      <p *ngIf="!squad.results.length">Ten gracz nie wysłał jeszcze składu.</p>
-    </mat-expansion-panel>
+        <div class="container" *ngIf="isUserSquadSent">
+          <app-loader [isLoading]="isLoading" [message]="loadingMessage"></app-loader>
 
+          <mat-expansion-panel [expanded]="true" *ngFor="let squad of squads" class="card">
+            <mat-expansion-panel-header>{{users[squad.userId]}}</mat-expansion-panel-header>
+            <div class="player" *ngFor="let result of squad.results">
+              <span class="name">{{result.name}}</span>
+              <span class="score">{{result.score}} + {{result.bonus}}</span>
+
+              <mat-divider></mat-divider>
+            </div>
+            <span *ngIf="squad.scoreSum">Koncowy wynik: {{squad.scoreSum}} + {{ squad.bonusSum }}</span>
+            <p *ngIf="!squad.results.length">Ten gracz nie wysłał jeszcze składu.</p>
+          </mat-expansion-panel>
+
+        </div>
+
+        <div class="container" *ngIf="!isUserSquadSent">Musisz wysłać skład dla tej kolejki, by mieć dostęp do składow pozostalych graczy</div>
+      </mat-tab>
+
+      <mat-tab label="Tabela">
+      </mat-tab>
+
+    </mat-tab-group>
   </div>
-
 </div>

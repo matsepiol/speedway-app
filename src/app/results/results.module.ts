@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { ResultsRoutingModule } from '@app/results/results-routing.module';
 import { SharedModule } from '@app/shared';
-import { MatButtonModule, MatSelectModule } from '@angular/material';
+import { MatButtonModule, MatSelectModule, MatTabsModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDividerModule } from '@angular/material/divider';
@@ -19,7 +19,8 @@ import { ResultsComponent } from './results.component';
     MatButtonModule,
     MatSelectModule,
     MatExpansionModule,
-    MatDividerModule
+    MatDividerModule,
+    MatTabsModule,
   ],
   declarations: [
     ResultsComponent,

@@ -45,6 +45,7 @@ export class LoginComponent {
           this.isLoading = false;
           this.error = null;
           localStorage.setItem('currentUser', JSON.stringify(res));
+          this.authenticationService.userDetails = res;
           this.router.navigate(['']);
           window.location.reload();
         } else {

@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataService } from '../home/services/data.service';
 import { Users } from '@app/users.model';
 import { find } from 'lodash';
-import { MatSort, MatTableDataSource } from '@angular/material';
+import { MatSort, MatTableDataSource, MatTabChangeEvent } from '@angular/material';
 import { Squad } from './result.model';
 
 @Component({
@@ -52,16 +52,16 @@ export class ResultsComponent implements OnInit {
         this.squads.push({ userId, team, results: [] });
       });
 
-      this.dataService.getRoundResult(userId).valueChanges().subscribe((data) => {
-        this.tableData.push({
-          userName: this.users[userId],
-          scoreSum: data.reduce((a: number, b) => a + parseInt(b[0], 10), 0),
-          bonusSum: data.reduce((a: number, b) => a + parseInt(b[1], 10), 0),
-        });
+      // this.dataService.getRoundResult(userId).valueChanges().subscribe((data) => {
+      //   this.tableData.push({
+      //     userName: this.users[userId],
+      //     scoreSum: data.reduce((a: number, b) => a + parseInt(b[0], 10), 0),
+      //     bonusSum: data.reduce((a: number, b) => a + parseInt(b[1], 10), 0),
+      //   });
 
-        this.dataSource = new MatTableDataSource(this.tableData);
-        this.dataSource.sort = this.sort;
-      });
+      //   this.dataSource = new MatTableDataSource(this.tableData);
+      //   this.dataSource.sort = this.sort;
+      // });
 
     });
 
@@ -88,5 +88,26 @@ export class ResultsComponent implements OnInit {
 
   public onRoundChange(): void {
     this.fetchRoundSquad();
+  }
+
+  public onSelect(event: MatTabChangeEvent): void {
+    if (event.tab.textLabel === 'Tabela' && !this.tableData.length) {
+
+      this.isLoading = true;
+      Object.keys(Users).forEach((userId) => {
+        this.dataService.getRoundResult(userId).valueChanges().subscribe((data) => {
+          this.tableData.push({
+            userName: this.users[userId],
+            scoreSum: data.reduce((a: number, b) => a + parseInt(b[0], 10), 0),
+            bonusSum: data.reduce((a: number, b) => a + parseInt(b[1], 10), 0),
+          });
+
+          this.dataSource = new MatTableDataSource(this.tableData);
+          this.dataSource.sort = this.sort;
+          this.isLoading = false;
+        });
+      });
+
+    }
   }
 }

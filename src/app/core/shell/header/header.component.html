@@ -8,12 +8,12 @@
 
     <div id="navbar-menu" class="collapse navbar-collapse float-xs-none" [ngbCollapse]="menuHidden">
       <div class="navbar-nav">
-        <a class="nav-item nav-link text-uppercase" routerLink="/" routerLinkActive="active">
+        <a class="nav-item nav-link text-uppercase" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
           <i class="fas fa-motorcycle"></i>
-          <span translate>Skład</span>
+          <span translate>Wybór Składu</span>
         </a>
         <a class="nav-item nav-link text-uppercase" *ngIf="authenticationService.isAdmin()" routerLink="/scores" routerLinkActive="active">
-          <i class="fas fa-chart-line"></i>
+          <i class="fas fa-list-ul"></i>
           <span translate>Punktacja</span>
         </a>
         <a class="nav-item nav-link text-uppercase" routerLink="/results" routerLinkActive="active">

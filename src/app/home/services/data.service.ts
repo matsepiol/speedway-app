@@ -39,7 +39,8 @@ export class DataService {
   }
 
   public sendSquad(playersToSend: any, round: number) {
-    return this.db.object(`squads/${round}/${this.authenticationService.userDetails.uid}`).set(playersToSend);
+    const id = this.authenticationService.userDetails.uid;
+    return this.db.object(`squads/${round}/${id}`).set(playersToSend);
   }
 
   public getRoundResult(id: any) {

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { LoaderComponent } from './loader/loader.component';
 import { FilterPipe } from './filterPipe/filterPipe';
+import { SortPlayersPipe } from '@app/shared/filterPipe/sortPipe';
 
 @NgModule({
   imports: [
@@ -11,10 +12,12 @@ import { FilterPipe } from './filterPipe/filterPipe';
   declarations: [
     LoaderComponent,
     FilterPipe,
+    SortPlayersPipe
   ],
   exports: [
     LoaderComponent,
     FilterPipe,
+    SortPlayersPipe
   ]
 })
 export class SharedModule { }

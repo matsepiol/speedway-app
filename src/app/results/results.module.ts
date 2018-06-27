@@ -1,12 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-
+import { FormsModule } from '@angular/forms';
+import {
+    MatButtonModule, MatSelectModule, MatSortModule, MatTableDataSource, MatTableModule,
+    MatTabsModule
+} from '@angular/material';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { ResultsRoutingModule } from '@app/results/results-routing.module';
 import { SharedModule } from '@app/shared';
-import { MatButtonModule, MatSelectModule, MatTabsModule } from '@angular/material';
-import { FormsModule } from '@angular/forms';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatDividerModule } from '@angular/material/divider';
 
 import { ResultsComponent } from './results.component';
 
@@ -21,6 +23,8 @@ import { ResultsComponent } from './results.component';
     MatExpansionModule,
     MatDividerModule,
     MatTabsModule,
+    MatTableModule,
+    MatSortModule,
   ],
   declarations: [
     ResultsComponent,

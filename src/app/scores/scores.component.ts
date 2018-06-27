@@ -1,4 +1,4 @@
-import { each, flatten, groupBy, pick } from 'lodash';
+import { each, find, flatten, groupBy, pick } from 'lodash';
 
 import { Component, OnInit } from '@angular/core';
 import { SnackBarService } from '@app/home/services/snack-bar.service';
@@ -14,7 +14,7 @@ import { DataService } from '../home/services/data.service';
 export class ScoresComponent implements OnInit {
   public teams: any;
   public isLoading: boolean;
-  public currentRound = 9;
+  public currentRound = 10;
   public roundsQuantity = 14;
   public roundsIterable = Array(this.roundsQuantity).fill(0).map((x, i) => i + 1);
   public loadingMessage = 'Wczytywanie...';
@@ -32,8 +32,7 @@ export class ScoresComponent implements OnInit {
       this.teams = Object.values(groupBy(data, 'team'));
       this.fetchRoundScore();
     });
-
-  }
+    }
 
   public onRoundChange(): void {
     this.fetchRoundScore();
@@ -45,14 +44,9 @@ export class ScoresComponent implements OnInit {
     this.dataService.getRoundScore(this.currentRound).valueChanges().subscribe((data) => {
       each(this.teams, (team) => {
         each(team, (player) => {
-          player.score = 0;
-          player.bonus = 0;
-          each(data, (score) => {
-            if (score.name === player.name) {
-              player.score = parseInt(score.score, 10);
-              player.bonus = parseInt(score.bonus, 10);
-            }
-          });
+          const playerData = find(data, { name: player.name});
+          player.score = playerData ? parseInt(playerData.score, 10) : 0;
+          player.bonus = playerData ? parseInt(playerData.bonus, 10) : 0;
         });
       });
       this.isLoading = false;

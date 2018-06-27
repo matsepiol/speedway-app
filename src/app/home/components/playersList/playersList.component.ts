@@ -8,7 +8,6 @@ import { Filter, Player, teamPlaceholder } from '../../home.model';
 import { DataService } from '../../services/data.service';
 import { SnackBarService } from '../../services/snack-bar.service';
 import { ConfirmationDialogComponent } from '@app/home/components/confirmationDialog/confirmation-dialog.component';
-import { AngularFireDatabase } from 'angularfire2/database';
 import { AuthenticationService } from '@app/authentication/authentication.service';
 
 @Component({
@@ -27,7 +26,6 @@ export class PlayersListComponent implements OnInit {
   public filter: Filter = {
     team: [], type: [], sort: 'ksm', searchQuery: '', showPossiblePlayers: false, showMinimum: false
   };
-  public ksmSum = 0;
   public selectedPlayers: Player[] = [];
   private confirmationDialog: MatDialogRef<ConfirmationDialogComponent>;
 
@@ -37,19 +35,18 @@ export class PlayersListComponent implements OnInit {
     public dataService: DataService,
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
-    private db: AngularFireDatabase,
     private snackBarService: SnackBarService,
   ) { }
 
-  ngOnInit(): void {
-    this.isLoading = true;
+  public ngOnInit(): void {
     this.init();
   }
 
   public init(): void {
     this.dataService.setSelection(clone(teamPlaceholder));
 
-    this.dataService.getData().valueChanges().subscribe( (data: any) => {
+    this.isLoading = true;
+    this.dataService.getData().valueChanges().subscribe((data: any) => {
       this.isLoading = false;
       this.availablePlayers = data;
       this.prepareFiltering();
@@ -101,19 +98,14 @@ export class PlayersListComponent implements OnInit {
   }
 
   public sendSquad(): void {
-    if ((countBy(this.selectedPlayers, 'placeholder').true)) {
-      this.snackBarService.messageError('Skład nie jest kompletny!');
-      return;
-    }
-
-    const playersToSend = this.selectedPlayers.map( (player) => {
+    const playersToSend = this.selectedPlayers.map((player) => {
       return player['name'];
     });
 
     this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent, { width: '400px' });
     this.confirmationDialog.afterClosed().subscribe(result => {
       if (result) {
-        this.dataService.sendSquad(playersToSend, 9).then(() => {
+        this.dataService.sendSquad(playersToSend, 10).then(() => {
           this.snackBarService.messageSuccess('Wyniki wysłane!');
         });
       }
@@ -131,6 +123,12 @@ export class PlayersListComponent implements OnInit {
 
     this.typeFilters = this.availablePlayers.map(item => item.type)
       .filter((value, index, self) => self.indexOf(value) === index);
+  }
+
+  public disableSendSquadButton(): boolean {
+    return !!(countBy(this.selectedPlayers, 'placeholder').true)
+      || this.dataService.ksmSumSubject.getValue() > 45
+      || new Date() > new Date(2018, 6, 1, 17, 0, 0);
   }
 
 }

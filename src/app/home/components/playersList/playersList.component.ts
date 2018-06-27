@@ -1,14 +1,14 @@
 import { clone, countBy } from 'lodash';
 import { ClipboardService } from 'ngx-clipboard';
 
-import { Component, Input, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 
-import {
-  Filter, Player, teamPlaceholder,
-} from '../../home.model';
+import { Filter, Player, teamPlaceholder } from '../../home.model';
 import { DataService } from '../../services/data.service';
 import { SnackBarService } from '../../services/snack-bar.service';
+import { ConfirmationDialogComponent } from '@app/home/components/confirmationDialog/confirmation-dialog.component';
+import { AuthenticationService } from '@app/authentication/authentication.service';
 
 @Component({
   selector: 'app-players-list',
@@ -18,7 +18,7 @@ import { SnackBarService } from '../../services/snack-bar.service';
 
 export class PlayersListComponent implements OnInit {
 
-  @Input() public availablePlayers: Player[];
+  public availablePlayers: Player[];
   public isLoading: boolean;
   public loadingMessage = 'Wczytywanie...';
   public teamFilters: string[] = [];
@@ -26,25 +26,27 @@ export class PlayersListComponent implements OnInit {
   public filter: Filter = {
     team: [], type: [], sort: 'ksm', searchQuery: '', showPossiblePlayers: false, showMinimum: false
   };
-  public ksmSum = 0;
   public selectedPlayers: Player[] = [];
+  private confirmationDialog: MatDialogRef<ConfirmationDialogComponent>;
 
   constructor(
+    public authenticationService: AuthenticationService,
+    public clipboardService: ClipboardService,
     public dataService: DataService,
-    private snackBarService: SnackBarService,
+    public dialog: MatDialog,
     public snackBar: MatSnackBar,
-    public clipboardService: ClipboardService
+    private snackBarService: SnackBarService,
   ) { }
 
-  ngOnInit(): void {
-    this.isLoading = true;
+  public ngOnInit(): void {
     this.init();
   }
 
   public init(): void {
     this.dataService.setSelection(clone(teamPlaceholder));
 
-    this.dataService.getData().valueChanges().subscribe( (data: any) => {
+    this.isLoading = true;
+    this.dataService.getData().valueChanges().subscribe((data: any) => {
       this.isLoading = false;
       this.availablePlayers = data;
       this.prepareFiltering();
@@ -95,6 +97,21 @@ export class PlayersListComponent implements OnInit {
     }
   }
 
+  public sendSquad(): void {
+    const playersToSend = this.selectedPlayers.map((player) => {
+      return player['name'];
+    });
+
+    this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent, { width: '400px' });
+    this.confirmationDialog.afterClosed().subscribe(result => {
+      if (result) {
+        this.dataService.sendSquad(playersToSend, 10).then(() => {
+          this.snackBarService.messageSuccess('Wyniki wysłane!');
+        });
+      }
+    });
+  }
+
   public clearSquad(): void {
     this.dataService.setSelection(clone(teamPlaceholder));
     this.init();
@@ -106,6 +123,12 @@ export class PlayersListComponent implements OnInit {
 
     this.typeFilters = this.availablePlayers.map(item => item.type)
       .filter((value, index, self) => self.indexOf(value) === index);
+  }
+
+  public disableSendSquadButton(): boolean {
+    return !!(countBy(this.selectedPlayers, 'placeholder').true)
+      || this.dataService.ksmSumSubject.getValue() > 45
+      || new Date() > new Date(2018, 6, 1, 17, 0, 0);
   }
 
 }

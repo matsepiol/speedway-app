@@ -4,10 +4,11 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { Route } from '@app/core';
 import { HomeComponent } from './home.component';
+import { HomeGuard } from './home.guard';
 
 const routes: Routes = [
   Route.withShell([
-    { path: '', component: HomeComponent, data: { title: '' } }
+    { path: '', component: HomeComponent, canActivate: [HomeGuard], data: { title: 'Wybór składu' } }
   ])
 ];
 

@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
+import { Route } from '@app/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { Route } from '@app/core';
-import { AboutComponent } from './about.component';
+import { ScoresComponent } from './scores.component';
 
 const routes: Routes = [
   Route.withShell([
-    { path: 'about', component: AboutComponent, data: { title: 'About' } }
+    { path: 'scores', component: ScoresComponent, canActivate: [], data: { title: 'Punktacja' } }
   ])
 ];
 
@@ -15,4 +15,4 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: []
 })
-export class AboutRoutingModule { }
+export class ScoresRoutingModule { }

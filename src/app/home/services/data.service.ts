@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
@@ -7,6 +7,7 @@ import {
 } from '../home.model';
 import { SnackBarService } from '../services/snack-bar.service';
 import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
+import { AuthenticationService } from '@app/authentication/authentication.service';
 
 @Injectable()
 export class DataService {
@@ -17,11 +18,40 @@ export class DataService {
 
   constructor(
     private snackBarService: SnackBarService,
+    private authenticationService: AuthenticationService,
     private db: AngularFireDatabase
   ) {}
 
   public getData(): AngularFireList<Player[]> {
     return this.db.list<Player[]>('/data');
+  }
+
+  public getRoundScore(round: number): AngularFireList<any> {
+    return this.db.list(`/scores/${round}`);
+  }
+
+  public saveResults(savedPlayers: any, round: number) {
+    return this.db.object(`scores/${round}`).set(savedPlayers);
+  }
+
+  public getRoundSquads(round: number, id: string): AngularFireList<any> {
+    return this.db.list(`/squads/${round}/${id}`);
+  }
+
+  public sendSquad(playersToSend: any, round: number) {
+    let id = this.authenticationService.userDetails.uid;
+    // id = 'nCnHvhYvcubTEVxJ3cUfrJyg04P2';
+    // round = 1;
+
+    return this.db.object(`squads/${round}/${id}`).set(playersToSend);
+  }
+
+  public getRoundResult(id: any) {
+    return this.db.list(`table/${id}`);
+  }
+
+  public setRoundResult(id: any, round: any, score: any) {
+    return this.db.object(`table/${id}/${round}`).set(score);
   }
 
   public setSelection(selection: Player[]): void {

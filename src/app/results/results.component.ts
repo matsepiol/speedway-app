@@ -55,6 +55,7 @@ export class ResultsComponent implements OnInit {
 
     this.dataService.getRoundScore(this.currentRound).valueChanges().subscribe((scores) => {
       this.squads.forEach((squad) => {
+        squad.results = [];
         squad.scoreSum = 0;
         squad.bonusSum = 0;
         squad.team.forEach((player: any) => {
@@ -84,11 +85,17 @@ export class ResultsComponent implements OnInit {
       this.isLoading = true;
       Object.keys(Users).forEach((userId) => {
         this.dataService.getRoundResult(userId).valueChanges().subscribe((data) => {
-          this.tableData.push({
-            userName: this.users[userId],
-            scoreSum: data.reduce((a: number, b) => a + parseInt(b[0], 10), 0),
-            bonusSum: data.reduce((a: number, b) => a + parseInt(b[1], 10), 0),
-          });
+          const playerScore = find(this.tableData, { 'userName': this.users[userId] });
+          if (playerScore) {
+            playerScore.scoreSum = data.reduce((a: number, b) => a + parseInt(b[0], 10), 0);
+            playerScore.bonusSum = data.reduce((a: number, b) => a + parseInt(b[1], 10), 0);
+          } else {
+            this.tableData.push({
+              userName: this.users[userId],
+              scoreSum: data.reduce((a: number, b) => a + parseInt(b[0], 10), 0),
+              bonusSum: data.reduce((a: number, b) => a + parseInt(b[1], 10), 0),
+            });
+          }
 
           this.dataSource = new MatTableDataSource(this.tableData);
           this.dataSource.sort = this.sort;

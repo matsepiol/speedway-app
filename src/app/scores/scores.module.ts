@@ -10,6 +10,7 @@ import { ScoresRoutingModule } from '@app/scores/scores-routing.module';
 import { SharedModule } from '@app/shared';
 
 import { ScoresComponent } from './scores.component';
+import { AuthenticationService } from '@app/authentication/authentication.service';
 
 @NgModule({
   imports: [
@@ -28,6 +29,7 @@ import { ScoresComponent } from './scores.component';
     ScoresComponent,
   ],
   providers: [
+    AuthenticationService
   ]
 })
 export class ScoresModule { }

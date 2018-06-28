@@ -3,10 +3,11 @@ import { Route } from '@app/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { ScoresComponent } from './scores.component';
+import { ScoresGuard } from './scores.guard';
 
 const routes: Routes = [
   Route.withShell([
-    { path: 'scores', component: ScoresComponent, canActivate: [], data: { title: 'Punktacja' } }
+    { path: 'scores', component: ScoresComponent, canActivate: [ScoresGuard], data: { title: 'Punktacja' } }
   ])
 ];
 

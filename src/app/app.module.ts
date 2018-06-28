@@ -22,6 +22,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireAuthModule } from 'angularfire2/auth';
+import { ScoresGuard } from '@app/scores/scores.guard';
 
 @NgModule({
   imports: [
@@ -44,6 +45,7 @@ import { AngularFireAuthModule } from 'angularfire2/auth';
   declarations: [AppComponent],
   providers: [
     HomeGuard,
+    ScoresGuard,
     AuthenticationService
   ],
   bootstrap: [AppComponent]

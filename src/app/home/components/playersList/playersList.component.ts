@@ -67,6 +67,7 @@ export class PlayersListComponent implements OnInit {
   }
 
   public selectPlayer(player: Player): void {
+    console.log(player);
     const selectionSuccess = this.dataService.selectPlayer(player);
     if (selectionSuccess) {
       this.availablePlayers = this.availablePlayers.filter((p) => p.name !== player.name);

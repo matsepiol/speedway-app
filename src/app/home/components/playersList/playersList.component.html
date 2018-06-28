@@ -44,7 +44,7 @@
     <button mat-raised-button color="primary" (click)="clearFilters()">Wyczyść filtry</button>
     <button mat-raised-button color="primary" (click)="clearSquad()">Wyczyść skład</button>
     <button mat-raised-button color="primary" (click)="exportSquad()">Eksportuj skład</button>
-    <button mat-raised-button color="primary" (click)="sendSquad()" [disabled]="disableSendSquadButton()">Wyślij skład</button>
+    <button mat-raised-button color="primary" (click)="sendSquad()" *ngIf="!isUserSquadSent"[disabled]="disableSendSquadButton()">Wyślij skład</button>
   </div>
 
   <div class="available-players col-xs-6">

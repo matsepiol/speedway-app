@@ -9,6 +9,7 @@ import { DataService } from '../../services/data.service';
 import { SnackBarService } from '../../services/snack-bar.service';
 import { ConfirmationDialogComponent } from '@app/home/components/confirmationDialog/confirmation-dialog.component';
 import { AuthenticationService } from '@app/authentication/authentication.service';
+import { PublicFeature } from '@angular/core/src/render3';
 
 @Component({
   selector: 'app-players-list',
@@ -20,6 +21,7 @@ export class PlayersListComponent implements OnInit {
 
   public availablePlayers: Player[];
   public isLoading: boolean;
+  public isUserSquadSent = false;
   public loadingMessage = 'Wczytywanie...';
   public teamFilters: string[] = [];
   public typeFilters: string[] = [];
@@ -54,6 +56,13 @@ export class PlayersListComponent implements OnInit {
 
     this.dataService.getSelection().subscribe((selected) => {
       this.selectedPlayers = selected;
+    });
+
+    this.dataService.getRoundSquads(
+      10,
+      JSON.parse(localStorage.getItem('currentUser')).user.uid
+    ).valueChanges().subscribe((team: string[]) => {
+      this.isUserSquadSent = !!team.length;
     });
   }
 
@@ -129,6 +138,6 @@ export class PlayersListComponent implements OnInit {
     return !!(countBy(this.selectedPlayers, 'placeholder').true)
       || this.dataService.ksmSumSubject.getValue() > 45
       || new Date() > new Date(2018, 6, 1, 17, 0, 0);
-  }
+  } 
 
 }

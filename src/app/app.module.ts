@@ -7,12 +7,14 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { environment } from '@env/environment';
 import { CoreModule } from '@app/core';
-import { AuthenticationGuard } from './authentication/authentication.guard';
+import { HomeGuard } from './home/home.guard';
 import { AuthenticationService } from './authentication/authentication.service';
 
 import { SharedModule } from '@app/shared';
 import { HomeModule } from './home/home.module';
-import { AboutModule } from './about/about.module';
+import { ScoresModule } from './scores/scores.module';
+import { ResultsModule } from './results/results.module';
+
 import { LoginModule } from './login/login.module';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -20,6 +22,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireAuthModule } from 'angularfire2/auth';
+import { ScoresGuard } from '@app/scores/scores.guard';
 
 @NgModule({
   imports: [
@@ -34,13 +37,15 @@ import { AngularFireAuthModule } from 'angularfire2/auth';
 
     SharedModule,
     HomeModule,
-    AboutModule,
+    ScoresModule,
+    ResultsModule,
     LoginModule,
     AppRoutingModule
   ],
   declarations: [AppComponent],
   providers: [
-    AuthenticationGuard,
+    HomeGuard,
+    ScoresGuard,
     AuthenticationService
   ],
   bootstrap: [AppComponent]

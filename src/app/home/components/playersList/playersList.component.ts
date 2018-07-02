@@ -59,7 +59,7 @@ export class PlayersListComponent implements OnInit {
     });
 
     this.dataService.getRoundSquads(
-      10,
+      11,
       JSON.parse(localStorage.getItem('currentUser')).user.uid
     ).valueChanges().subscribe((team: string[]) => {
       this.isUserSquadSent = !!team.length;
@@ -115,7 +115,7 @@ export class PlayersListComponent implements OnInit {
     this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent, { width: '400px' });
     this.confirmationDialog.afterClosed().subscribe(result => {
       if (result) {
-        this.dataService.sendSquad(playersToSend, 10).then(() => {
+        this.dataService.sendSquad(playersToSend, 11).then(() => {
           this.snackBarService.messageSuccess('Wyniki wysłane!');
         });
       }
@@ -138,7 +138,7 @@ export class PlayersListComponent implements OnInit {
   public disableSendSquadButton(): boolean {
     return !!(countBy(this.selectedPlayers, 'placeholder').true)
       || this.dataService.ksmSumSubject.getValue() > 45
-      || new Date() > new Date(2018, 6, 1, 17, 0, 0);
-  } 
+      || new Date() > new Date(2018, 6, 29, 17, 0, 0);
+  }
 
 }

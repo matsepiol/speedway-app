@@ -13,7 +13,7 @@ import { Squad } from './result.model';
 })
 
 export class ResultsComponent implements OnInit {
-  public currentRound = 10;
+  public currentRound = 11;
   public isLoading = false;
   public isUserSquadSent: boolean;
   public loadingMessage = 'Wczytywanie...';

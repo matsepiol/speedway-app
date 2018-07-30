@@ -9,7 +9,6 @@ import { DataService } from '../../services/data.service';
 import { SnackBarService } from '../../services/snack-bar.service';
 import { ConfirmationDialogComponent } from '@app/home/components/confirmationDialog/confirmation-dialog.component';
 import { AuthenticationService } from '@app/authentication/authentication.service';
-import { PublicFeature } from '@angular/core/src/render3';
 
 @Component({
   selector: 'app-players-list',
@@ -59,7 +58,7 @@ export class PlayersListComponent implements OnInit {
     });
 
     this.dataService.getRoundSquads(
-      11,
+      12,
       JSON.parse(localStorage.getItem('currentUser')).user.uid
     ).valueChanges().subscribe((team: string[]) => {
       this.isUserSquadSent = !!team.length;
@@ -115,7 +114,7 @@ export class PlayersListComponent implements OnInit {
     this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent, { width: '400px' });
     this.confirmationDialog.afterClosed().subscribe(result => {
       if (result) {
-        this.dataService.sendSquad(playersToSend, 11).then(() => {
+        this.dataService.sendSquad(playersToSend, 12).then(() => {
           this.snackBarService.messageSuccess('Wyniki wysłane!');
         });
       }
@@ -138,7 +137,7 @@ export class PlayersListComponent implements OnInit {
   public disableSendSquadButton(): boolean {
     return !!(countBy(this.selectedPlayers, 'placeholder').true)
       || this.dataService.ksmSumSubject.getValue() > 45
-      || new Date() > new Date(2018, 6, 29, 17, 0, 0);
+      || new Date() > new Date(2018, 7, 12, 17, 0, 0);
   }
 
 }

@@ -14,7 +14,7 @@ import { DataService } from '../home/services/data.service';
 export class ScoresComponent implements OnInit {
   public teams: any;
   public isLoading: boolean;
-  public currentRound = 10;
+  public currentRound = 11;
   public roundsQuantity = 14;
   public roundsIterable = Array(this.roundsQuantity).fill(0).map((x, i) => i + 1);
   public loadingMessage = 'Wczytywanie...';

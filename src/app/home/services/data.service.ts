@@ -40,6 +40,8 @@ export class DataService {
 
   public sendSquad(playersToSend: any, round: number) {
     const id = this.authenticationService.userDetails.uid;
+    // const id = 'irHsihWshPXjcoEhmD3ryogcJCo1';
+
     return this.db.object(`squads/${round}/${id}`).set(playersToSend);
   }
 

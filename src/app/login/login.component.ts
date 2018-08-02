@@ -5,7 +5,7 @@ import { AuthenticationService } from '../authentication/authentication.service'
 
 const emailList = [
   'matsepiol@interia.pl',
-  'szymoneczek134@onet.pl',
+  'szymoneczek134@op.pl',
   'ligieza.lukasz@gmail.com',
   'orlikowskimichal@wp.pl',
   'zioma@o2.pl',

@@ -108,7 +108,7 @@ export class ResultsComponent implements OnInit {
       });
     }
 
-    if (event.tab.textLabel === 'Wybory kolejki') {
+    if (event.tab.textLabel === 'Wybory kolejki' && !this.statsData.length) {
       this.isLoading = true;
 
       this.dataService.getData().valueChanges().subscribe((players: any) => {

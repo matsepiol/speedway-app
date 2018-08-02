@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 
 import { DataService } from '../home/services/data.service';
 import { Users } from '@app/users.model';
-import { find } from 'lodash';
+import { find, orderBy } from 'lodash';
 import { MatSort, MatTableDataSource, MatTabChangeEvent } from '@angular/material';
 import { Squad } from './result.model';
 
@@ -23,7 +23,11 @@ export class ResultsComponent implements OnInit {
   public users = Users;
   public tableData: any[] = [];
   public dataSource: any;
+  public statsData: any[] = [];
+  public statsTableData: any;
+
   displayedColumns: string[] = ['position', 'userName', 'scoreSum', 'bonusSum'];
+  displayedStatsColumns: string[] = ['position', 'name', 'score', 'ksm', 'ratio'];
 
   @ViewChild(MatSort) sort: MatSort;
 
@@ -102,7 +106,27 @@ export class ResultsComponent implements OnInit {
           this.isLoading = false;
         });
       });
+    }
+
+    if (event.tab.textLabel === 'Wybory kolejki') {
+      this.isLoading = true;
+
+      this.dataService.getData().valueChanges().subscribe((players: any) => {
+        this.dataService.getRoundScore(this.currentRound).valueChanges().subscribe((scores: any) => {
+          players.forEach( (player: any) => {
+            const playerScore: any = find(scores, { 'name': player.name });
+            player.score = playerScore.score;
+            player.ratio = parseFloat((player.score / player.ksm).toFixed(2));
+            this.statsData.push(player);
+          });
+
+          const data = orderBy(this.statsData, ['ratio'], ['desc']).filter(player => player.score);
+          this.statsTableData = new MatTableDataSource(data);
+          this.isLoading = false;
+        });
+      });
 
     }
   }
 }
+

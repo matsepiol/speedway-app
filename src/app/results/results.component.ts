@@ -14,6 +14,7 @@ import { Squad } from './result.model';
 
 export class ResultsComponent implements OnInit {
   public currentRound = 11;
+  public currentStatsRound = this.currentRound;
   public isLoading = false;
   public isUserSquadSent: boolean;
   public loadingMessage = 'Wczytywanie...';
@@ -78,9 +79,32 @@ export class ResultsComponent implements OnInit {
     });
   }
 
+  public fetchStatsData(): void {
+    this.isLoading = true;
+    this.statsData = [];
+
+    this.dataService.getData().valueChanges().subscribe((players: any) => {
+      this.dataService.getRoundScore(this.currentStatsRound).valueChanges().subscribe((scores: any) => {
+        players.forEach( (player: any) => {
+          const playerScore: any = find(scores, { 'name': player.name });
+          player.score = playerScore.score;
+          player.ratio = parseFloat((player.score / player.ksm).toFixed(2));
+          this.statsData.push(player);
+        });
+
+        this.statsData = orderBy(this.statsData, ['ratio'], ['desc']).filter(player => player.score);
+        this.statsTableData = new MatTableDataSource(this.statsData);
+        this.isLoading = false;
+      });
+    });
+  }
 
   public onRoundChange(): void {
     this.fetchRoundSquad();
+  }
+
+  public onStatsRoundChange(): void {
+    this.fetchStatsData();
   }
 
   public onSelect(event: MatTabChangeEvent): void {
@@ -109,23 +133,7 @@ export class ResultsComponent implements OnInit {
     }
 
     if (event.tab.textLabel === 'Wybory kolejki' && !this.statsData.length) {
-      this.isLoading = true;
-
-      this.dataService.getData().valueChanges().subscribe((players: any) => {
-        this.dataService.getRoundScore(this.currentRound).valueChanges().subscribe((scores: any) => {
-          players.forEach( (player: any) => {
-            const playerScore: any = find(scores, { 'name': player.name });
-            player.score = playerScore.score;
-            player.ratio = parseFloat((player.score / player.ksm).toFixed(2));
-            this.statsData.push(player);
-          });
-
-          const data = orderBy(this.statsData, ['ratio'], ['desc']).filter(player => player.score);
-          this.statsTableData = new MatTableDataSource(data);
-          this.isLoading = false;
-        });
-      });
-
+      this.fetchStatsData();
     }
   }
 }

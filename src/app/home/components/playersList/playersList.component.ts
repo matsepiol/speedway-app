@@ -28,7 +28,7 @@ export class PlayersListComponent implements OnInit {
     team: [], type: [], sort: 'ksm', searchQuery: '', showPossiblePlayers: false, showMinimum: false
   };
   public selectedPlayers: Player[] = [];
-  private currentRound = 12;
+  private currentRound = 13;
   private confirmationDialog: MatDialogRef<ConfirmationDialogComponent>;
 
   constructor(
@@ -137,7 +137,7 @@ export class PlayersListComponent implements OnInit {
   public disableSendSquadButton(): boolean {
     return !!(countBy(this.selectedPlayers, 'placeholder').true)
       || this.dataService.ksmSumSubject.getValue() > 45
-      || new Date() > new Date(2018, 7, 12, 17, 0, 0);
+      || new Date() > new Date(2018, 7, 19, 17, 0, 0);
   }
 
 }

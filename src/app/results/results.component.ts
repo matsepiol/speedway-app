@@ -13,7 +13,7 @@ import { Squad } from './result.model';
 })
 
 export class ResultsComponent implements OnInit {
-  public currentRound = 12;
+  public currentRound = 13;
   public currentStatsRound = this.currentRound;
   public isLoading = false;
   public isUserSquadSent: boolean;

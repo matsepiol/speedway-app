@@ -1,0 +1,11 @@
+<mat-expansion-panel [expanded]="true" *ngFor="let squad of squads | sortPlayers; let i = index" class="card">
+  <mat-expansion-panel-header>{{ i + 1 }}. {{users[squad.userId]}}</mat-expansion-panel-header>
+  <div class="player" *ngFor="let result of squad.results">
+    <span class="name">{{result.name}}</span>
+    <span class="score">{{result.score}} + {{result.bonus}}</span>
+
+    <mat-divider></mat-divider>
+  </div>
+  <p class="round-score" *ngIf="squad.scoreSum">Wynik kolejki: {{squad.scoreSum}} + {{ squad.bonusSum }}</p>
+  <p *ngIf="!squad.results.length">Ten gracz nie wysłał jeszcze składu.</p>
+</mat-expansion-panel>

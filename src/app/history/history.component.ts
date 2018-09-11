@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Users } from '@app/users.model';
-import { MatSort, MatTableDataSource, MatTabChangeEvent } from '@angular/material';
+import { MatTableDataSource, MatTabChangeEvent } from '@angular/material';
 import { DataService } from '../home/services/data.service';
 
 @Component({
@@ -21,10 +21,6 @@ export class HistoryComponent implements OnInit {
   public tableData: any[] = [];
   public dataSource: any;
   public loadingMessage = 'Wczytywanie...';
-
-  displayedColumns: string[] = ['position', 'userName', 'scoreSum', 'bonusSum'];
-
-  @ViewChild(MatSort) sort: MatSort;
 
   constructor(
     public dataService: DataService,
@@ -57,7 +53,6 @@ export class HistoryComponent implements OnInit {
     if (event.tab.textLabel === 'Tabela' && !this.tableData.length) {
       this.dataService.getHistoryTable(this.currentSeason).valueChanges().subscribe((table) => {
         this.dataSource = new MatTableDataSource(table);
-        this.dataSource.sort = this.sort;
         this.isLoading = false;
       });
     }

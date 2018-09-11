@@ -19,18 +19,7 @@
 
         <div class="container" *ngIf="isUserSquadSent">
           <app-loader [isLoading]="isLoading" [message]="loadingMessage"></app-loader>
-
-          <mat-expansion-panel [expanded]="true" *ngFor="let squad of squads | sortPlayers; let i = index" class="card">
-            <mat-expansion-panel-header>{{ i + 1 }}. {{users[squad.userId]}}</mat-expansion-panel-header>
-            <div class="player" *ngFor="let result of squad.results">
-              <span class="name">{{result.name}}</span>
-              <span class="score">{{result.score}} + {{result.bonus}}</span>
-
-              <mat-divider></mat-divider>
-            </div>
-            <p class="round-score" *ngIf="squad.scoreSum">Wynik kolejki: {{squad.scoreSum}} + {{ squad.bonusSum }}</p>
-            <p *ngIf="!squad.results.length">Ten gracz nie wysłał jeszcze składu.</p>
-          </mat-expansion-panel>
+          <app-round-score [squads]="squads"></app-round-score>
 
         </div>
 
@@ -39,33 +28,7 @@
 
       <mat-tab label="Tabela">
         <app-loader [isLoading]="isLoading" [message]="loadingMessage"></app-loader>
-
-        <table mat-table [dataSource]="dataSource" matSort matSortActive="scoreSum" matSortDirection="desc" matSortDisableClear class="mat-elevation-z8">
-
-          <ng-container matColumnDef="position">
-            <th mat-header-cell *matHeaderCellDef> No. </th>
-            <td mat-cell *matCellDef="let element; let i = index;"> {{ i + 1}}. </td>
-          </ng-container>
-
-          <ng-container matColumnDef="userName">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Gracz </th>
-            <td mat-cell *matCellDef="let element"> {{element.userName}} </td>
-          </ng-container>
-
-          <ng-container matColumnDef="scoreSum">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Punkty </th>
-            <td mat-cell *matCellDef="let element"> {{element.scoreSum}} </td>
-          </ng-container>
-
-          <ng-container matColumnDef="bonusSum">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Bonus </th>
-            <td mat-cell *matCellDef="let element"> {{element.bonusSum}} </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-        </table>
+        <app-table-score [dataSource]="dataSource"></app-table-score>
       </mat-tab>
 
       <mat-tab label="Wybory kolejki" *ngIf=false>

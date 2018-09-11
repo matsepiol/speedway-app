@@ -1,0 +1,42 @@
+:host {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+
+  .card {
+    margin: 20px;
+    width: 29%;
+
+    mat-expansion-panel-header {
+      font-weight: 700;
+    }
+    
+    .player {
+      line-height: 30px;
+      .score {
+        float: right;
+      }
+    }
+  
+    .round-score {
+      font-weight: 700;
+      margin-top: 10px;
+      text-align: right;
+    }
+  }
+
+
+  @media (max-width: 768px) {
+    .card {
+      width: 90%;
+
+      .player {
+        font-size: 12px;
+      }
+    }
+
+    table td {
+      font-size: 12px;
+    }
+  }
+}

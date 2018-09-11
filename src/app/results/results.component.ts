@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-
+import { Component, OnInit } from '@angular/core';
 import { DataService } from '../home/services/data.service';
 import { Users } from '@app/users.model';
 import { find, orderBy } from 'lodash';
-import { MatSort, MatTableDataSource, MatTabChangeEvent } from '@angular/material';
-import { Squad, TableData } from './result.model';
+import { MatTableDataSource, MatTabChangeEvent } from '@angular/material';
+import { Squad } from './result.model';
 
 @Component({
   selector: 'app-results',
@@ -27,10 +26,7 @@ export class ResultsComponent implements OnInit {
   public statsData: any[] = [];
   public statsTableData: any;
 
-  displayedColumns: string[] = ['position', 'userName', 'scoreSum', 'bonusSum'];
   displayedStatsColumns: string[] = ['position', 'name', 'score', 'ksm', 'ratio'];
-
-  @ViewChild(MatSort) sort: MatSort;
 
   constructor(
     public dataService: DataService,
@@ -126,7 +122,6 @@ export class ResultsComponent implements OnInit {
           }
 
           this.dataSource = new MatTableDataSource(this.tableData);
-          this.dataSource.sort = this.sort;
           this.isLoading = false;
         });
       });

@@ -16,5 +16,4 @@ export interface Squad {
   results: PlayerResult[];
   scoreSum?: number;
   bonusSum?: number;
-
 }

@@ -4,7 +4,7 @@ import { DataService } from '../home/services/data.service';
 import { Users } from '@app/users.model';
 import { find, orderBy } from 'lodash';
 import { MatSort, MatTableDataSource, MatTabChangeEvent } from '@angular/material';
-import { Squad } from './result.model';
+import { Squad, TableData } from './result.model';
 
 @Component({
   selector: 'app-results',
@@ -13,7 +13,7 @@ import { Squad } from './result.model';
 })
 
 export class ResultsComponent implements OnInit {
-  public currentRound = 14;
+  public currentRound = 1;
   public currentStatsRound = this.currentRound;
   public isLoading = false;
   public isUserSquadSent: boolean;

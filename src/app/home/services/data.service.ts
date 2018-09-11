@@ -38,6 +38,14 @@ export class DataService {
     return this.db.list(`/squads/${round}/${id}`);
   }
 
+  public getHistorySquads(season: number, round: number): AngularFireList<any> {
+    return this.db.list(`/history/${season}/squads/${round}`);
+  }
+
+  public getHistoryTable(season: number): AngularFireList<any> {
+    return this.db.list(`/history/${season}/table`);
+  }
+
   public sendSquad(playersToSend: any, round: number) {
     const id = this.authenticationService.userDetails.uid;
     // const id = 'irHsihWshPXjcoEhmD3ryogcJCo1';

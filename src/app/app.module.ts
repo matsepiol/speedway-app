@@ -14,6 +14,7 @@ import { SharedModule } from '@app/shared';
 import { HomeModule } from './home/home.module';
 import { ScoresModule } from './scores/scores.module';
 import { ResultsModule } from './results/results.module';
+import { HistoryModule } from './history/history.module';
 
 import { LoginModule } from './login/login.module';
 import { AppComponent } from './app.component';
@@ -39,6 +40,7 @@ import { ScoresGuard } from '@app/scores/scores.guard';
     HomeModule,
     ScoresModule,
     ResultsModule,
+    HistoryModule,
     LoginModule,
     AppRoutingModule
   ],

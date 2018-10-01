@@ -142,6 +142,12 @@ export class DataService {
     const selectedPlayers = this.selectedPlayersSubject.getValue();
     let index;
 
+    index = selectedPlayers.findIndex(item => item.placeholder);
+    if (index === -1) {
+      this.snackBarService.messageError('Skład jest pełny');
+      return index;
+    }
+
     if (player.type === PlayerType.OBCOKRAJOWIEC) {
       index = selectedPlayers.findIndex(item => item.type === PlayerType.OBCOKRAJOWIEC && item.placeholder);
       if (index === -1) {
@@ -164,9 +170,6 @@ export class DataService {
 
       if (index === -1) {
         index = selectedPlayers.findIndex(item => item.placeholder);
-        if (index === -1) {
-          this.snackBarService.messageError('Skład jest pełny');
-        }
       }
     }
     return index;

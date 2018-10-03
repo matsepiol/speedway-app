@@ -8,8 +8,8 @@ import {
 import { SnackBarService } from '../services/snack-bar.service';
 import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
 import { AuthenticationService } from '@app/authentication/authentication.service';
-import { HistoryTeam, HistoryTable } from '@app/history/history.model';
 import { StatsData } from '@app/results/result.model';
+import { TableData } from '@app/scores/scores.model';
 
 @Injectable()
 export class DataService {
@@ -44,8 +44,8 @@ export class DataService {
     return this.db.list<StatsData>(`/history/${season}/squads/${round}`).valueChanges();
   }
 
-  public getHistoryTable(season: number): Observable<HistoryTable[]> {
-    return this.db.list<HistoryTable>(`/history/${season}/table`).valueChanges();
+  public getHistoryTable(season: number): Observable<TableData[]> {
+    return this.db.list<TableData>(`/history/${season}/table`).valueChanges();
   }
 
   public sendSquad(playersToSend: string[], round: number) {

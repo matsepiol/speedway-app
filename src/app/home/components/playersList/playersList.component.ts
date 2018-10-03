@@ -45,23 +45,27 @@ export class PlayersListComponent implements OnInit {
   }
 
   public init(): void {
-    this.dataService.setSelection(clone(teamPlaceholder));
+    const initialSelection = JSON.parse(localStorage.getItem('teamSelection')) || clone(teamPlaceholder);
+    this.dataService.setSelection(initialSelection);
 
     this.isLoading = true;
-    this.dataService.getData().subscribe((data: Player[]) => {
+    this.dataService.getData().subscribe((data) => {
       this.isLoading = false;
-      this.availablePlayers = data;
+      this.availablePlayers = data.filter(
+        players => this.selectedPlayers.every(selection => selection.name !== players.name)
+      );
       this.prepareFiltering();
     });
 
     this.dataService.getSelection().subscribe((selected) => {
       this.selectedPlayers = selected;
+      this.saveSelectionToLocalStorage(selected);
     });
 
     this.dataService.getRoundSquads(
       this.currentRound,
       JSON.parse(localStorage.getItem('currentUser')).user.uid
-    ).subscribe((team: string[]) => {
+    ).subscribe((team) => {
       this.isUserSquadSent = !!team.length;
     });
   }
@@ -124,6 +128,10 @@ export class PlayersListComponent implements OnInit {
   public clearSquad(): void {
     this.dataService.setSelection(clone(teamPlaceholder));
     this.init();
+  }
+
+  private saveSelectionToLocalStorage(selection: Player[]) {
+    localStorage.setItem('teamSelection', JSON.stringify(selection));
   }
 
   private prepareFiltering(): void {

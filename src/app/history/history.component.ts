@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Users } from '@app/users.model';
 import { MatTableDataSource, MatTabChangeEvent } from '@angular/material';
 import { DataService } from '../home/services/data.service';
+import { StatsData, TableData, Squad } from '@app/results/result.model';
 
 @Component({
   selector: 'app-history',
@@ -15,11 +16,11 @@ export class HistoryComponent implements OnInit {
   public roundsQuantity = 14;
   public currentRound = this.roundsQuantity;
   public roundsIterable = Array(this.roundsQuantity).fill(0).map((x, i) => i + 1);
-  public squads: any[] = [];
+  public squads: StatsData[] = [];
   public isLoading = false;
   public users = Users;
-  public tableData: any[] = [];
-  public dataSource: any;
+  public tableData: TableData[] = [];
+  public dataSource: MatTableDataSource<TableData>;
   public loadingMessage = 'Wczytywanie...';
 
   constructor(
@@ -43,7 +44,7 @@ export class HistoryComponent implements OnInit {
     this.isLoading = true;
     this.squads = [];
 
-    this.dataService.getHistorySquads(this.currentSeason, this.currentRound).valueChanges().subscribe((squads) => {
+    this.dataService.getHistorySquads(this.currentSeason, this.currentRound).subscribe((squads: StatsData[]) => {
       this.squads = squads;
       this.isLoading = false;
     });
@@ -51,7 +52,7 @@ export class HistoryComponent implements OnInit {
 
   public onSelect(event: MatTabChangeEvent): void {
     if (event.tab.textLabel === 'Tabela' && !this.tableData.length) {
-      this.dataService.getHistoryTable(this.currentSeason).valueChanges().subscribe((table) => {
+      this.dataService.getHistoryTable(this.currentSeason).subscribe((table: TableData[]) => {
         this.dataSource = new MatTableDataSource(table);
         this.isLoading = false;
       });

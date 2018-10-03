@@ -19,11 +19,3 @@ export interface Squad {
   scoreSum?: number;
   bonusSum?: number;
 }
-
-export interface StatsData {
-  type: string;
-  team?: string;
-  score?: number;
-  bonus?: number;
-  ratio?: number;
-}

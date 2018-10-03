@@ -3,11 +3,13 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 
 import {
-  juniorPlaceholder, obcokrajowiecPlaceholder, Player, PlayerType, seniorPlaceholder
+  juniorPlaceholder, obcokrajowiecPlaceholder, Player, PlayerResult, PlayerType, seniorPlaceholder
 } from '../home.model';
 import { SnackBarService } from '../services/snack-bar.service';
 import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
 import { AuthenticationService } from '@app/authentication/authentication.service';
+import { HistoryTeam, HistoryTable } from '@app/history/history.model';
+import { StatsData } from '@app/results/result.model';
 
 @Injectable()
 export class DataService {
@@ -22,42 +24,42 @@ export class DataService {
     private db: AngularFireDatabase
   ) {}
 
-  public getData(): AngularFireList<Player[]> {
-    return this.db.list<Player[]>('/data');
+  public getData(): Observable<Player[]> {
+    return this.db.list<Player>('/data').valueChanges();
   }
 
-  public getRoundScore(round: number): AngularFireList<any> {
-    return this.db.list(`/scores/${round}`);
+  public getRoundScore(round: number): Observable<PlayerResult[]> {
+    return this.db.list<PlayerResult>(`/scores/${round}`).valueChanges();
   }
 
-  public saveResults(savedPlayers: any, round: number) {
+  public saveResults(savedPlayers: PlayerResult[], round: number) {
     return this.db.object(`scores/${round}`).set(savedPlayers);
   }
 
-  public getRoundSquads(round: number, id: string): AngularFireList<any> {
-    return this.db.list(`/squads/${round}/${id}`);
+  public getRoundSquads(round: number, id: string): Observable<string[]> {
+    return this.db.list<string>(`/squads/${round}/${id}`).valueChanges();
   }
 
-  public getHistorySquads(season: number, round: number): AngularFireList<any> {
-    return this.db.list(`/history/${season}/squads/${round}`);
+  public getHistorySquads(season: number, round: number): Observable<StatsData[]> {
+    return this.db.list<StatsData>(`/history/${season}/squads/${round}`).valueChanges();
   }
 
-  public getHistoryTable(season: number): AngularFireList<any> {
-    return this.db.list(`/history/${season}/table`);
+  public getHistoryTable(season: number): Observable<HistoryTable[]> {
+    return this.db.list<HistoryTable>(`/history/${season}/table`).valueChanges();
   }
 
-  public sendSquad(playersToSend: any, round: number) {
+  public sendSquad(playersToSend: string[], round: number) {
     const id = this.authenticationService.userDetails.uid;
     // const id = 'irHsihWshPXjcoEhmD3ryogcJCo1';
 
     return this.db.object(`squads/${round}/${id}`).set(playersToSend);
   }
 
-  public getRoundResult(id: any) {
-    return this.db.list(`table/${id}`);
+  public getRoundResult(id: string): Observable<number[]> {
+    return this.db.list<number>(`table/${id}`).valueChanges();
   }
 
-  public setRoundResult(id: any, round: any, score: any) {
+  public setRoundResult(id: string, round: number, score: number[]) {
     return this.db.object(`table/${id}/${round}`).set(score);
   }
 
@@ -122,7 +124,6 @@ export class DataService {
     }
 
     this.setSelection(selectedPlayers);
-
   }
 
   private calculateKsmSum(): void {

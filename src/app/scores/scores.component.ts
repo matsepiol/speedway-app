@@ -5,6 +5,8 @@ import { SnackBarService } from '@app/home/services/snack-bar.service';
 
 import { DataService } from '../home/services/data.service';
 
+import { Player, PlayerResult } from '../home/home.model';
+
 @Component({
   selector: 'app-scores',
   templateUrl: './scores.component.html',
@@ -12,7 +14,7 @@ import { DataService } from '../home/services/data.service';
 })
 
 export class ScoresComponent implements OnInit {
-  public teams: any;
+  public teams: Player[][];
   public isLoading: boolean;
   public currentRound = 1;
   public roundsQuantity = 14;
@@ -27,8 +29,7 @@ export class ScoresComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.dataService.getData().valueChanges().subscribe((data: any) => {
-
+    this.dataService.getData().subscribe((data: Player[]) => {
       this.teams = Object.values(groupBy(data, 'team'));
       this.fetchRoundScore();
     });
@@ -41,12 +42,12 @@ export class ScoresComponent implements OnInit {
   private fetchRoundScore(): void {
     this.isLoading = true;
 
-    this.dataService.getRoundScore(this.currentRound).valueChanges().subscribe((data) => {
+    this.dataService.getRoundScore(this.currentRound).subscribe((data: PlayerResult[]) => {
       each(this.teams, (team) => {
         each(team, (player) => {
           const playerData = find(data, { name: player.name});
-          player.score = playerData ? parseInt(playerData.score, 10) : 0;
-          player.bonus = playerData ? parseInt(playerData.bonus, 10) : 0;
+          player.score = playerData ? playerData.score : 0;
+          player.bonus = playerData ? playerData.bonus : 0;
         });
       });
       this.isLoading = false;
@@ -54,7 +55,7 @@ export class ScoresComponent implements OnInit {
   }
 
   public save(): void {
-    const savedPlayers: any[] = [];
+    const savedPlayers: PlayerResult[] = [];
     each(flatten(this.teams), (player) => {
       savedPlayers.push(pick(player, ['name', 'score', 'bonus']));
     });

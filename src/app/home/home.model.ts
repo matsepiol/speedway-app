@@ -10,6 +10,15 @@ export interface Player {
   ksm?: number;
   team?: string;
   placeholder?: boolean;
+  score?: number;
+  bonus?: number;
+  ratio?: number;
+}
+
+export interface PlayerResult {
+  name?: string;
+  bonus?: number;
+  score?: number;
 }
 
 export interface Filter {

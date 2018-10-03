@@ -28,7 +28,7 @@ export class PlayersListComponent implements OnInit {
     team: [], type: [], sort: 'ksm', searchQuery: '', showPossiblePlayers: false, showMinimum: false
   };
   public selectedPlayers: Player[] = [];
-  private currentRound = 14;
+  private currentRound = 1;
   private confirmationDialog: MatDialogRef<ConfirmationDialogComponent>;
 
   constructor(
@@ -48,7 +48,7 @@ export class PlayersListComponent implements OnInit {
     this.dataService.setSelection(clone(teamPlaceholder));
 
     this.isLoading = true;
-    this.dataService.getData().valueChanges().subscribe((data: any) => {
+    this.dataService.getData().subscribe((data: Player[]) => {
       this.isLoading = false;
       this.availablePlayers = data;
       this.prepareFiltering();
@@ -61,7 +61,7 @@ export class PlayersListComponent implements OnInit {
     this.dataService.getRoundSquads(
       this.currentRound,
       JSON.parse(localStorage.getItem('currentUser')).user.uid
-    ).valueChanges().subscribe((team: string[]) => {
+    ).subscribe((team: string[]) => {
       this.isUserSquadSent = !!team.length;
     });
   }
@@ -136,8 +136,8 @@ export class PlayersListComponent implements OnInit {
 
   public disableSendSquadButton(): boolean {
     return !!(countBy(this.selectedPlayers, 'placeholder').true)
-      || this.dataService.ksmSumSubject.getValue() > 45
-      || new Date() > new Date(2018, 7, 26, 17, 0, 0);
+      || this.dataService.ksmSumSubject.getValue() > 45;
+ //     || new Date() > new Date(2018, 7, 26, 17, 0, 0);
   }
 
 }

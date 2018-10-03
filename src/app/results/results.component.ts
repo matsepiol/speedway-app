@@ -3,7 +3,9 @@ import { DataService } from '../home/services/data.service';
 import { Users } from '@app/users.model';
 import { find, orderBy } from 'lodash';
 import { MatTableDataSource, MatTabChangeEvent } from '@angular/material';
-import { Squad } from './result.model';
+import { Squad, StatsData } from './result.model';
+import { Player, PlayerResult } from '../home/home.model';
+import { TableData } from '@app/scores/scores.model';
 
 @Component({
   selector: 'app-results',
@@ -21,10 +23,10 @@ export class ResultsComponent implements OnInit {
   public roundsIterable = Array(this.roundsQuantity).fill(0).map((x, i) => i + 1);
   public squads: Squad[] = [];
   public users = Users;
-  public tableData: any[] = [];
-  public dataSource: any;
-  public statsData: any[] = [];
-  public statsTableData: any;
+  public tableData: TableData[] = [];
+  public dataSource: MatTableDataSource<TableData>;
+  public statsData: StatsData[] = [];
+  public statsTableData: MatTableDataSource<StatsData>;
 
   displayedStatsColumns: string[] = ['position', 'name', 'score', 'ksm', 'ratio'];
 
@@ -44,23 +46,23 @@ export class ResultsComponent implements OnInit {
     this.dataService.getRoundSquads(
       this.currentRound,
       JSON.parse(localStorage.getItem('currentUser')).user.uid
-    ).valueChanges().subscribe((team: string[]) => {
+    ).subscribe((team: string[]) => {
       this.isUserSquadSent = !!team.length;
     });
 
-    Object.keys(Users).forEach((userId) => {
-      this.dataService.getRoundSquads(this.currentRound, userId).valueChanges().subscribe((team: string[]) => {
+    Object.keys(Users).forEach((userId: string) => {
+      this.dataService.getRoundSquads(this.currentRound, userId).subscribe((team: string[]) => {
         this.squads.push({ userId, team, results: [] });
       });
     });
 
-    this.dataService.getRoundScore(this.currentRound).valueChanges().subscribe((scores) => {
+    this.dataService.getRoundScore(this.currentRound).subscribe((scores: PlayerResult[]) => {
       this.squads.forEach((squad) => {
         squad.results = [];
         squad.scoreSum = 0;
         squad.bonusSum = 0;
-        squad.team.forEach((player: any) => {
-          const playerScore = find(scores, { 'name': player });
+        squad.team.forEach((player: string) => {
+          const playerScore: PlayerResult = find(scores, { 'name': player });
           squad.scoreSum += playerScore ? playerScore.score : 0;
           squad.bonusSum += playerScore ? playerScore.bonus : 0;
           squad.results.push(playerScore);
@@ -79,10 +81,10 @@ export class ResultsComponent implements OnInit {
     this.isLoading = true;
     this.statsData = [];
 
-    this.dataService.getData().valueChanges().subscribe((players: any) => {
-      this.dataService.getRoundScore(this.currentStatsRound).valueChanges().subscribe((scores: any) => {
-        players.forEach( (player: any) => {
-          const playerScore: any = find(scores, { 'name': player.name });
+    this.dataService.getData().subscribe((players: Player[]) => {
+      this.dataService.getRoundScore(this.currentStatsRound).subscribe((scores: PlayerResult[]) => {
+        players.forEach((player) => {
+          const playerScore = find(scores, { 'name': player.name });
           player.score = playerScore.score;
           player.ratio = parseFloat((player.score / player.ksm).toFixed(2));
           this.statsData.push(player);
@@ -108,8 +110,9 @@ export class ResultsComponent implements OnInit {
 
       this.isLoading = true;
       Object.keys(Users).forEach((userId) => {
-        this.dataService.getRoundResult(userId).valueChanges().subscribe((data) => {
-          const playerScore = find(this.tableData, { 'userName': this.users[userId] });
+        this.dataService.getRoundResult(userId).subscribe((data) => {
+          // TODO: fix typings and remove 'any'
+          const playerScore: any = find(this.tableData, { 'userName': this.users[userId] });
           if (playerScore) {
             playerScore.scoreSum = data.reduce((a: number, b) => a + parseInt(b[0], 10), 0);
             playerScore.bonusSum = data.reduce((a: number, b) => a + parseInt(b[1], 10), 0);

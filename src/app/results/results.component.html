@@ -31,12 +31,12 @@
         <app-table-score [dataSource]="dataSource"></app-table-score>
       </mat-tab>
 
-      <mat-tab label="Wybory kolejki" *ngIf=false>
+      <mat-tab label="Wybory kolejki" *ngIf=true>
         <div class="container options">
           <mat-form-field>
 
             <mat-select [(ngModel)]="currentStatsRound" (ngModelChange)="onStatsRoundChange()">
-              <mat-option *ngFor="let number of [8, 9, 10, 11, 12, 13, 14]" [value]="number">Kolejka {{number}}</mat-option>
+              <mat-option *ngFor="let number of [1, 8, 9, 10, 11, 12, 13, 14]" [value]="number">Kolejka {{number}}</mat-option>
             </mat-select>
 
           </mat-form-field>

@@ -12,16 +12,15 @@ export class AuthenticationService {
 
   constructor(private _firebaseAuth: AngularFireAuth, private router: Router) {
     this.user = _firebaseAuth.authState;
+    this.authenticate();
+  }
 
-    this.user.subscribe( (user) => {
+  authenticate() {
+    this.user.subscribe((user) => {
       if (user) {
         this.userDetails = user;
       }
     });
-  }
-
-  signInRegular(email: string, password: string) {
-    return this._firebaseAuth.auth.signInWithEmailAndPassword(email, password);
   }
 
   signInWithFacebook() {
@@ -31,11 +30,7 @@ export class AuthenticationService {
   }
 
   isLoggedIn() {
-    if (!localStorage.getItem('currentUser')) {
-      return false;
-    } else {
-      return true;
-    }
+    return !!localStorage.getItem('currentUser');
   }
 
   isAdmin() {

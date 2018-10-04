@@ -20,7 +20,6 @@
         <div class="container" *ngIf="isUserSquadSent">
           <app-loader [isLoading]="isLoading" [message]="loadingMessage"></app-loader>
           <app-round-score [squads]="squads"></app-round-score>
-
         </div>
 
         <div class="container" *ngIf="!isUserSquadSent">Musisz wysłać skład dla tej kolejki, by mieć dostęp do składow pozostalych graczy.</div>

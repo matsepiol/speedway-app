@@ -1,6 +1,7 @@
-import { Component, Input, ViewChild, OnChanges, SimpleChange } from '@angular/core';
+import { Component, Input, ViewChild, OnChanges } from '@angular/core';
 import { Users } from '@app/users.model';
-import { MatSort } from '@angular/material';
+import { MatSort, MatTableDataSource } from '@angular/material';
+import { TableData } from '@app/scores/scores.model';
 
 @Component({
   selector: 'app-table-score',
@@ -11,7 +12,7 @@ export class TableScoreComponent implements OnChanges {
   public users = Users;
   displayedColumns: string[] = ['position', 'userName', 'scoreSum', 'bonusSum'];
 
-  @Input() dataSource: any;
+  @Input() dataSource: MatTableDataSource<TableData>;
   @ViewChild(MatSort) sort: MatSort;
 
   ngOnChanges() {

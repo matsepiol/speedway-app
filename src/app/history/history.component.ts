@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Users } from '@app/users.model';
 import { MatTableDataSource, MatTabChangeEvent } from '@angular/material';
 import { DataService } from '../home/services/data.service';
-import { StatsData, TableData, Squad } from '@app/results/result.model';
+import { StatsData, TableData } from '@app/results/result.model';
 
 @Component({
   selector: 'app-history',

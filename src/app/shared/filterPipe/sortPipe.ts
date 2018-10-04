@@ -1,7 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { DataService } from '../../home/services/data.service';
 import { orderBy } from 'lodash';
-import { Users } from '@app/users.model';
+import { Player } from '@app/home/home.model';
 
 @Pipe({
   name: 'sortPlayers',
@@ -9,9 +8,9 @@ import { Users } from '@app/users.model';
 })
 
 export class SortPlayersPipe implements PipeTransform {
-  constructor(private dataService: DataService) { }
+  constructor() { }
 
-  transform(items: any[]): any {
+  transform(items: Player[]): Player[] {
     items = orderBy(items, ['scoreSum', 'bonusSum'], ['desc', 'desc']);
 
     return items;

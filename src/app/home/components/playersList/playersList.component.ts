@@ -145,7 +145,7 @@ export class PlayersListComponent implements OnInit {
   public disableSendSquadButton(): boolean {
     return !!(countBy(this.selectedPlayers, 'placeholder').true)
       || this.dataService.ksmSumSubject.getValue() > 45;
- //     || new Date() > new Date(2018, 7, 26, 17, 0, 0);
+    //     || new Date() > new Date(2018, 7, 26, 17, 0, 0);
   }
 
 }

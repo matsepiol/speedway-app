@@ -62,7 +62,15 @@ export class ResultsComponent implements OnInit {
         squad.scoreSum = 0;
         squad.bonusSum = 0;
         squad.team.forEach((player: string) => {
-          const playerScore: PlayerResult = find(scores, { 'name': player });
+          let playerScore: PlayerResult = find(scores, { 'name': player });
+
+          if (!playerScore) {
+            playerScore = {
+              name: player,
+              score: 0,
+              bonus: 0
+            };
+          }
           squad.scoreSum += playerScore ? playerScore.score : 0;
           squad.bonusSum += playerScore ? playerScore.bonus : 0;
           squad.results.push(playerScore);
@@ -111,8 +119,8 @@ export class ResultsComponent implements OnInit {
       this.isLoading = true;
       Object.keys(Users).forEach((userId) => {
         this.dataService.getRoundResult(userId).subscribe((data) => {
-          // TODO: fix typings and remove 'any'
-          const playerScore: any = find(this.tableData, { 'userName': this.users[userId] });
+          const userName: string = this.users[userId];
+          const playerScore = find(this.tableData, { 'userName': userName });
           if (playerScore) {
             playerScore.scoreSum = data.reduce((a: number, b) => a + parseInt(b[0], 10), 0);
             playerScore.bonusSum = data.reduce((a: number, b) => a + parseInt(b[1], 10), 0);

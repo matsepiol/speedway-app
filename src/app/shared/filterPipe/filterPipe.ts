@@ -12,7 +12,7 @@ import { combineLatest } from 'rxjs';
 export class FilterPipe implements PipeTransform {
   constructor(private dataService: DataService) { }
 
-  transform(items: any[], term: Filter): any {
+  transform(items: Player[], term: Filter): Player[] {
     let tempItems = items;
 
     if (term.showPossiblePlayers) {

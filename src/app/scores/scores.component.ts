@@ -1,10 +1,7 @@
 import { each, find, flatten, groupBy, pick } from 'lodash';
-
 import { Component, OnInit } from '@angular/core';
 import { SnackBarService } from '@app/home/services/snack-bar.service';
-
 import { DataService } from '../home/services/data.service';
-
 import { Player, PlayerResult } from '../home/home.model';
 
 @Component({
@@ -25,7 +22,6 @@ export class ScoresComponent implements OnInit {
     public dataService: DataService,
     private snackBarService: SnackBarService,
   ) {
-
   }
 
   public ngOnInit(): void {
@@ -33,7 +29,7 @@ export class ScoresComponent implements OnInit {
       this.teams = Object.values(groupBy(data, 'team'));
       this.fetchRoundScore();
     });
-    }
+  }
 
   public onRoundChange(): void {
     this.fetchRoundScore();
@@ -45,7 +41,7 @@ export class ScoresComponent implements OnInit {
     this.dataService.getRoundScore(this.currentRound).subscribe((data: PlayerResult[]) => {
       each(this.teams, (team) => {
         each(team, (player) => {
-          const playerData = find(data, { name: player.name});
+          const playerData = find(data, { name: player.name });
           player.score = playerData ? playerData.score : 0;
           player.bonus = playerData ? playerData.bonus : 0;
         });
@@ -64,5 +60,4 @@ export class ScoresComponent implements OnInit {
       this.snackBarService.messageSuccess('Wyniki zapisane');
     });
   }
-
 }

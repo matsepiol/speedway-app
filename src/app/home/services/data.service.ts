@@ -1,12 +1,11 @@
 import { BehaviorSubject, Observable } from 'rxjs';
-
 import { Injectable } from '@angular/core';
 
 import {
   juniorPlaceholder, obcokrajowiecPlaceholder, Player, PlayerResult, PlayerType, seniorPlaceholder
 } from '../home.model';
 import { SnackBarService } from '../services/snack-bar.service';
-import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
+import { AngularFireDatabase } from 'angularfire2/database';
 import { AuthenticationService } from '@app/authentication/authentication.service';
 import { StatsData } from '@app/results/result.model';
 import { TableData } from '@app/scores/scores.model';
@@ -22,7 +21,7 @@ export class DataService {
     private snackBarService: SnackBarService,
     private authenticationService: AuthenticationService,
     private db: AngularFireDatabase
-  ) {}
+  ) { }
 
   public getData(): Observable<Player[]> {
     return this.db.list<Player>('/data').valueChanges();

@@ -3,11 +3,6 @@ import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { filter, map, mergeMap } from 'rxjs/operators';
 
-import { environment } from '@env/environment';
-import { Logger } from '@app/core';
-
-const log = new Logger('App');
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -22,11 +17,6 @@ export class AppComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // Setup logger
-    if (environment.production) {
-      Logger.enableProductionMode();
-    }
-
     const onNavigationEnd = this.router.events.pipe(filter(event => event instanceof NavigationEnd));
 
     onNavigationEnd

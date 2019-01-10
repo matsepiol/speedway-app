@@ -33,7 +33,7 @@ import { ScoresGuard } from '@app/scores/scores.guard';
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    NgbModule.forRoot(),
+    NgbModule,
     CoreModule,
 
     SharedModule,

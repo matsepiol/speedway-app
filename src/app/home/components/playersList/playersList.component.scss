@@ -14,6 +14,11 @@
   }
 }
 
+.card-title {
+  font-size: 16px;
+  margin-bottom: 0.4rem;
+}
+
 .card {
   height: 60px;
   margin: 5px;
@@ -31,17 +36,13 @@
     }
   }
 
-  .card-title {
-    font-size: 16px;
-    margin-bottom: 0.4rem;
-  }
 
   &.placeholder {
     border-style: dashed;
 
     .card-text {
       line-height: 60px;
-      opacity: .5;
+      opacity: 0.5;
       text-align: center;
       vertical-align: middle;
     }
@@ -60,14 +61,12 @@
   }
 }
 
-.filter-wrapper, .search {
+.filter-wrapper,
+.search {
   display: flex;
+  font-size: 14px;
   flex-direction: row;
   justify-content: space-between;
-}
-
-.filter-wrapper, .search {
-  font-size: 14px;
 }
 
 .filter-wrapper {
@@ -139,7 +138,8 @@
   .card {
     width: 100%;
 
-    .card-title, .card-text {
+    .card-title,
+    .card-text {
       font-size: 12px !important;
     }
   }
@@ -191,18 +191,19 @@
         margin: 0;
         height: 75px;
 
-        &.placeholder {
-          .card-text {
-            line-height: 75px;
-          }
-        }
-
-        .card-title, .card-text {
+        .card-title,
+        .card-text {
           font-size: 10px !important;
 
           span {
             display: block;
             margin-top: 5px;
+          }
+        }
+
+        &.placeholder {
+          .card-text {
+            line-height: 75px;
           }
         }
       }
@@ -217,17 +218,18 @@
     }
   }
 
-  .selected-players, img {
+  .selected-players,
+  img {
     display: none;
   }
 
   .filter-wrapper .ksm-counter {
     display: none;
   }
- }
+}
 
- @media (min-width: 769px) {
-   .mobile-selected-players {
-     display: none;
-   }
- }
+@media (min-width: 769px) {
+  .mobile-selected-players {
+    display: none;
+  }
+}

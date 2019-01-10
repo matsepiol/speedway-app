@@ -1,5 +1,6 @@
 @import "src/theme/theme-variables";
 @import "~bootstrap/scss/mixins/_breakpoints";
+
 .login-container {
   position: absolute;
   top: 0;
@@ -9,9 +10,9 @@
 }
 
 .error-msg {
-  color: #D8000C;
-  background-color: #FFD2D2;
-  margin: 10px 0px;
+  color: #d8000c;
+  background-color: #ffd2d2;
+  margin: 10px 0;
   padding: 12px;
   text-align: center;
 }

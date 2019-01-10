@@ -10,10 +10,7 @@
     ],
     "selector-attribute-quotes": "always",
     "string-quotes": "double",
-    "max-nesting-depth": 3,
-    "selector-max-compound-selectors": 3,
-    "selector-max-specificity": "0,3,2",
-    "declaration-no-important": true,
+    "max-nesting-depth": 4,
     "at-rule-no-vendor-prefix": true,
     "media-feature-name-no-vendor-prefix": true,
     "property-no-vendor-prefix": true,
@@ -25,6 +22,8 @@
     "selector-max-id": 0,
     "selector-no-qualifying-type": true,
     "selector-max-universal": 0,
+    "selector-type-no-unknown": null,
+    "selector-max-specificity": null,
     "selector-pseudo-element-no-unknown": [
       true,
       {

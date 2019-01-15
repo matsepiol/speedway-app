@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
-    MatButtonModule, MatSelectModule, MatSortModule, MatTableDataSource, MatTableModule,
+    MatButtonModule, MatSelectModule, MatSortModule, MatTableModule,
     MatTabsModule
 } from '@angular/material';
 import { MatDividerModule } from '@angular/material/divider';

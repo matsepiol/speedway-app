@@ -15,14 +15,14 @@ import { HomeModule } from './home/home.module';
 import { ScoresModule } from './scores/scores.module';
 import { ResultsModule } from './results/results.module';
 import { HistoryModule } from './history/history.module';
-
 import { LoginModule } from './login/login.module';
+
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
-import { AngularFireModule } from 'angularfire2';
-import { AngularFireDatabaseModule } from 'angularfire2/database';
-import { AngularFireAuthModule } from 'angularfire2/auth';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireDatabaseModule } from '@angular/fire/database';
+import { AngularFireAuthModule } from '@angular/fire/auth';
 import { ScoresGuard } from '@app/scores/scores.guard';
 
 @NgModule({

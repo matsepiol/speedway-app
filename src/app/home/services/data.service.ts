@@ -5,7 +5,7 @@ import {
   juniorPlaceholder, obcokrajowiecPlaceholder, Player, PlayerResult, PlayerType, seniorPlaceholder
 } from '../home.model';
 import { SnackBarService } from '../services/snack-bar.service';
-import { AngularFireDatabase } from 'angularfire2/database';
+import { AngularFireDatabase } from '@angular/fire/database';
 import { AuthenticationService } from '@app/authentication/authentication.service';
 import { StatsData } from '@app/results/result.model';
 import { TableData } from '@app/scores/scores.model';

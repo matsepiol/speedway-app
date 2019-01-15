@@ -66,7 +66,8 @@ export class PlayersListComponent implements OnInit {
       this.currentRound,
       JSON.parse(localStorage.getItem('currentUser')).user.uid
     ).subscribe((team) => {
-      this.isUserSquadSent = !!team.length;
+      // this.isUserSquadSent = !!team.length;
+      this.isUserSquadSent = true;
     });
   }
 

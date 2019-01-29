@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 
 import { OverlayModule } from '@angular/cdk/overlay';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
@@ -16,9 +16,39 @@ import { FilterPipe } from '@app/shared/filterPipe/filterPipe';
 import { environment } from '@env/environment';
 import { ClipboardModule } from 'ngx-clipboard';
 import { PlayersListComponent } from './playersList.component';
+import { of } from 'rxjs';
 
+class MockDataService {
+	public setSelection() {
+		return;
+	}
+
+	public getData() {
+		return of([{ name: 'Zmarzlik', type: 'senior' }]);
+	}
+
+	public getSelection() {
+		return of([{ name: 'Zmarzlik', type: 'senior' }]);
+	}
+
+	public getRoundSquads() {
+		return of(['Zmarzlik']);
+	}
+
+	public getKsmSum() {
+		return of(10);
+	}
+
+	public getKsmLeft() {
+		return of(40);
+	}
+}
 
 describe('PlayersListComponent', () => {
+	let fixture: ComponentFixture<PlayersListComponent>;
+	let component: PlayersListComponent;
+	const testUser = { 'user': { 'uid': '1234', 'displayName': 'test' }};
+
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			imports: [
@@ -34,9 +64,9 @@ describe('PlayersListComponent', () => {
 				FilterPipe
 			],
 			providers: [
-				{ provide: AngularFireAuth, useClass: class {} },
-				{ provide: AuthenticationService, useClass: class {} },
-				{ provide: DataService, useClass: class {} },
+				{ provide: AngularFireAuth, useClass: class { } },
+				{ provide: AuthenticationService, useClass: class { } },
+				{ provide: DataService, useClass: MockDataService },
 				SnackBarService,
 				MatSnackBar
 			],
@@ -46,11 +76,17 @@ describe('PlayersListComponent', () => {
 		}).compileComponents();
 	});
 
-	it('should create the app', () => {
-		const fixture = TestBed.createComponent(PlayersListComponent);
-		const app = fixture.debugElement.componentInstance;
+	beforeEach(() => {
+		spyOn(Storage.prototype, 'getItem').and.returnValue(JSON.stringify(testUser));
 
-		console.log(app);
-		expect(app).toBeTruthy();
-	});
+		fixture = TestBed.createComponent(PlayersListComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+
+});
+
+it('should create the app', () => {
+	expect(component).toBeTruthy();
+});
+
 });

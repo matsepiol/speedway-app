@@ -5,7 +5,7 @@
 
   <div class="container options">
     <button mat-raised-button color="primary" (click)="save()">Save</button>
-    <mat-form-field>
+    <mat-form-field class="round-picker">
 
       <mat-select [(ngModel)]="currentRound" (ngModelChange)="onRoundChange()">
         <mat-option *ngFor="let number of roundsIterable" [value]="number">Kolejka {{number}}</mat-option>
@@ -20,7 +20,7 @@
     <mat-expansion-panel [expanded]="true" *ngFor="let team of teams" class="card">
       <mat-expansion-panel-header>{{team[0].team}}</mat-expansion-panel-header>
       <div *ngFor="let player of team">
-        <span>{{player.name}}</span>
+        <span class="player">{{player.name}}</span>
         <form>
 
           <mat-form-field>

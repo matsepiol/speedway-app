@@ -9,6 +9,7 @@ import { DataService } from '../../services/data.service';
 import { SnackBarService } from '../../services/snack-bar.service';
 import { ConfirmationDialogComponent } from '@app/home/components/confirmationDialog/confirmation-dialog.component';
 import { AuthenticationService } from '@app/authentication/authentication.service';
+import { CURRENT_ROUND } from '@app/variables';
 
 @Component({
 	selector: 'app-players-list',
@@ -28,7 +29,7 @@ export class PlayersListComponent implements OnInit {
 		team: [], type: [], sort: 'ksm', searchQuery: '', showPossiblePlayers: false, showMinimum: false
 	};
 	public selectedPlayers: Player[] = [];
-	private currentRound = 1;
+	private currentRound = CURRENT_ROUND;
 	private confirmationDialog: MatDialogRef<ConfirmationDialogComponent>;
 
 	constructor(
@@ -66,8 +67,7 @@ export class PlayersListComponent implements OnInit {
 			this.currentRound,
 			JSON.parse(localStorage.getItem('currentUser')).user.uid
 		).subscribe((team) => {
-			// this.isUserSquadSent = !!team.length;
-			this.isUserSquadSent = true;
+			this.isUserSquadSent = !!team.length;
 		});
 	}
 
@@ -98,14 +98,14 @@ export class PlayersListComponent implements OnInit {
 	public exportSquad(): void {
 		if ((countBy(this.selectedPlayers, 'placeholder').true)) {
 			this.snackBarService.messageError('Skład nie jest kompletny!');
-		} else if (this.dataService.ksmSumSubject.getValue() > 45) {
+		} else if (this.dataService.getKsmValue() > 45) {
 			this.snackBarService.messageError('Skład przekracza dopuszczalny ksm!');
 		} else {
 			let textToCopy = '';
 			this.selectedPlayers.forEach((selected, index) => {
 				textToCopy += `${index + 1}. ${selected.name} `;
 			});
-			textToCopy += ` Ksm: ${this.dataService.ksmSumSubject.getValue()}`;
+			textToCopy += `Ksm: ${this.dataService.getKsmValue()}`;
 			this.clipboardService.copyFromContent(textToCopy);
 			this.snackBarService.messageSuccess('Skład skopiowany do schowka!');
 		}
@@ -145,7 +145,7 @@ export class PlayersListComponent implements OnInit {
 
 	public disableSendSquadButton(): boolean {
 		return !!(countBy(this.selectedPlayers, 'placeholder').true)
-			|| this.dataService.ksmSumSubject.getValue() > 45;
+			|| this.dataService.getKsmValue() > 45;
 		//     || new Date() > new Date(2018, 7, 26, 17, 0, 0);
 	}
 

@@ -13,9 +13,9 @@ import { TableData } from '@app/scores/scores.model';
 @Injectable()
 export class DataService {
 	public maxKsm = 45;
-	public selectedPlayersSubject: BehaviorSubject<Player[]> = new BehaviorSubject([]);
-	public ksmSumSubject: BehaviorSubject<number> = new BehaviorSubject(0);
-	public ksmLeftSubject: BehaviorSubject<number> = new BehaviorSubject(this.maxKsm);
+	private selectedPlayersSubject: BehaviorSubject<Player[]> = new BehaviorSubject([]);
+	private ksmSumSubject: BehaviorSubject<number> = new BehaviorSubject(0);
+	private ksmLeftSubject: BehaviorSubject<number> = new BehaviorSubject(this.maxKsm);
 
 	constructor(
 		private snackBarService: SnackBarService,
@@ -31,7 +31,7 @@ export class DataService {
 		return this.db.list<PlayerResult>(`/scores/${round}`).valueChanges();
 	}
 
-	public saveResults(savedPlayers: PlayerResult[], round: number) {
+	public saveResults(savedPlayers: PlayerResult[], round: number): Promise<void> {
 		return this.db.object(`scores/${round}`).set(savedPlayers);
 	}
 
@@ -47,7 +47,7 @@ export class DataService {
 		return this.db.list<TableData>(`/history/${season}/table`).valueChanges();
 	}
 
-	public sendSquad(playersToSend: string[], round: number) {
+	public sendSquad(playersToSend: string[], round: number): Promise<void> {
 		const id = this.authenticationService.userDetails.uid;
 		// const id = 'irHsihWshPXjcoEhmD3ryogcJCo1';
 
@@ -58,7 +58,7 @@ export class DataService {
 		return this.db.list<number>(`table/${id}`).valueChanges();
 	}
 
-	public setRoundResult(id: string, round: number, score: number[]) {
+	public setRoundResult(id: string, round: number, score: number[]): Promise<void> {
 		return this.db.object(`table/${id}/${round}`).set(score);
 	}
 
@@ -69,6 +69,10 @@ export class DataService {
 
 	public getSelection(): Observable<Player[]> {
 		return this.selectedPlayersSubject.asObservable();
+	}
+
+	public getKsmValue(): number {
+		return this.ksmSumSubject.getValue();
 	}
 
 	public getKsmSum(): Observable<number> {

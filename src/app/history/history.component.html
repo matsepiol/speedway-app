@@ -3,7 +3,7 @@
     <h1>Historia</h1>
   </div>
 
-  <div class="container">
+  <div>
     <div class="container options">
       <mat-form-field>
 
@@ -16,7 +16,7 @@
       <mat-tab-group (selectedTabChange)="onSelect($event)">
         <mat-tab label="Składy">
 
-          <div class="container options">
+          <div>
             <mat-form-field>
 
               <mat-select [(ngModel)]="currentRound" (ngModelChange)="onRoundChange()">
@@ -27,7 +27,7 @@
 
           </div>
 
-          <div class="container">
+          <div>
             <app-loader [isLoading]="isLoading" [message]="loadingMessage"></app-loader>
             <app-round-score [squads]="squads"></app-round-score>
           </div>
@@ -42,7 +42,7 @@
       </mat-tab-group>
 
     </div>
-
+  
   </div>
 
 </div>

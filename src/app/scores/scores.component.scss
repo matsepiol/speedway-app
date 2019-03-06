@@ -38,16 +38,16 @@
 
 @media (max-width: 768px) {
   .container {
+    .round-picker {
+      width: 150px;
+    }
+
     .card {
       width: 90%;
 
       .player {
-        font-size: 12px;
+        width: 55%;
       }
-    }
-
-    table td {
-      font-size: 12px;
     }
   }
 }

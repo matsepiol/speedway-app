@@ -17,12 +17,12 @@
 
         </div>
 
-        <div class="container" *ngIf="isUserSquadSent">
+        <div *ngIf="isUserSquadSent">
           <app-loader [isLoading]="isLoading" [message]="loadingMessage"></app-loader>
           <app-round-score [squads]="squads"></app-round-score>
         </div>
 
-        <div class="container" *ngIf="!isUserSquadSent">Musisz wysłać skład dla tej kolejki, by mieć dostęp do składow pozostalych graczy.</div>
+        <h3 class="container" *ngIf="!isUserSquadSent">Musisz wysłać skład dla tej kolejki, by mieć dostęp do składow pozostalych graczy</h3>
       </mat-tab>
 
       <mat-tab label="Tabela">
@@ -35,7 +35,7 @@
           <mat-form-field>
 
             <mat-select [(ngModel)]="currentStatsRound" (ngModelChange)="onStatsRoundChange()">
-              <mat-option *ngFor="let number of [1, 8, 9, 10, 11, 12, 13, 14]" [value]="number">Kolejka {{number}}</mat-option>
+              <mat-option *ngFor="let number of roundsIterable" [value]="number">Kolejka {{number}}</mat-option>
             </mat-select>
 
           </mat-form-field>
@@ -76,7 +76,7 @@
 
         </table>
 
-        <div class="container" *ngIf="!statsData.length">Brak danych dla tej kolejki</div>
+        <h3 class="container" *ngIf="!statsData.length">Brak danych dla tej kolejki</h3>
 
       </mat-tab>
 

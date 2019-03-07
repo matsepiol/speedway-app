@@ -8,19 +8,19 @@ import { HomeGuard } from './../home/home.guard';
  */
 export class Route {
 
-  /**
-   * Creates routes using the shell component and authentication.
-   * @param routes The routes to add.
-   * @return {Route} The new route using shell as the base.
-   */
-  static withShell(routes: Routes): ngRoute {
-    return {
-      path: '',
-      component: ShellComponent,
-      children: routes,
-      canActivate: [HomeGuard],
-      data: { reuse: true }
-    };
-  }
+	/**
+	 * Creates routes using the shell component and authentication.
+	 * @param routes The routes to add.
+	 * @return {Route} The new route using shell as the base.
+	 */
+	static withShell(routes: Routes): ngRoute {
+		return {
+			path: '',
+			component: ShellComponent,
+			children: routes,
+			canActivate: [HomeGuard],
+			data: { reuse: true }
+		};
+	}
 
 }

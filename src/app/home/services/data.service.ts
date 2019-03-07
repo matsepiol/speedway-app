@@ -35,6 +35,10 @@ export class DataService {
 		return this.db.object(`scores/${round}`).set(savedPlayers);
 	}
 
+	public changePlayersData(players: Player[]): Promise<void> {
+		return this.db.object(`data`).set(players);
+	}
+
 	public getRoundSquads(round: number, id: string): Observable<string[]> {
 		return this.db.list<string>(`/squads/${round}/${id}`).valueChanges();
 	}

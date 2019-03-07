@@ -1,0 +1,51 @@
+<div class="container-fluid">
+  <div class="jumbotron text-center">
+    <h1>Zarządzanie zawodnikami</h1>
+  </div>
+
+  <app-loader [isLoading]="isLoading" [message]="loadingMessage"></app-loader>
+
+  <div class="buttons">
+    <button mat-raised-button color="primary" (click)="addPlayer()">Dodaj zawodnika</button>
+    <button mat-raised-button color="warn" (click)="saveChanges()">Zapisz zmiany</button>
+  </div>
+
+  <div class="filter-wrapper">
+    <mat-form-field>
+      <mat-select multiple placeholder="Filtruj drużyny" [(ngModel)]="filter.team">
+        <mat-option *ngFor="let team of teamFilters" [value]="team">{{team}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-select multiple placeholder="Filtruj typ zawodnika" [(ngModel)]="filter.type">
+        <mat-option *ngFor="let type of typeFilters" [value]="type">{{type}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-select placeholder="Sortuj według" [(ngModel)]="filter.sort">
+        <mat-option [value]="'team'">Klubu</mat-option>
+        <mat-option [value]="'ksm'">KSMu</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput [(ngModel)]="filter.searchQuery" placeholder="Szukaj zawodnika" />
+    </mat-form-field>
+
+  </div>
+
+  <div class="players">
+    <div *ngFor="let player of players | filter: filter" class="card">
+      <div class="card-body">
+        <h5 class="card-title">{{player.name}}
+          <span class="ksm">KSM: <b>{{player.ksm}}</b></span>
+        </h5>
+        <p class="card-text">{{player.type}}</p>
+        <img src="../../../../assets/logos/{{ player.team }}.jpg" />
+        <button class="edit-button" mat-mini-fab color="primary" (click)="editPlayer(player)">Edytuj</button>
+        <button class="delete-button" mat-mini-fab color="warn" (click)="removePlayer(player)">Usuń</button>
+      </div>
+    </div>
+  </div>
+</div>

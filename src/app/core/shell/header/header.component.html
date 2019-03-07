@@ -24,6 +24,10 @@
           <i class="fas fa-history"></i>
           <span translate>Historia</span>
         </a>
+        <a class="nav-item nav-link text-uppercase" *ngIf="authenticationService.isModerators()" routerLink="/player-managment" routerLinkActive="active">
+          <i class="fas fa-cogs"></i>
+          <span translate>Zarządzaj</span>
+        </a>
       </div>
       <div class="navbar-nav ml-auto">
         <div class="nav-item" ngbDropdown placement="bottom-right">

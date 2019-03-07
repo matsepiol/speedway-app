@@ -7,10 +7,11 @@ import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { Filter, Player, teamPlaceholder } from '../../home.model';
 import { DataService } from '../../services/data.service';
 import { SnackBarService } from '../../services/snack-bar.service';
-import { ConfirmationDialogComponent } from '@app/home/components/confirmationDialog/confirmation-dialog.component';
 import { AuthenticationService } from '@app/authentication/authentication.service';
 import { CURRENT_ROUND } from '@app/variables';
-
+import {
+	GenericConfirmationDialogComponent
+} from '@app/shared/genericConfirmationDialog/generic-confirmation-dialog.component';
 @Component({
 	selector: 'app-players-list',
 	templateUrl: './playersList.component.html',
@@ -30,7 +31,7 @@ export class PlayersListComponent implements OnInit {
 	};
 	public selectedPlayers: Player[] = [];
 	private currentRound = CURRENT_ROUND;
-	private confirmationDialog: MatDialogRef<ConfirmationDialogComponent>;
+	private confirmationDialog: MatDialogRef<GenericConfirmationDialogComponent>;
 
 	constructor(
 		public authenticationService: AuthenticationService,
@@ -116,7 +117,16 @@ export class PlayersListComponent implements OnInit {
 			return player['name'];
 		});
 
-		this.confirmationDialog = this.dialog.open(ConfirmationDialogComponent, { width: '400px' });
+		this.confirmationDialog = this.dialog.open(GenericConfirmationDialogComponent,
+			{
+				width: '400px',
+				data: {
+					title: 'Czy na pewno chcesz wysłać ten skład?',
+					dialogText: 'Po wysłaniu składu nie da się już go zmienić. Czy na pewno chcesz kontunuować?',
+					confirmText: 'Wysyłam!'
+				}
+			});
+
 		this.confirmationDialog.afterClosed().subscribe(result => {
 			if (result) {
 				this.dataService.sendSquad(playersToSend, this.currentRound).then(() => {

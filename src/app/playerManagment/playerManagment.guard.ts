@@ -5,13 +5,13 @@ import { AuthenticationService } from '../authentication/authentication.service'
 
 
 @Injectable()
-export class ScoresGuard implements CanActivate {
+export class PlayerManagmentGuard implements CanActivate {
 
 	constructor(private router: Router,
 		private authenticationService: AuthenticationService) { }
 
 	canActivate() {
-		if (this.authenticationService.isAdmin()) {
+		if (this.authenticationService.isModerators()) {
 			return true;
 		}
 

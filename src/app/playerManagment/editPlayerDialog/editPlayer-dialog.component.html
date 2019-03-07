@@ -1,0 +1,40 @@
+<h1 matDialogTitle>Edytuj zawodnika</h1>
+
+<form class="edit-form" #editForm="ngForm">
+  <mat-form-field class="edit-name">
+    <input required matInput placeholder="Imię i nazwisko" [(ngModel)]="playerData.name" name="name" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Typ zawodnika</mat-label>
+    <mat-select required [(ngModel)]="playerData.type" name="type">
+      <mat-option value="Senior">Senior</mat-option>
+      <mat-option value="Obcokrajowiec">Obcokrajowiec</mat-option>
+      <mat-option value="Junior">Junior</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="edit-ksm">
+    <input matInput required placeholder="Ksm" type="number" [(ngModel)]="playerData.ksm" name="ksm" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Klub</mat-label>
+    <mat-select required [(ngModel)]="playerData.team" name="team">
+      <mat-option value="Częstochowa">Częstochowa</mat-option>
+      <mat-option value="Zielona Góra">Zielona Góra</mat-option>
+      <mat-option value="Grudziądz">Grudziądz</mat-option>
+      <mat-option value="Toruń">Toruń</mat-option>
+      <mat-option value="Gorzów">Gorzów</mat-option>
+      <mat-option value="Wrocław">Wrocław</mat-option>
+      <mat-option value="Lublin">Lublin</mat-option>
+      <mat-option value="Leszno">Leszno</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div mat-dialog-actions>
+    <button mat-button [matDialogClose]="false">Wróć</button>
+    <button mat-button [matDialogClose]="playerData" [disabled]="editForm.form.invalid">Zapisz</button>
+  </div>
+
+</form>

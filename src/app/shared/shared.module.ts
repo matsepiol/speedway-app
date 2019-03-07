@@ -8,29 +8,36 @@ import { TableScoreComponent } from './tableScore/tableScore.component';
 import { SortPlayersPipe } from '@app/shared/filterPipe/sortPipe';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { MatSortModule, MatTableModule } from '@angular/material';
+import { MatSortModule, MatTableModule, MatDialogModule, MatButtonModule } from '@angular/material';
+import { GenericConfirmationDialogComponent } from './genericConfirmationDialog/generic-confirmation-dialog.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    MatExpansionModule,
-    MatDividerModule,
-    MatSortModule,
-    MatTableModule,
-  ],
-  declarations: [
-    LoaderComponent,
-    FilterPipe,
-    RoundScoreComponent,
-    TableScoreComponent,
-    SortPlayersPipe
-  ],
-  exports: [
-    LoaderComponent,
-    FilterPipe,
-    RoundScoreComponent,
-    TableScoreComponent,
-    SortPlayersPipe
-  ]
+	imports: [
+		CommonModule,
+		MatExpansionModule,
+		MatDividerModule,
+		MatSortModule,
+		MatTableModule,
+		MatDialogModule,
+		MatButtonModule,
+		FormsModule,
+	],
+	declarations: [
+		LoaderComponent,
+		FilterPipe,
+		RoundScoreComponent,
+		TableScoreComponent,
+		GenericConfirmationDialogComponent,
+		SortPlayersPipe
+	],
+	exports: [
+		LoaderComponent,
+		FilterPipe,
+		RoundScoreComponent,
+		TableScoreComponent,
+		GenericConfirmationDialogComponent,
+		SortPlayersPipe
+	]
 })
 export class SharedModule { }

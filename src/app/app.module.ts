@@ -24,32 +24,36 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { ScoresGuard } from '@app/scores/scores.guard';
+import { PlayerManagmentModule } from './playerManagment/playerManagment.module';
+import { PlayerManagmentGuard } from './playerManagment/playerManagment.guard';
 
 @NgModule({
-  imports: [
-    AngularFireModule.initializeApp(environment.firebase, 'speedway-app'),
-    AngularFireDatabaseModule,
-    AngularFireAuthModule,
-    BrowserModule,
-    FormsModule,
-    HttpClientModule,
-    NgbModule,
-    CoreModule,
+	imports: [
+		AngularFireModule.initializeApp(environment.firebase, 'speedway-app'),
+		AngularFireDatabaseModule,
+		AngularFireAuthModule,
+		BrowserModule,
+		FormsModule,
+		HttpClientModule,
+		NgbModule,
+		CoreModule,
 
-    SharedModule,
-    HomeModule,
-    ScoresModule,
-    ResultsModule,
-    HistoryModule,
-    LoginModule,
-    AppRoutingModule
-  ],
-  declarations: [AppComponent],
-  providers: [
-    HomeGuard,
-    ScoresGuard,
-    AuthenticationService
-  ],
-  bootstrap: [AppComponent]
+		SharedModule,
+		HomeModule,
+		ScoresModule,
+		ResultsModule,
+		PlayerManagmentModule,
+		HistoryModule,
+		LoginModule,
+		AppRoutingModule
+	],
+	declarations: [AppComponent],
+	providers: [
+		HomeGuard,
+		ScoresGuard,
+		PlayerManagmentGuard,
+		AuthenticationService
+	],
+	bootstrap: [AppComponent]
 })
 export class AppModule { }

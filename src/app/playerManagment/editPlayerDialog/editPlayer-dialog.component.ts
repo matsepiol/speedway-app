@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MAT_DIALOG_DATA } from '@angular/material';
 import { Player } from '@app/home/home.model';
 import { cloneDeep } from 'lodash';
 import { CURRENT_ROUND, ROUNDS_ITERABLE } from '@app/variables';
@@ -12,8 +12,8 @@ import { CURRENT_ROUND, ROUNDS_ITERABLE } from '@app/variables';
 
 export class EditPlayerDialogComponent {
 	public playerData: Player;
-	private selectedRound: number = CURRENT_ROUND;
-	private roundsIterable = ROUNDS_ITERABLE;
+	public selectedRound: number = CURRENT_ROUND;
+	public roundsIterable = ROUNDS_ITERABLE;
 
 	constructor(
 		@Inject(MAT_DIALOG_DATA) public data: Player

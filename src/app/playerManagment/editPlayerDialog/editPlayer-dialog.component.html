@@ -14,9 +14,20 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field class="edit-ksm">
-    <input matInput required placeholder="Ksm" type="number" [(ngModel)]="playerData.ksm" name="ksm" />
-  </mat-form-field>
+  <div class="ksm-picker">
+    <mat-form-field class="round">
+      <mat-label>Kolejka</mat-label>
+      <mat-select name="round" [(ngModel)]="selectedRound">
+        <mat-option *ngFor="let round of roundsIterable" [value]="round">{{round}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="edit-ksm">
+      <input matInput placeholder="Ksm" type="number" step="0.01" [(ngModel)]="playerData.ksm[selectedRound - 1]"
+        name="ksm" />
+    </mat-form-field>
+  </div>
 
   <mat-form-field>
     <mat-label>Klub</mat-label>

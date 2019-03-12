@@ -23,13 +23,6 @@
     </mat-form-field>
 
     <mat-form-field>
-      <mat-select placeholder="Sortuj według" [(ngModel)]="filter.sort">
-        <mat-option [value]="'team'">Klubu</mat-option>
-        <mat-option [value]="'ksm'">KSMu</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field>
       <input matInput [(ngModel)]="filter.searchQuery" placeholder="Szukaj zawodnika" />
     </mat-form-field>
 
@@ -38,9 +31,7 @@
   <div class="players">
     <div *ngFor="let player of players | filter: filter" class="card">
       <div class="card-body">
-        <h5 class="card-title">{{player.name}}
-          <span class="ksm">KSM: <b>{{player.ksm}}</b></span>
-        </h5>
+        <h5 class="card-title">{{player.name}}</h5>
         <p class="card-text">{{player.type}}</p>
         <img src="../../../../assets/logos/{{ player.team }}.jpg" />
         <button class="edit-button" mat-mini-fab color="primary" (click)="editPlayer(player)">Edytuj</button>

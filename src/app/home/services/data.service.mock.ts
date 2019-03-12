@@ -8,7 +8,7 @@ export class MockDataService {
 	}
 
 	public getData() {
-		return of([{ name: 'Zmarzlik', type: 'Senior' }, { name: 'Dudek', type: 'Senior' }]);
+		return of([{ name: 'Zmarzlik', type: 'Senior', ksm: [8] }, { name: 'Dudek', type: 'Senior', ksm: [8] }]);
 	}
 
 	public getSelection() {
@@ -25,6 +25,10 @@ export class MockDataService {
 
 	public getRoundSquads() {
 		return of(['Zmarzlik']);
+	}
+
+	public getKsmValue() {
+		return 10;
 	}
 
 	public getKsmSum() {

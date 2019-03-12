@@ -9,6 +9,7 @@ import { AngularFireDatabase } from '@angular/fire/database';
 import { AuthenticationService } from '@app/authentication/authentication.service';
 import { StatsData } from '@app/results/result.model';
 import { TableData } from '@app/scores/scores.model';
+import { CURRENT_ROUND } from '@app/variables';
 
 @Injectable()
 export class DataService {
@@ -16,6 +17,7 @@ export class DataService {
 	private selectedPlayersSubject: BehaviorSubject<Player[]> = new BehaviorSubject([]);
 	private ksmSumSubject: BehaviorSubject<number> = new BehaviorSubject(0);
 	private ksmLeftSubject: BehaviorSubject<number> = new BehaviorSubject(this.maxKsm);
+	private currentRound = CURRENT_ROUND;
 
 	constructor(
 		private snackBarService: SnackBarService,
@@ -137,7 +139,9 @@ export class DataService {
 		const selectedPlayers = this.selectedPlayersSubject.getValue();
 
 		const ksmSum = selectedPlayers.length
-			? parseFloat(selectedPlayers.map(item => item.ksm || 0).reduce((a, b) => a + b).toFixed(2))
+			? parseFloat(selectedPlayers
+				.map(item => (item.ksm && item.ksm[this.currentRound - 1]) || 0)
+				.reduce((a, b) => a + b).toFixed(2))
 			: 0;
 
 		const ksmLeft = parseFloat((this.maxKsm - ksmSum).toFixed(2));

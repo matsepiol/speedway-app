@@ -3,6 +3,7 @@ import { countBy, orderBy } from 'lodash';
 import { Filter, PlayerType, Player } from '../../home/home.model';
 import { DataService } from '../../home/services/data.service';
 import { combineLatest } from 'rxjs';
+import { CURRENT_ROUND } from '@app/variables';
 
 @Pipe({
 	name: 'filter',
@@ -11,6 +12,7 @@ import { combineLatest } from 'rxjs';
 
 export class FilterPipe implements PipeTransform {
 	constructor(private dataService: DataService) { }
+	private currentRound = CURRENT_ROUND;
 
 	transform(items: Player[], term: Filter): Player[] {
 		let tempItems = items;
@@ -32,7 +34,7 @@ export class FilterPipe implements PipeTransform {
 					tempItems = tempItems.filter((player) => PlayerType.JUNIOR.indexOf(player.type) === -1);
 				}
 
-				tempItems = tempItems.filter( (player) => player.ksm <= ksmLeft);
+				tempItems = tempItems.filter( (player) => player.ksm && player.ksm[this.currentRound] <= ksmLeft);
 			});
 		}
 
@@ -53,7 +55,9 @@ export class FilterPipe implements PipeTransform {
 		}
 
 		if (term.sort === 'ksm') {
-			tempItems = orderBy(tempItems, ['ksm', 'team'], ['desc', 'asc']);
+			tempItems = orderBy(tempItems, function(el: Player) {
+				return [el.ksm[CURRENT_ROUND - 1], el.team];
+			}, ['desc', 'asc']);
 		}
 
 		return tempItems;

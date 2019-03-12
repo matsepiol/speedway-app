@@ -63,7 +63,7 @@
 
           <ng-container matColumnDef="ksm">
             <th mat-header-cell *matHeaderCellDef> KSM </th>
-            <td mat-cell *matCellDef="let element"> {{element.ksm}} </td>
+            <td mat-cell *matCellDef="let element"> {{element.ksm[currentStatsRound - 1]}} </td>
           </ng-container>
 
           <ng-container matColumnDef="ratio">

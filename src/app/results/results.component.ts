@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DataService } from '../home/services/data.service';
 import { Users } from '@app/users.model';
 import { find, orderBy, remove } from 'lodash';
@@ -6,7 +6,7 @@ import { MatTableDataSource, MatTabChangeEvent } from '@angular/material';
 import { Squad, StatsData } from './result.model';
 import { Player, PlayerResult } from '../home/home.model';
 import { TableData } from '@app/scores/scores.model';
-import { combineLatest } from 'rxjs';
+import { combineLatest, Subscription } from 'rxjs';
 import { CURRENT_ROUND, ROUNDS_ITERABLE } from '@app/variables';
 
 @Component({
@@ -15,7 +15,7 @@ import { CURRENT_ROUND, ROUNDS_ITERABLE } from '@app/variables';
 	styleUrls: ['./results.component.scss']
 })
 
-export class ResultsComponent implements OnInit {
+export class ResultsComponent implements OnInit, OnDestroy {
 	public currentRound = CURRENT_ROUND;
 	public currentStatsRound = this.currentRound;
 	public isLoading = false;
@@ -31,6 +31,11 @@ export class ResultsComponent implements OnInit {
 
 	displayedStatsColumns: string[] = ['position', 'name', 'score', 'ksm', 'ratio'];
 
+	private roundSquadSubscribtion: Subscription;
+	private scoringSubscribtion: Subscription;
+	private dataSubscribtion: Subscription;
+	private roundResultSubscribtion: Subscription;
+
 	constructor(
 		public dataService: DataService,
 	) {
@@ -44,7 +49,7 @@ export class ResultsComponent implements OnInit {
 		this.isLoading = true;
 		this.squads = [];
 
-		this.dataService.getRoundSquads(
+		this.roundSquadSubscribtion = this.dataService.getRoundSquads(
 			this.currentRound,
 			JSON.parse(localStorage.getItem('currentUser')).user.uid
 		).subscribe((team: string[]) => {
@@ -52,7 +57,7 @@ export class ResultsComponent implements OnInit {
 		});
 
 		Object.keys(Users).forEach((userId: string) => {
-			combineLatest(
+			this.scoringSubscribtion = combineLatest(
 				this.dataService.getRoundSquads(this.currentRound, userId),
 				this.dataService.getRoundScore(this.currentRound)
 			).subscribe(
@@ -99,14 +104,16 @@ export class ResultsComponent implements OnInit {
 		this.isLoading = true;
 		this.statsData = [];
 
-		this.dataService.getData().subscribe((players: Player[]) => {
+		this.dataSubscribtion = this.dataService.getData().subscribe((players: Player[]) => {
 			this.dataService.getRoundScore(this.currentStatsRound).subscribe((scores: PlayerResult[]) => {
 				if (scores.length) {
 					players.forEach((player) => {
 						const playerScore = find(scores, { 'name': player.name });
-						player.score = playerScore.score;
-						player.ratio = parseFloat((player.score / player.ksm).toFixed(2));
-						this.statsData.push(player);
+						if (playerScore) {
+							player.score = playerScore.score;
+							player.ratio = parseFloat((player.score / player.ksm[this.currentStatsRound - 1]).toFixed(2));
+							this.statsData.push(player);
+						}
 					});
 				}
 
@@ -130,7 +137,7 @@ export class ResultsComponent implements OnInit {
 
 			this.isLoading = true;
 			Object.keys(Users).forEach((userId) => {
-				this.dataService.getRoundResult(userId).subscribe((data) => {
+				this.roundResultSubscribtion = this.dataService.getRoundResult(userId).subscribe((data) => {
 					const userName: string = this.users[userId];
 					const playerScore = find(this.tableData, { 'userName': userName });
 					if (playerScore) {
@@ -152,6 +159,21 @@ export class ResultsComponent implements OnInit {
 
 		if (event.tab.textLabel === 'Wybory kolejki' && !this.statsData.length) {
 			this.fetchStatsData();
+		}
+	}
+
+	public ngOnDestroy() {
+		if (this.roundSquadSubscribtion) {
+			this.roundSquadSubscribtion.unsubscribe();
+		}
+		if (this.scoringSubscribtion) {
+			this.scoringSubscribtion.unsubscribe();
+		}
+		if (this.dataSubscribtion) {
+			this.dataSubscribtion.unsubscribe();
+		}
+		if (this.roundResultSubscribtion) {
+			this.roundResultSubscribtion.unsubscribe();
 		}
 	}
 }

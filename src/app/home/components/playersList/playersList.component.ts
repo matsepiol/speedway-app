@@ -1,7 +1,7 @@
-import { clone, countBy } from 'lodash';
+import { cloneDeep, countBy } from 'lodash';
 import { ClipboardService } from 'ngx-clipboard';
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 
 import { Filter, Player, teamPlaceholder } from '../../home.model';
@@ -12,13 +12,15 @@ import { CURRENT_ROUND } from '@app/variables';
 import {
 	GenericConfirmationDialogComponent
 } from '@app/shared/genericConfirmationDialog/generic-confirmation-dialog.component';
+import { Subscription } from 'rxjs';
+import { first } from 'rxjs/operators';
 @Component({
 	selector: 'app-players-list',
 	templateUrl: './playersList.component.html',
 	styleUrls: ['./playersList.component.scss']
 })
 
-export class PlayersListComponent implements OnInit {
+export class PlayersListComponent implements OnInit, OnDestroy {
 
 	public availablePlayers: Player[];
 	public isLoading: boolean;
@@ -30,8 +32,12 @@ export class PlayersListComponent implements OnInit {
 		team: [], type: [], sort: 'ksm', searchQuery: '', showPossiblePlayers: false, showMinimum: false
 	};
 	public selectedPlayers: Player[] = [];
+
 	private currentRound = CURRENT_ROUND;
 	private confirmationDialog: MatDialogRef<GenericConfirmationDialogComponent>;
+	private playersSubscribtion: Subscription;
+	private selectionSubscribtion: Subscription;
+	private roundSquadsSubscribtion: Subscription;
 
 	constructor(
 		public authenticationService: AuthenticationService,
@@ -47,24 +53,25 @@ export class PlayersListComponent implements OnInit {
 	}
 
 	public init(): void {
-		const initialSelection = JSON.parse(localStorage.getItem('teamSelection')) || clone(teamPlaceholder);
+		const initialSelection = JSON.parse(localStorage.getItem('teamSelection')) || cloneDeep(teamPlaceholder);
 		this.dataService.setSelection(initialSelection);
 
 		this.isLoading = true;
-		this.dataService.getData().subscribe((data) => {
+		this.playersSubscribtion = this.dataService.getData().subscribe((data) => {
 			this.isLoading = false;
 			this.availablePlayers = data.filter(
 				players => this.selectedPlayers.every(selection => selection.name !== players.name)
 			);
+
 			this.prepareFiltering();
 		});
 
-		this.dataService.getSelection().subscribe((selected) => {
+		this.selectionSubscribtion = this.dataService.getSelection().subscribe((selected) => {
 			this.selectedPlayers = selected;
 			this.saveSelectionToLocalStorage(selected);
 		});
 
-		this.dataService.getRoundSquads(
+		this.roundSquadsSubscribtion = this.dataService.getRoundSquads(
 			this.currentRound,
 			JSON.parse(localStorage.getItem('currentUser')).user.uid
 		).subscribe((team) => {
@@ -127,7 +134,9 @@ export class PlayersListComponent implements OnInit {
 				}
 			});
 
-		this.confirmationDialog.afterClosed().subscribe(result => {
+		this.confirmationDialog.afterClosed().pipe(
+			first()
+		).subscribe(result => {
 			if (result) {
 				this.dataService.sendSquad(playersToSend, this.currentRound).then(() => {
 					this.snackBarService.messageSuccess('Wyniki wysłane!');
@@ -137,7 +146,7 @@ export class PlayersListComponent implements OnInit {
 	}
 
 	public clearSquad(): void {
-		this.dataService.setSelection(clone(teamPlaceholder));
+		this.dataService.setSelection(cloneDeep(teamPlaceholder));
 		this.init();
 	}
 
@@ -157,6 +166,18 @@ export class PlayersListComponent implements OnInit {
 		return !!(countBy(this.selectedPlayers, 'placeholder').true)
 			|| this.dataService.getKsmValue() > 45;
 		//     || new Date() > new Date(2018, 7, 26, 17, 0, 0);
+	}
+
+	public ngOnDestroy(): void {
+		if (this.playersSubscribtion) {
+			this.playersSubscribtion.unsubscribe();
+		}
+		if (this.selectionSubscribtion) {
+			this.selectionSubscribtion.unsubscribe();
+		}
+		if (this.roundSquadsSubscribtion) {
+			this.roundSquadsSubscribtion.unsubscribe();
+		}
 	}
 
 }

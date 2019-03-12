@@ -53,7 +53,7 @@
     <div *ngFor="let player of availablePlayers | filter: filter" class="card" [ngClass]="{ 'minimal': filter.showMinimum }">
       <div class="card-body" (click)="selectPlayer(player)">
         <h5 class="card-title">{{player.name}}
-          <span class="ksm">KSM: <b>{{player.ksm}}</b></span>
+          <span class="ksm">KSM: <b>{{player.ksm[currentRound - 1]}}</b></span>
         </h5>
         <p class="card-text" *ngIf="!filter.showMinimum">{{player.type}}</p>
         <img *ngIf="!filter.showMinimum" src="../../../../assets/logos/{{ player.team }}.jpg" />
@@ -71,7 +71,7 @@
 
         <div class="card-body" *ngIf="!player.placeholder" (click)="unselectPlayer(player, i)">
           <h5 class="card-title">{{player.name}} KSM:
-            <b>{{player.ksm}}</b>
+            <b>{{player.ksm[currentRound - 1]}}</b>
           </h5>
           <p class="card-text">{{player.type}}</p>
           <img src="../../../../assets/logos/{{ player.team }}.jpg" />

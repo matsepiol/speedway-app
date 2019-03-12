@@ -15,7 +15,7 @@ export class TableScoreComponent implements OnChanges {
 	@Input() dataSource: MatTableDataSource<TableData>;
 	@ViewChild(MatSort) sort: MatSort;
 
-	ngOnChanges() {
+	ngOnChanges(): void {
 		if (this.dataSource) {
 			this.dataSource.sort = this.sort;
 		}

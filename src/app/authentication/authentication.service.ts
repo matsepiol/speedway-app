@@ -15,7 +15,7 @@ export class AuthenticationService {
 		this.authenticate();
 	}
 
-	authenticate() {
+	authenticate(): void {
 		this.user.subscribe((user) => {
 			if (user) {
 				this.userDetails = user;
@@ -23,29 +23,30 @@ export class AuthenticationService {
 		});
 	}
 
-	signInWithFacebook() {
+	signInWithFacebook(): Promise<firebase.auth.UserCredential> {
 		return this._firebaseAuth.auth.signInWithPopup(
 			new firebase.auth.FacebookAuthProvider()
 		);
 	}
 
-	isLoggedIn() {
+	isLoggedIn(): boolean {
 		return !!localStorage.getItem('currentUser');
 	}
 
-	isAdmin() {
+	isAdmin(): boolean {
 		// admin id
 		return JSON.parse(localStorage.getItem('currentUser')).user.uid === '4h41P3l8XqYRW7YSBy3LA9pYGOt2';
 	}
 
-	isModerators() {
+	isModerators(): boolean {
 		const userId = JSON.parse(localStorage.getItem('currentUser')).user.uid;
 
-		// Priv || Łukasz || Sobol
-		return userId === '4h41P3l8XqYRW7YSBy3LA9pYGOt2' || 'Gxhqkwmu0VfaMAsiWy6xSPj367z1' || 'nCnHvhYvcubTEVxJ3cUfrJyg04P2';
+		// Mati || Łukasz || Sobol
+		const moderators = ['4h41P3l8XqYRW7YSBy3LA9pYGOt2', 'Gxhqkwmu0VfaMAsiWy6xSPj367z1', 'nCnHvhYvcubTEVxJ3cUfrJyg04P2'];
+		return moderators.indexOf(userId) !== -1;
 	}
 
-	logout() {
+	logout(): void {
 		localStorage.removeItem('currentUser');
 		this.router.navigate(['/login']);
 	}

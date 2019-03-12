@@ -8,7 +8,7 @@ import { AuthenticationService } from '../../../authentication/authentication.se
 })
 export class HeaderComponent implements OnInit {
 
-	menuHidden = true;
+	public menuHidden = true;
 
 	constructor(
 		public authenticationService: AuthenticationService,
@@ -16,12 +16,12 @@ export class HeaderComponent implements OnInit {
 
 	ngOnInit() { }
 
-	toggleMenu() {
+	toggleMenu(): void {
 		this.menuHidden = !this.menuHidden;
 	}
 
 
-	logout() {
+	logout(): void {
 		this.authenticationService.logout();
 	}
 

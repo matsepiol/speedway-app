@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DataService } from '@app/home/services/data.service';
 import { Player, Filter } from '@app/home/home.model';
 import { EditPlayerDialogComponent } from './editPlayerDialog/editPlayer-dialog.component';
@@ -7,6 +7,9 @@ import {
 	GenericConfirmationDialogComponent
 } from '@app/shared/genericConfirmationDialog/generic-confirmation-dialog.component';
 import { SnackBarService } from '@app/home/services/snack-bar.service';
+import { Subscription } from 'rxjs';
+import { first } from 'rxjs/operators';
+import { isUndefined, isNumber } from 'lodash';
 
 @Component({
 	selector: 'app-player-managment',
@@ -14,17 +17,18 @@ import { SnackBarService } from '@app/home/services/snack-bar.service';
 	styleUrls: ['./playerManagment.component.scss']
 })
 
-export class PlayerManagmentComponent implements OnInit {
+export class PlayerManagmentComponent implements OnInit, OnDestroy {
 	public isLoading: boolean;
 	public players: Player[];
 	public teamFilters: string[] = [];
 	public typeFilters: string[] = [];
 	public loadingMessage = 'Wczytywanie...';
 	public filter: Filter = {
-		team: [], type: [], sort: 'ksm', searchQuery: ''
+		team: [], type: [], sort: 'klub', searchQuery: ''
 	};
 	private editPlayerDialog: MatDialogRef<EditPlayerDialogComponent>;
 	private confirmationDialog: MatDialogRef<GenericConfirmationDialogComponent>;
+	private dataSubscribtion: Subscription;
 
 	constructor(
 		public dialog: MatDialog,
@@ -32,8 +36,8 @@ export class PlayerManagmentComponent implements OnInit {
 		private snackBarService: SnackBarService,
 	) { }
 
-	ngOnInit() {
-		this.dataService.getData().subscribe((data: Player[]) => {
+	ngOnInit(): void {
+		this.dataSubscribtion = this.dataService.getData().subscribe((data: Player[]) => {
 			this.isLoading = false;
 			this.players = data;
 			this.prepareFiltering();
@@ -41,8 +45,10 @@ export class PlayerManagmentComponent implements OnInit {
 	}
 
 	public addPlayer(): void {
-		this.editPlayerDialog = this.dialog.open(EditPlayerDialogComponent, { width: '400px', data: {} });
-		this.editPlayerDialog.afterClosed().subscribe(result => {
+		this.editPlayerDialog = this.dialog.open(EditPlayerDialogComponent, { width: '400px', data: { ksm: []} });
+		this.editPlayerDialog.afterClosed().pipe(
+			first()
+		).subscribe(result => {
 			if (result) {
 				this.players.push(result);
 			}
@@ -50,8 +56,19 @@ export class PlayerManagmentComponent implements OnInit {
 	}
 
 	public editPlayer(player: Player): void {
+		if (isNumber(player.ksm)) {
+			player.ksm = [player.ksm];
+		}
 		this.editPlayerDialog = this.dialog.open(EditPlayerDialogComponent, { width: '400px', data: player });
-		this.editPlayerDialog.afterClosed().subscribe(result => {
+		this.editPlayerDialog.afterClosed().pipe(
+			first()
+		).subscribe(result => {
+			result.ksm.forEach((ksmValue: number, index: number) => {
+				if (isUndefined(ksmValue)) {
+					result.ksm[index] = null;
+				}
+			});
+			console.log(result);
 			Object.assign(player, result);
 		});
 	}
@@ -66,7 +83,9 @@ export class PlayerManagmentComponent implements OnInit {
 				}
 			});
 
-		this.confirmationDialog.afterClosed().subscribe(result => {
+		this.confirmationDialog.afterClosed().pipe(
+			first()
+		).subscribe(result => {
 			if (result) {
 				this.players = this.players.filter(player => player !== removedPlayer);
 			}
@@ -85,12 +104,12 @@ export class PlayerManagmentComponent implements OnInit {
 
 		this.confirmationDialog.afterClosed().subscribe(result => {
 			if (result) {
+				console.log(result);
 				this.dataService.changePlayersData(this.players).then(() => {
 					this.snackBarService.messageSuccess('Zmiany zapisane');
 				});
 			}
 		});
-
 	}
 
 	private prepareFiltering(): void {
@@ -99,5 +118,11 @@ export class PlayerManagmentComponent implements OnInit {
 
 		this.typeFilters = this.players.map(item => item.type)
 			.filter((value, index, self) => self.indexOf(value) === index);
+	}
+
+	public ngOnDestroy(): void {
+		if (this.dataSubscribtion) {
+			this.dataSubscribtion.unsubscribe();
+		}
 	}
 }

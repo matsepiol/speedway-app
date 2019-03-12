@@ -7,7 +7,7 @@ export enum PlayerType {
 export interface Player {
 	type: PlayerType;
 	name?: string;
-	ksm?: number;
+	ksm?: number[];
 	team?: string;
 	placeholder?: boolean;
 	score?: number;

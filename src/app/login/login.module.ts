@@ -11,18 +11,18 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SnackBarService } from '../home/services/snack-bar.service';
 
 @NgModule({
-  imports: [
-    BrowserAnimationsModule,
-    CommonModule,
-    ReactiveFormsModule,
+	imports: [
+		BrowserAnimationsModule,
+		CommonModule,
+		ReactiveFormsModule,
 
-    NgbModule,
-    LoginRoutingModule,
-    MatSnackBarModule,
-  ],
-  declarations: [
-    LoginComponent
-  ],
-  providers: [SnackBarService]
+		NgbModule,
+		LoginRoutingModule,
+		MatSnackBarModule,
+	],
+	declarations: [
+		LoginComponent
+	],
+	providers: [SnackBarService]
 })
 export class LoginModule { }

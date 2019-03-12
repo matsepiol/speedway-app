@@ -92,7 +92,7 @@
       <div class="card-body" *ngIf="!player.placeholder" (click)="unselectPlayer(player, i)">
         <h5 class="card-title">{{player.name}}
           <span>KSM:
-            <b>{{player.ksm}}</b>
+            <b>{{player.ksm[currentRound - 1]}}</b>
           </span>
         </h5>
       </div>

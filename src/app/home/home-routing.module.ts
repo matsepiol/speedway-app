@@ -7,14 +7,14 @@ import { HomeComponent } from './home.component';
 import { HomeGuard } from './home.guard';
 
 const routes: Routes = [
-  Route.withShell([
-    { path: '', component: HomeComponent, canActivate: [HomeGuard], data: { title: 'Wybór składu' } }
-  ])
+	Route.withShell([
+		{ path: '', component: HomeComponent, canActivate: [HomeGuard], data: { title: 'Wybór składu' } }
+	])
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
-  providers: []
+	imports: [RouterModule.forChild(routes)],
+	exports: [RouterModule],
+	providers: []
 })
 export class HomeRoutingModule { }

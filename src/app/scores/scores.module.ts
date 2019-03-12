@@ -13,23 +13,23 @@ import { ScoresComponent } from './scores.component';
 import { AuthenticationService } from '@app/authentication/authentication.service';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatButtonModule,
-    MatDividerModule,
-    MatExpansionModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    ScoresRoutingModule,
-    SharedModule
-  ],
-  declarations: [
-    ScoresComponent,
-  ],
-  providers: [
-    AuthenticationService
-  ]
+	imports: [
+		CommonModule,
+		FormsModule,
+		MatButtonModule,
+		MatDividerModule,
+		MatExpansionModule,
+		MatFormFieldModule,
+		MatInputModule,
+		MatSelectModule,
+		ScoresRoutingModule,
+		SharedModule
+	],
+	declarations: [
+		ScoresComponent,
+	],
+	providers: [
+		AuthenticationService
+	]
 })
 export class ScoresModule { }

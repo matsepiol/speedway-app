@@ -12,7 +12,6 @@ import { CURRENT_ROUND } from '@app/variables';
 
 export class FilterPipe implements PipeTransform {
 	constructor(private dataService: DataService) { }
-	private currentRound = CURRENT_ROUND;
 
 	transform(items: Player[], term: Filter): Player[] {
 		let tempItems = items;
@@ -34,7 +33,7 @@ export class FilterPipe implements PipeTransform {
 					tempItems = tempItems.filter((player) => PlayerType.JUNIOR.indexOf(player.type) === -1);
 				}
 
-				tempItems = tempItems.filter( (player) => player.ksm && player.ksm[this.currentRound] <= ksmLeft);
+				tempItems = tempItems.filter( (player) => player.ksm && player.ksm[CURRENT_ROUND - 1] <= ksmLeft);
 			});
 		}
 
@@ -55,10 +54,11 @@ export class FilterPipe implements PipeTransform {
 		}
 
 		if (term.sort === 'ksm') {
-			tempItems = orderBy(tempItems, function(el: Player) {
-				return [el.ksm[CURRENT_ROUND - 1], el.team];
-			}, ['desc', 'asc']);
+			if (tempItems) {
+				tempItems.sort( (a, b) => b.ksm[CURRENT_ROUND - 1] - a.ksm[CURRENT_ROUND - 1]);
+			}
 		}
+
 
 		return tempItems;
 	}

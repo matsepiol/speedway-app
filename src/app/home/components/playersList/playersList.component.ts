@@ -165,7 +165,7 @@ export class PlayersListComponent implements OnInit, OnDestroy {
 	public disableSendSquadButton(): boolean {
 		return !!(countBy(this.selectedPlayers, 'placeholder').true)
 			|| this.dataService.getKsmValue() > 45
-			|| new Date() > new Date(2018, 4, 5, 17, 0, 0);
+			|| new Date() > new Date(2019, 4, 5, 17, 0, 0);
 	}
 
 	public ngOnDestroy(): void {

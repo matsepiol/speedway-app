@@ -48,6 +48,7 @@ export class PlayersListComponent implements OnInit, OnDestroy {
 	) { }
 
 	public ngOnInit(): void {
+		this.isLoading = true;
 		this.dataService.getOptions().subscribe(options => {
 			this.currentRound = options.currentRound;
 			this.init();
@@ -55,7 +56,6 @@ export class PlayersListComponent implements OnInit, OnDestroy {
 	}
 
 	public init(): void {
-		this.isLoading = true;
 		const initialSelection = JSON.parse(localStorage.getItem('teamSelection')) || cloneDeep(teamPlaceholder);
 		this.dataService.setSelection(initialSelection, this.currentRound);
 		this.playersSubscribtion = this.dataService.getData().subscribe((data) => {

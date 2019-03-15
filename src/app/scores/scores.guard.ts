@@ -11,7 +11,7 @@ export class ScoresGuard implements CanActivate {
 		private authenticationService: AuthenticationService) { }
 
 	canActivate() {
-		if (this.authenticationService.isAdmin()) {
+		if (this.authenticationService.isModerators()) {
 			return true;
 		}
 

@@ -16,8 +16,8 @@ import { CURRENT_ROUND, ROUNDS_ITERABLE } from '@app/variables';
 })
 
 export class ResultsComponent implements OnInit, OnDestroy {
-	public currentRound = CURRENT_ROUND;
-	public currentStatsRound = this.currentRound;
+	public currentRound: number;
+	public currentStatsRound: number;
 	public isLoading = false;
 	public isUserSquadSent: boolean;
 	public loadingMessage = 'Wczytywanie...';
@@ -42,11 +42,15 @@ export class ResultsComponent implements OnInit, OnDestroy {
 	}
 
 	public ngOnInit(): void {
-		this.fetchRoundSquad();
+		this.dataService.getOptions().subscribe(options => {
+			this.isLoading = true;
+			this.currentRound = options.currentRound;
+			this.currentStatsRound = options.currentRound;
+			this.fetchRoundSquad();
+		});
 	}
 
 	private fetchRoundSquad(): void {
-		this.isLoading = true;
 		this.squads = [];
 
 		this.roundSquadSubscribtion = this.dataService.getRoundSquads(
@@ -102,10 +106,10 @@ export class ResultsComponent implements OnInit, OnDestroy {
 
 	public fetchStatsData(): void {
 		this.isLoading = true;
-		this.statsData = [];
-
+		
 		this.dataSubscribtion = this.dataService.getData().subscribe((players: Player[]) => {
 			this.dataService.getRoundScore(this.currentStatsRound).subscribe((scores: PlayerResult[]) => {
+				this.statsData = [];
 				if (scores.length) {
 					players.forEach((player) => {
 						const playerScore = find(scores, { 'name': player.name });

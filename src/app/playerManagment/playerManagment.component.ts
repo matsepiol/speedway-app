@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DataService } from '@app/home/services/data.service';
 import { Player, Filter } from '@app/home/home.model';
 import { EditPlayerDialogComponent } from './editPlayerDialog/editPlayer-dialog.component';
-import { MatDialogRef, MatDialog } from '@angular/material';
+import { MatDialogRef, MatDialog, MatTabChangeEvent } from '@angular/material';
 import {
 	GenericConfirmationDialogComponent
 } from '@app/shared/genericConfirmationDialog/generic-confirmation-dialog.component';
@@ -10,6 +10,27 @@ import { SnackBarService } from '@app/home/services/snack-bar.service';
 import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { isUndefined, isNumber } from 'lodash';
+import { ROUNDS_ITERABLE } from '@app/variables';
+import { Options, Game } from './playerManagment.model';
+
+const games : Game[] = [
+	{
+		home: '',
+		away: ''
+	},
+	{
+		home: '',
+		away: ''
+	},
+	{
+		home: '',
+		away: ''
+	},
+	{
+		home: '',
+		away: ''
+	}
+];
 
 @Component({
 	selector: 'app-player-managment',
@@ -17,14 +38,21 @@ import { isUndefined, isNumber } from 'lodash';
 	styleUrls: ['./playerManagment.component.scss']
 })
 
+
 export class PlayerManagmentComponent implements OnInit, OnDestroy {
 	public isLoading: boolean;
 	public players: Player[];
 	public teamFilters: string[] = [];
 	public typeFilters: string[] = [];
 	public loadingMessage = 'Wczytywanie...';
+	public selectedRound: number;
+	public options: Options = {
+		currentRound: null,
+		games
+	}
+	public roundsIterable = ROUNDS_ITERABLE;
 	public filter: Filter = {
-		team: [], type: [], sort: 'klub', searchQuery: ''
+		team: [], type: [], sort: 'team', searchQuery: ''
 	};
 	private editPlayerDialog: MatDialogRef<EditPlayerDialogComponent>;
 	private confirmationDialog: MatDialogRef<GenericConfirmationDialogComponent>;
@@ -97,16 +125,15 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 			{
 				width: '400px',
 				data: {
-					title: 'Czy na pewno chcesz zapisać zmiany?',
+					title: 'Czy na pewno chcesz zapisać zmiany zawodników?',
 					confirmText: 'Zapisz'
 				}
 			});
 
 		this.confirmationDialog.afterClosed().subscribe(result => {
 			if (result) {
-				console.log(result);
 				this.dataService.changePlayersData(this.players).then(() => {
-					this.snackBarService.messageSuccess('Zmiany zapisane');
+					this.snackBarService.messageSuccess('Zmiany zawodników zapisane');
 				});
 			}
 		});
@@ -118,6 +145,33 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 
 		this.typeFilters = this.players.map(item => item.type)
 			.filter((value, index, self) => self.indexOf(value) === index);
+	}
+
+	public onSelect(event: MatTabChangeEvent) {
+		if (event.tab.textLabel === 'Kolejka') {
+			this.dataService.getOptions().subscribe( (options) => {
+				this.options = options;
+			});
+		}
+	}
+
+	public saveOptions() {
+		this.confirmationDialog = this.dialog.open(GenericConfirmationDialogComponent,
+			{
+				width: '400px',
+				data: {
+					title: 'Czy na pewno chcesz zapisać opcje kolejki?',
+					confirmText: 'Zapisz'
+				}
+			});
+
+		this.confirmationDialog.afterClosed().subscribe(result => {
+			if (result) {
+				this.dataService.saveOptions(this.options).then(() => {
+					this.snackBarService.messageSuccess('Opcje kolejki zapisane');
+				});
+			}
+		});
 	}
 
 	public ngOnDestroy(): void {

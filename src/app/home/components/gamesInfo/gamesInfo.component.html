@@ -1,8 +1,12 @@
-<h4>Kolejka I:</h4>
-<app-game [home]="'Zielona Góra'" [away]="'Toruń'"></app-game>
-<app-game [home]="'Częstochowa'" [away]="'Gorzów'"></app-game>
-<app-game [home]="'Leszno'" [away]="'Wrocław'"></app-game>
-<app-game [home]="'Lublin'" [away]="'Grudziądz'"></app-game>
+<app-loader [isLoading]="isLoading" [message]="loadingMessage"></app-loader>
+
+<div *ngIf="!isLoading">
+    <h4>Kolejka {{options.currentRound}}:</h4>
+    <app-game [home]="options.games[0].home" [away]="options.games[0].away"></app-game>
+    <app-game [home]="options.games[1].home" [away]="options.games[1].away"></app-game>
+    <app-game [home]="options.games[2].home" [away]="options.games[2].away"></app-game>
+    <app-game [home]="options.games[3].home" [away]="options.games[3].away"></app-game>
+</div>
 
 
 <!--

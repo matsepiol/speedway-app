@@ -8,7 +8,6 @@ import { Filter, Player, teamPlaceholder } from '../../home.model';
 import { DataService } from '../../services/data.service';
 import { SnackBarService } from '../../services/snack-bar.service';
 import { AuthenticationService } from '@app/authentication/authentication.service';
-import { CURRENT_ROUND } from '@app/variables';
 import {
 	GenericConfirmationDialogComponent
 } from '@app/shared/genericConfirmationDialog/generic-confirmation-dialog.component';
@@ -32,8 +31,8 @@ export class PlayersListComponent implements OnInit, OnDestroy {
 		team: [], type: [], sort: 'ksm', searchQuery: '', showPossiblePlayers: false, showMinimum: false
 	};
 	public selectedPlayers: Player[] = [];
+	public currentRound: number;
 
-	private currentRound = CURRENT_ROUND;
 	private confirmationDialog: MatDialogRef<GenericConfirmationDialogComponent>;
 	private playersSubscribtion: Subscription;
 	private selectionSubscribtion: Subscription;
@@ -49,14 +48,16 @@ export class PlayersListComponent implements OnInit, OnDestroy {
 	) { }
 
 	public ngOnInit(): void {
-		this.init();
+		this.dataService.getOptions().subscribe(options => {
+			this.currentRound = options.currentRound;
+			this.init();
+		});
 	}
 
 	public init(): void {
-		const initialSelection = JSON.parse(localStorage.getItem('teamSelection')) || cloneDeep(teamPlaceholder);
-		this.dataService.setSelection(initialSelection);
-
 		this.isLoading = true;
+		const initialSelection = JSON.parse(localStorage.getItem('teamSelection')) || cloneDeep(teamPlaceholder);
+		this.dataService.setSelection(initialSelection, this.currentRound);
 		this.playersSubscribtion = this.dataService.getData().subscribe((data) => {
 			this.isLoading = false;
 			this.availablePlayers = data.filter(
@@ -80,7 +81,7 @@ export class PlayersListComponent implements OnInit, OnDestroy {
 	}
 
 	public selectPlayer(player: Player): void {
-		const selectionSuccess = this.dataService.selectPlayer(player);
+		const selectionSuccess = this.dataService.selectPlayer(player, this.currentRound);
 		if (selectionSuccess) {
 			this.availablePlayers = this.availablePlayers.filter((p) => p.name !== player.name);
 		}
@@ -89,7 +90,7 @@ export class PlayersListComponent implements OnInit, OnDestroy {
 
 	public unselectPlayer(player: Player, index: number): void {
 		this.availablePlayers.push(player);
-		this.dataService.unselectPlayer(player, index);
+		this.dataService.unselectPlayer(player, index, this.currentRound);
 	}
 
 	public clearFilters(): void {
@@ -140,13 +141,14 @@ export class PlayersListComponent implements OnInit, OnDestroy {
 			if (result) {
 				this.dataService.sendSquad(playersToSend, this.currentRound).then(() => {
 					this.snackBarService.messageSuccess('Wyniki wysłane!');
+					this.clearSquad();
 				});
 			}
 		});
 	}
 
 	public clearSquad(): void {
-		this.dataService.setSelection(cloneDeep(teamPlaceholder));
+		this.dataService.setSelection(cloneDeep(teamPlaceholder), this.currentRound);
 		this.init();
 	}
 

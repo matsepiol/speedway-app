@@ -3,7 +3,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SnackBarService } from '@app/home/services/snack-bar.service';
 import { DataService } from '../home/services/data.service';
 import { Player, PlayerResult } from '../home/home.model';
-import { CURRENT_ROUND, ROUNDS_ITERABLE } from '@app/variables';
+import { ROUNDS_ITERABLE } from '@app/variables';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -15,8 +15,8 @@ import { Subscription } from 'rxjs';
 export class ScoresComponent implements OnInit, OnDestroy {
 	public teams: Player[][];
 	public isLoading: boolean;
-	public currentRound = CURRENT_ROUND;
 	public roundsIterable = ROUNDS_ITERABLE;
+	public currentRound: number;
 	public loadingMessage = 'Wczytywanie...';
 	private dataSubscribtion: Subscription;
 	private roundScoreSubscribtion: Subscription;
@@ -28,10 +28,15 @@ export class ScoresComponent implements OnInit, OnDestroy {
 	}
 
 	public ngOnInit(): void {
-		this.dataSubscribtion = this.dataService.getData().subscribe((data: Player[]) => {
-			this.teams = Object.values(groupBy(data, 'team'));
-			this.fetchRoundScore();
+		this.dataService.getOptions().subscribe(options => {
+			this.currentRound = options.currentRound;
+			
+			this.dataSubscribtion = this.dataService.getData().subscribe((data: Player[]) => {
+				this.teams = Object.values(groupBy(data, 'team'));
+				this.fetchRoundScore();
+			});
 		});
+
 	}
 
 	public onRoundChange(): void {

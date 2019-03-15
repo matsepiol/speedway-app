@@ -1,42 +1,130 @@
 <div class="container-fluid">
   <div class="jumbotron text-center">
-    <h1>Zarządzanie zawodnikami</h1>
+    <h1>Panel zarządzania</h1>
   </div>
 
-  <app-loader [isLoading]="isLoading" [message]="loadingMessage"></app-loader>
+  <mat-tab-group (selectedTabChange)="onSelect($event)">
+    <mat-tab label="Zawodnicy">
 
-  <div class="buttons">
-    <button mat-raised-button color="primary" (click)="addPlayer()">Dodaj zawodnika</button>
-    <button mat-raised-button color="warn" (click)="saveChanges()">Zapisz zmiany</button>
-  </div>
+      <app-loader [isLoading]="isLoading" [message]="loadingMessage"></app-loader>
 
-  <div class="filter-wrapper">
-    <mat-form-field>
-      <mat-select multiple placeholder="Filtruj drużyny" [(ngModel)]="filter.team">
-        <mat-option *ngFor="let team of teamFilters" [value]="team">{{team}}</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-select multiple placeholder="Filtruj typ zawodnika" [(ngModel)]="filter.type">
-        <mat-option *ngFor="let type of typeFilters" [value]="type">{{type}}</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field>
-      <input matInput [(ngModel)]="filter.searchQuery" placeholder="Szukaj zawodnika" />
-    </mat-form-field>
-
-  </div>
-
-  <div class="players">
-    <div *ngFor="let player of players | filter: filter" class="card">
-      <div class="card-body">
-        <h5 class="card-title">{{player.name}}</h5>
-        <p class="card-text">{{player.type}}</p>
-        <img src="../../../../assets/logos/{{ player.team }}.jpg" />
-        <button class="edit-button" mat-mini-fab color="primary" (click)="editPlayer(player)">Edytuj</button>
-        <button class="delete-button" mat-mini-fab color="warn" (click)="removePlayer(player)">Usuń</button>
+      <div class="buttons">
+        <button mat-raised-button color="primary" (click)="addPlayer()">Dodaj zawodnika</button>
+        <button mat-raised-button color="warn" (click)="saveChanges()">Zapisz zmiany</button>
       </div>
-    </div>
-  </div>
+
+      <div class="filter-wrapper">
+        <mat-form-field>
+          <mat-select multiple placeholder="Filtruj drużyny" [(ngModel)]="filter.team">
+            <mat-option *ngFor="let team of teamFilters" [value]="team">{{team}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select multiple placeholder="Filtruj typ zawodnika" [(ngModel)]="filter.type">
+            <mat-option *ngFor="let type of typeFilters" [value]="type">{{type}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput [(ngModel)]="filter.searchQuery" placeholder="Szukaj zawodnika" />
+        </mat-form-field>
+
+      </div>
+
+      <div class="players">
+        <div *ngFor="let player of players | filter: filter" class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{player.name}}</h5>
+            <p class="card-text">{{player.type}}</p>
+            <img src="../../../../assets/logos/{{ player.team }}.jpg" />
+            <button class="edit-button" mat-mini-fab color="primary" (click)="editPlayer(player)">Edytuj</button>
+            <button class="delete-button" mat-mini-fab color="warn" (click)="removePlayer(player)">Usuń</button>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Kolejka">
+
+      <div class="container">
+        <div class="buttons">
+          <button mat-raised-button color="warn" (click)="saveOptions()">Zapisz opcje</button>
+        </div>
+
+        <div class="round">
+          <mat-form-field>
+            <mat-label>Aktualna kolejka</mat-label>
+            <mat-select name="round" [(ngModel)]="options.currentRound">
+              <mat-option *ngFor="let round of roundsIterable" [value]="round">{{round}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="game1">
+          <mat-form-field>
+            <mat-label>Klub</mat-label>
+            <mat-select required [(ngModel)]="options.games[0].home" name="team">
+              <mat-option *ngFor="let team of teamFilters" [value]="team">{{team}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <span>vs</span>
+          <mat-form-field>
+            <mat-label>Klub</mat-label>
+            <mat-select required [(ngModel)]="options.games[0].away" name="team">
+              <mat-option *ngFor="let team of teamFilters" [value]="team">{{team}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="game2">
+          <mat-form-field>
+            <mat-label>Klub</mat-label>
+            <mat-select required [(ngModel)]="options.games[1].home" name="team">
+              <mat-option *ngFor="let team of teamFilters" [value]="team">{{team}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <span>vs</span>
+          <mat-form-field>
+            <mat-label>Klub</mat-label>
+            <mat-select required [(ngModel)]="options.games[1].away" name="team">
+              <mat-option *ngFor="let team of teamFilters" [value]="team">{{team}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="game3">
+          <mat-form-field>
+            <mat-label>Klub</mat-label>
+            <mat-select required [(ngModel)]="options.games[2].home" name="team">
+              <mat-option *ngFor="let team of teamFilters" [value]="team">{{team}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <span>vs</span>
+          <mat-form-field>
+            <mat-label>Klub</mat-label>
+            <mat-select required [(ngModel)]="options.games[2].away" name="team">
+              <mat-option *ngFor="let team of teamFilters" [value]="team">{{team}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="game4">
+          <mat-form-field>
+            <mat-label>Klub</mat-label>
+            <mat-select required [(ngModel)]="options.games[3].home" name="team">
+              <mat-option *ngFor="let team of teamFilters" [value]="team">{{team}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <span>vs</span>
+          <mat-form-field>
+            <mat-label>Klub</mat-label>
+            <mat-select required [(ngModel)]="options.games[3].away" name="team">
+              <mat-option *ngFor="let team of teamFilters" [value]="team">{{team}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
 </div>

@@ -59,7 +59,6 @@ export class FilterPipe implements PipeTransform {
 			}
 		}
 
-
 		return tempItems;
 	}
 }

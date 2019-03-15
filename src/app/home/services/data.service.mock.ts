@@ -19,6 +19,10 @@ export class MockDataService {
 		return true;
 	}
 
+	public getOptions() {
+		return of({ currentRound: 1 });
+	}
+
 	public unselectPlayer() {
 		return;
 	}

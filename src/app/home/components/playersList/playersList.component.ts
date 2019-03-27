@@ -1,7 +1,7 @@
 import { cloneDeep, countBy } from 'lodash';
 import { ClipboardService } from 'ngx-clipboard';
 
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 
 import { Filter, Player, teamPlaceholder } from '../../home.model';
@@ -11,32 +11,30 @@ import { AuthenticationService } from '@app/authentication/authentication.servic
 import {
 	GenericConfirmationDialogComponent
 } from '@app/shared/genericConfirmationDialog/generic-confirmation-dialog.component';
-import { Subscription } from 'rxjs';
-import { first } from 'rxjs/operators';
+import { Observable, combineLatest } from 'rxjs';
+import { first, tap, map } from 'rxjs/operators';
+
 @Component({
 	selector: 'app-players-list',
 	templateUrl: './playersList.component.html',
 	styleUrls: ['./playersList.component.scss']
 })
 
-export class PlayersListComponent implements OnInit, OnDestroy {
-
-	public availablePlayers: Player[];
-	public isLoading: boolean;
-	public isUserSquadSent = false;
+export class PlayersListComponent implements OnInit {
 	public loadingMessage = 'Wczytywanie...';
 	public teamFilters: string[] = [];
 	public typeFilters: string[] = [];
 	public filter: Filter = {
 		team: [], type: [], sort: 'ksm', searchQuery: '', showPossiblePlayers: false, showMinimum: false
 	};
-	public selectedPlayers: Player[] = [];
-	public currentRound: number;
+
+	public players$: Observable<Player[]>
+	public selectedPlayers$: Observable<Player[]>;
+	public availablePlayers$: Observable<Player[]>;
+	public currentRound$: Observable<number>;
+	public isUserSquadSent$: Observable<boolean>;
 
 	private confirmationDialog: MatDialogRef<GenericConfirmationDialogComponent>;
-	private playersSubscribtion: Subscription;
-	private selectionSubscribtion: Subscription;
-	private roundSquadsSubscribtion: Subscription;
 
 	constructor(
 		public authenticationService: AuthenticationService,
@@ -48,49 +46,43 @@ export class PlayersListComponent implements OnInit, OnDestroy {
 	) { }
 
 	public ngOnInit(): void {
-		this.isLoading = true;
-		this.dataService.getOptions().subscribe(options => {
-			this.currentRound = options.currentRound;
-			this.init();
-		});
-	}
-
-	public init(): void {
 		const initialSelection = JSON.parse(localStorage.getItem('teamSelection')) || cloneDeep(teamPlaceholder);
-		this.dataService.setSelection(initialSelection, this.currentRound);
-		this.playersSubscribtion = this.dataService.getData().subscribe((data) => {
-			this.isLoading = false;
-			this.availablePlayers = data.filter(
-				players => this.selectedPlayers.every(selection => selection.name !== players.name)
-			);
+		this.dataService.setSelection(initialSelection);
 
-			this.prepareFiltering();
-		});
+		this.players$ = this.dataService.data$;
+		this.selectedPlayers$ = this.dataService.selectedPlayers$.pipe(
+			tap(selected => this.saveSelectionToLocalStorage(selected))
+		);
 
-		this.selectionSubscribtion = this.dataService.getSelection().subscribe((selected) => {
-			this.selectedPlayers = selected;
-			this.saveSelectionToLocalStorage(selected);
-		});
+		this.availablePlayers$ = combineLatest(
+			this.players$,
+			this.selectedPlayers$
+		).pipe(
+			map(([players, selected]) => players.filter(
+				players => selected.every(selection => selection.name !== players.name)
+			))
+		);
 
-		this.roundSquadsSubscribtion = this.dataService.getRoundSquads(
-			this.currentRound,
-			JSON.parse(localStorage.getItem('currentUser')).user.uid
-		).subscribe((team) => {
-			this.isUserSquadSent = !!team.length;
-		});
+		this.isUserSquadSent$ = this.dataService.currentSquad$.pipe(
+			map(team => !!team.length),
+		);
+
+		this.currentRound$ = this.dataService.options$.pipe(
+			map(options => options.currentRound),
+			tap(() => this.dataService.getCurrentRoundSquad())
+		);
+
+		this.dataService.calculateKsmSum();
+		this.prepareFiltering();
 	}
 
 	public selectPlayer(player: Player): void {
-		const selectionSuccess = this.dataService.selectPlayer(player, this.currentRound);
-		if (selectionSuccess) {
-			this.availablePlayers = this.availablePlayers.filter((p) => p.name !== player.name);
-		}
+		this.dataService.selectPlayer(player);
 		this.filter.searchQuery = '';
 	}
 
 	public unselectPlayer(player: Player, index: number): void {
-		this.availablePlayers.push(player);
-		this.dataService.unselectPlayer(player, index, this.currentRound);
+		this.dataService.unselectPlayer(player, index);
 	}
 
 	public clearFilters(): void {
@@ -105,23 +97,25 @@ export class PlayersListComponent implements OnInit, OnDestroy {
 	}
 
 	public exportSquad(): void {
-		if ((countBy(this.selectedPlayers, 'placeholder').true)) {
+		const selectedPlayers = this.dataService.getSelectedPlayersValue();
+		if ((countBy(selectedPlayers, 'placeholder').true)) {
 			this.snackBarService.messageError('Skład nie jest kompletny!');
 		} else if (this.dataService.getKsmValue() > 45) {
 			this.snackBarService.messageError('Skład przekracza dopuszczalny ksm!');
 		} else {
 			let textToCopy = '';
-			this.selectedPlayers.forEach((selected, index) => {
+			selectedPlayers.forEach((selected, index) => {
 				textToCopy += `${index + 1}. ${selected.name} `;
 			});
 			textToCopy += `Ksm: ${this.dataService.getKsmValue()}`;
+
 			this.clipboardService.copyFromContent(textToCopy);
 			this.snackBarService.messageSuccess('Skład skopiowany do schowka!');
 		}
 	}
 
 	public sendSquad(): void {
-		const playersToSend = this.selectedPlayers.map((player) => {
+		const playersToSend = this.dataService.getSelectedPlayersValue().map((player) => {
 			return player['name'];
 		});
 
@@ -139,7 +133,7 @@ export class PlayersListComponent implements OnInit, OnDestroy {
 			first()
 		).subscribe(result => {
 			if (result) {
-				this.dataService.sendSquad(playersToSend, this.currentRound).then(() => {
+				this.dataService.sendSquad(playersToSend, this.dataService.getCurrentRound()).then(() => {
 					this.snackBarService.messageSuccess('Wyniki wysłane!');
 					this.clearSquad();
 				});
@@ -148,8 +142,7 @@ export class PlayersListComponent implements OnInit, OnDestroy {
 	}
 
 	public clearSquad(): void {
-		this.dataService.setSelection(cloneDeep(teamPlaceholder), this.currentRound);
-		this.init();
+		this.dataService.setSelection(cloneDeep(teamPlaceholder));
 	}
 
 	private saveSelectionToLocalStorage(selection: Player[]) {
@@ -157,29 +150,16 @@ export class PlayersListComponent implements OnInit, OnDestroy {
 	}
 
 	private prepareFiltering(): void {
-		this.teamFilters = this.availablePlayers.map(item => item.team)
-			.filter((value, index, self) => self.indexOf(value) === index);
-
-		this.typeFilters = this.availablePlayers.map(item => item.type)
-			.filter((value, index, self) => self.indexOf(value) === index);
+		this.players$.subscribe(players => {
+			this.teamFilters = players.map(item => item.team).filter((value, index, self) => self.indexOf(value) === index);
+			this.typeFilters = players.map(item => item.type).filter((value, index, self) => self.indexOf(value) === index);
+		});
 	}
 
 	public disableSendSquadButton(): boolean {
-		return !!(countBy(this.selectedPlayers, 'placeholder').true)
+		return !!(countBy(this.dataService.getSelectedPlayersValue(), 'placeholder').true)
 			|| this.dataService.getKsmValue() > 45
 			|| new Date() > new Date(2019, 4, 5, 17, 0, 0);
-	}
-
-	public ngOnDestroy(): void {
-		if (this.playersSubscribtion) {
-			this.playersSubscribtion.unsubscribe();
-		}
-		if (this.selectionSubscribtion) {
-			this.selectionSubscribtion.unsubscribe();
-		}
-		if (this.roundSquadsSubscribtion) {
-			this.roundSquadsSubscribtion.unsubscribe();
-		}
 	}
 
 }

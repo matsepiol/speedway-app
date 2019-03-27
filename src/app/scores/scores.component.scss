@@ -14,6 +14,10 @@
   .card {
     margin: 20px;
     width: 21%;
+
+    &.hidden {
+      display: none;
+    }
   }
 
   span {

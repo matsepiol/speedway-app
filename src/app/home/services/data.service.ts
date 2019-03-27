@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 
 import {
@@ -9,33 +9,61 @@ import { AngularFireDatabase } from '@angular/fire/database';
 import { AuthenticationService } from '@app/authentication/authentication.service';
 import { StatsData } from '@app/results/result.model';
 import { TableData } from '@app/scores/scores.model';
-import { CURRENT_ROUND } from '@app/variables';
 import { Options } from '@app/playerManagment/playerManagment.model';
 
 @Injectable()
 export class DataService {
 	public maxKsm = 45;
-	private selectedPlayersSubject: BehaviorSubject<Player[]> = new BehaviorSubject([]);
-	private ksmSumSubject: BehaviorSubject<number> = new BehaviorSubject(0);
-	private ksmLeftSubject: BehaviorSubject<number> = new BehaviorSubject(this.maxKsm);
+
+	private ksmSumSubject = new BehaviorSubject<number>(0);
+	private ksmLeftSubject = new BehaviorSubject<number>(this.maxKsm);
+
+	public ksmSum$: Observable<number> = this.ksmSumSubject.asObservable();
+	public ksmLeft$: Observable<number> = this.ksmLeftSubject.asObservable();
+
+	private dataSubject = new BehaviorSubject<Player[]>([]);
+	public data$: Observable<Player[]> = this.dataSubject.asObservable();
+
+	private availablePlayersSubject = new BehaviorSubject<Player[]>([]);
+	public availablePlayers$: Observable<Player[]> = this.availablePlayersSubject.asObservable();
+
+	private selectedPlayersSubject = new BehaviorSubject<Player[]>([]);
+	public selectedPlayers$: Observable<Player[]> = this.selectedPlayersSubject.asObservable();
+
+	private optionsSubject = new BehaviorSubject<Options>({ currentRound: null, games: []});
+	public options$: Observable<Options> = this.optionsSubject.asObservable();
+
+	private currentSquadSubject = new BehaviorSubject<string[]>([]);
+	public currentSquad$: Observable<string[]> = this.currentSquadSubject.asObservable();
 
 	constructor(
 		private snackBarService: SnackBarService,
 		private authenticationService: AuthenticationService,
 		private db: AngularFireDatabase
-	) { 
+	) {
+		this.getOptions();
+		this.getData();
 	}
 
-	public getData(): Observable<Player[]> {
-		return this.db.list<Player>('/data').valueChanges();
+	public getData() {
+		this.db.list<Player>('/data').valueChanges().subscribe(data => this.dataSubject.next(data));
+	}
+	
+	public getOptions() {
+		this.db.object<Options>(`options`).valueChanges().subscribe(options => this.optionsSubject.next(options));
+	}
+
+	public getCurrentRound() {
+		return this.optionsSubject.getValue().currentRound;
+	}
+
+	public getCurrentRoundSquad() {
+		this.getRoundSquads(this.getCurrentRound(), JSON.parse(localStorage.getItem('currentUser')).user.uid)
+			.subscribe(team => this.currentSquadSubject.next(team));
 	}
 
 	public getRoundScore(round: number): Observable<PlayerResult[]> {
 		return this.db.list<PlayerResult>(`/scores/${round}`).valueChanges();
-	}
-	
-	public getOptions(): Observable<Options> {
-		return this.db.object<Options>(`options`).valueChanges();
 	}
 
 	public saveOptions(options: Options): Promise<void> {
@@ -77,28 +105,19 @@ export class DataService {
 		return this.db.object(`table/${id}/${round}`).set(score);
 	}
 
-	public setSelection(selection: Player[], currentRound: number): void {
+	public setSelection(selection: Player[]): void {
 		this.selectedPlayersSubject.next(selection);
-		this.calculateKsmSum(currentRound);
-	}
-
-	public getSelection(): Observable<Player[]> {
-		return this.selectedPlayersSubject.asObservable();
 	}
 
 	public getKsmValue(): number {
 		return this.ksmSumSubject.getValue();
 	}
-
-	public getKsmSum(): Observable<number> {
-		return this.ksmSumSubject.asObservable();
+	
+	public getSelectedPlayersValue(): Player[] {
+		return this.selectedPlayersSubject.getValue();
 	}
 
-	public getKsmLeft(): Observable<number> {
-		return this.ksmLeftSubject.asObservable();
-	}
-
-	public selectPlayer(player: Player, currentRound: number): boolean {
+	public selectPlayer(player: Player): boolean {
 		const selectedPlayers = this.selectedPlayersSubject.getValue();
 		const index = this.findSquadIndex(player);
 		if (index === -1) {
@@ -106,11 +125,11 @@ export class DataService {
 		}
 
 		selectedPlayers[index] = player;
-		this.setSelection(selectedPlayers, currentRound);
+		this.setSelection(selectedPlayers);
 		return true;
 	}
 
-	public unselectPlayer(player: Player, index: number, currentRound: number): void {
+	public unselectPlayer(player: Player, index: number): void {
 		const selectedPlayers = this.selectedPlayersSubject.getValue();
 
 		if (index === 0 || index === 4) {
@@ -118,7 +137,7 @@ export class DataService {
 				if (selectedPlayers[i].type === PlayerType.SENIOR) {
 					selectedPlayers[index] = selectedPlayers[i];
 					selectedPlayers[i] = obcokrajowiecPlaceholder;
-					this.setSelection(selectedPlayers, currentRound);
+					this.setSelection(selectedPlayers);
 					return;
 				}
 			}
@@ -132,7 +151,7 @@ export class DataService {
 					} else {
 						selectedPlayers[i] = obcokrajowiecPlaceholder;
 					}
-					this.setSelection(selectedPlayers, currentRound);
+					this.setSelection(selectedPlayers);
 					return;
 				}
 			}
@@ -141,22 +160,25 @@ export class DataService {
 			selectedPlayers[index] = obcokrajowiecPlaceholder;
 		}
 
-		this.setSelection(selectedPlayers, currentRound);
+		this.setSelection(selectedPlayers);
 	}
 
-	private calculateKsmSum(currentRound: number): void {
-		const selectedPlayers = this.selectedPlayersSubject.getValue();
-
-		const ksmSum = selectedPlayers.length
-			? parseFloat(selectedPlayers
-				.map(item => (item.ksm && item.ksm[currentRound - 1]) || 0)
-				.reduce((a, b) => a + b).toFixed(2))
-			: 0;
-
-		const ksmLeft = parseFloat((this.maxKsm - ksmSum).toFixed(2));
-
-		this.ksmSumSubject.next(ksmSum);
-		this.ksmLeftSubject.next(ksmLeft);
+	public calculateKsmSum(): void {
+		combineLatest(
+			this.selectedPlayers$,
+			this.options$
+		).subscribe(([selectedPlayers, options]) => {
+			const ksmSum = selectedPlayers.length
+				? parseFloat(selectedPlayers
+					.map(item => (item.ksm && item.ksm[options.currentRound - 1]) || 0)
+					.reduce((a, b) => a + b).toFixed(2))
+				: 0;
+	
+			const ksmLeft = parseFloat((this.maxKsm - ksmSum).toFixed(2));
+	
+			this.ksmSumSubject.next(ksmSum);
+			this.ksmLeftSubject.next(ksmLeft);
+		});
 	}
 
 	private findSquadIndex(player: Player): number {

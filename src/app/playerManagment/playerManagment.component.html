@@ -32,7 +32,7 @@
       </div>
 
       <div class="players">
-        <div *ngFor="let player of players | filter: filter" class="card">
+        <div *ngFor="let player of players$ | async | filter: filter" class="card">
           <div class="card-body">
             <h5 class="card-title">{{player.name}}</h5>
             <p class="card-text">{{player.type}}</p>

@@ -7,7 +7,7 @@ import {
 	GenericConfirmationDialogComponent
 } from '@app/shared/genericConfirmationDialog/generic-confirmation-dialog.component';
 import { SnackBarService } from '@app/home/services/snack-bar.service';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { isUndefined, isNumber } from 'lodash';
 import { ROUNDS_ITERABLE } from '@app/variables';
@@ -57,6 +57,7 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 	private editPlayerDialog: MatDialogRef<EditPlayerDialogComponent>;
 	private confirmationDialog: MatDialogRef<GenericConfirmationDialogComponent>;
 	private dataSubscribtion: Subscription;
+	public players$: Observable<Player[]>
 
 	constructor(
 		public dialog: MatDialog,
@@ -65,11 +66,16 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 	) { }
 
 	ngOnInit(): void {
-		this.dataSubscribtion = this.dataService.getData().subscribe((data: Player[]) => {
-			this.isLoading = false;
-			this.players = data;
-			this.prepareFiltering();
-		});
+		this.players$ = this.dataService.data$;
+
+		this.dataService.getData();
+		this.prepareFiltering();
+
+		// this.dataSubscribtion = this.dataService.getData().subscribe((data: Player[]) => {
+		// 	this.isLoading = false;
+		// 	this.players = data;
+		// 	this.prepareFiltering();
+		// });
 	}
 
 	public addPlayer(): void {
@@ -96,7 +102,7 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 					result.ksm[index] = null;
 				}
 			});
-			console.log(result);
+
 			Object.assign(player, result);
 		});
 	}
@@ -140,11 +146,10 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 	}
 
 	private prepareFiltering(): void {
-		this.teamFilters = this.players.map(item => item.team)
-			.filter((value, index, self) => self.indexOf(value) === index);
-
-		this.typeFilters = this.players.map(item => item.type)
-			.filter((value, index, self) => self.indexOf(value) === index);
+		this.players$.subscribe(players => {
+			this.teamFilters = players.map(item => item.team).filter((value, index, self) => self.indexOf(value) === index);
+			this.typeFilters = players.map(item => item.type).filter((value, index, self) => self.indexOf(value) === index);
+		});
 	}
 
 	public onSelect(event: MatTabChangeEvent) {

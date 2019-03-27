@@ -17,7 +17,7 @@ export class FilterPipe implements PipeTransform {
 		let tempItems = items;
 
 		if (term.showPossiblePlayers) {
-			combineLatest(this.dataService.getSelection(), this.dataService.getKsmLeft())
+			combineLatest(this.dataService.selectedPlayers$, this.dataService.ksmLeft$)
 			.subscribe(([selected, ksmLeft]) => {
 
 				const selection = countBy(selected.filter((item) => !item.placeholder), 'type');

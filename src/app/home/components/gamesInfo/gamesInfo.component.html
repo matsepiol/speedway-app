@@ -1,21 +1,9 @@
-<app-loader [isLoading]="isLoading" [message]="loadingMessage"></app-loader>
+<app-loader [isLoading]="!(dataService.options$ | async).currentRound" [message]="loadingMessage"></app-loader>
 
-<div *ngIf="!isLoading">
-    <h4>Kolejka {{options.currentRound}}:</h4>
-    <app-game [home]="options.games[0].home" [away]="options.games[0].away"></app-game>
-    <app-game [home]="options.games[1].home" [away]="options.games[1].away"></app-game>
-    <app-game [home]="options.games[2].home" [away]="options.games[2].away"></app-game>
-    <app-game [home]="options.games[3].home" [away]="options.games[3].away"></app-game>
+<div *ngIf="(dataService.options$ | async).currentRound">
+    <h4>Kolejka {{(dataService.options$ | async).currentRound}}:</h4>
+    <app-game [home]="(dataService.options$ | async).games[0].home" [away]="(dataService.options$ | async).games[0].away"></app-game>
+    <app-game [home]="(dataService.options$ | async).games[1].home" [away]="(dataService.options$ | async).games[1].away"></app-game>
+    <app-game [home]="(dataService.options$ | async).games[2].home" [away]="(dataService.options$ | async).games[2].away"></app-game>
+    <app-game [home]="(dataService.options$ | async).games[3].home" [away]="(dataService.options$ | async).games[3].away"></app-game>
 </div>
-
-
-<!--
-Toruń
-Zielona Góra
-Wrocław
-Lublin
-Gorzów
-Grudziądz
-Częstochowa
-Leszno
--->

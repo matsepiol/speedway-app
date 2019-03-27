@@ -7,17 +7,17 @@
     <button mat-raised-button color="primary" (click)="save()">Save</button>
     <mat-form-field class="round-picker">
 
-      <mat-select [(ngModel)]="currentRound" (ngModelChange)="onRoundChange()">
+      <mat-select [value]="(dataService.options$ | async).currentRound" (selectionChange)="changeRound($event)">
         <mat-option *ngFor="let number of roundsIterable" [value]="number">Kolejka {{number}}</mat-option>
       </mat-select>
     </mat-form-field>
   </div>
 
+  
   <div class="container">
-
-    <app-loader [isLoading]="isLoading" [message]="loadingMessage"></app-loader>
-
-    <mat-expansion-panel [expanded]="true" *ngFor="let team of teams" class="card">
+    
+    <app-loader [isLoading]="isLoading$ | async" [message]="loadingMessage"></app-loader>
+    <mat-expansion-panel [expanded]="true" *ngFor="let team of (teams$ | async)" class="card" [ngClass]="{ 'hidden': isLoading$ | async }">
       <mat-expansion-panel-header>{{team[0].team}}</mat-expansion-panel-header>
       <div *ngFor="let player of team">
         <span class="player">{{player.name}}</span>

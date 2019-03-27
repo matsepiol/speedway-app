@@ -13,6 +13,7 @@ import {
 } from '@app/shared/genericConfirmationDialog/generic-confirmation-dialog.component';
 import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
+import { Options } from '@app/playerManagment/playerManagment.model';
 @Component({
 	selector: 'app-players-list',
 	templateUrl: './playersList.component.html',
@@ -32,7 +33,7 @@ export class PlayersListComponent implements OnInit, OnDestroy {
 	};
 	public selectedPlayers: Player[] = [];
 	public currentRound: number;
-
+	public date: Date;
 	private confirmationDialog: MatDialogRef<GenericConfirmationDialogComponent>;
 	private playersSubscribtion: Subscription;
 	private selectionSubscribtion: Subscription;
@@ -51,6 +52,7 @@ export class PlayersListComponent implements OnInit, OnDestroy {
 		this.isLoading = true;
 		this.dataService.getOptions().subscribe(options => {
 			this.currentRound = options.currentRound;
+			this.prepareRoundClosingTime(options);
 			this.init();
 		});
 	}
@@ -164,10 +166,16 @@ export class PlayersListComponent implements OnInit, OnDestroy {
 			.filter((value, index, self) => self.indexOf(value) === index);
 	}
 
+	private prepareRoundClosingTime(options: Options) {
+		this.date = new Date(options.date);
+		this.date.setHours(options.hour);
+		this.date.setMinutes(options.minute);
+	}
+
 	public disableSendSquadButton(): boolean {
 		return !!(countBy(this.selectedPlayers, 'placeholder').true)
 			|| this.dataService.getKsmValue() > 45
-			|| new Date() > new Date(2019, 4, 5, 17, 0, 0);
+			|| new Date() > this.date;
 	}
 
 	public ngOnDestroy(): void {

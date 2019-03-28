@@ -5,5 +5,8 @@ export interface Game {
 
 export interface Options {
     currentRound: number,
+    date: string,
+    hour: number,
+    minute: number,
     games: Game[]
 }

@@ -48,8 +48,12 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 	public selectedRound: number;
 	public options: Options = {
 		currentRound: null,
+		date: null,
+		hour: null,
+		minute: null,
 		games
 	}
+	public date: Date;
 	public roundsIterable = ROUNDS_ITERABLE;
 	public filter: Filter = {
 		team: [], type: [], sort: 'team', searchQuery: ''
@@ -156,6 +160,7 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 		if (event.tab.textLabel === 'Kolejka') {
 			this.dataService.getOptions().subscribe( (options) => {
 				this.options = options;
+				this.date = new Date(options.date);
 			});
 		}
 	}
@@ -172,6 +177,7 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 
 		this.confirmationDialog.afterClosed().subscribe(result => {
 			if (result) {
+				this.options.date = this.date.toISOString()
 				this.dataService.saveOptions(this.options).then(() => {
 					this.snackBarService.messageSuccess('Opcje kolejki zapisane');
 				});

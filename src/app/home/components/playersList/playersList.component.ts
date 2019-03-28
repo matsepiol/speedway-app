@@ -156,10 +156,16 @@ export class PlayersListComponent implements OnInit {
 		});
 	}
 
+	private prepareRoundClosingTime(options: Options) {
+		this.date = new Date(options.date);
+		this.date.setHours(options.hour);
+		this.date.setMinutes(options.minute);
+	}
+
 	public disableSendSquadButton(): boolean {
 		return !!(countBy(this.dataService.getSelectedPlayersValue(), 'placeholder').true)
 			|| this.dataService.getKsmValue() > 45
-			|| new Date() > new Date(2019, 4, 5, 17, 0, 0);
+			|| new Date() > this.date;
 	}
 
 }

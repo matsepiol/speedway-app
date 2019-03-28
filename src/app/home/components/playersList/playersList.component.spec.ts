@@ -119,7 +119,6 @@ describe('PlayersListComponent', () => {
 	});
 
 	it('should export squad correctly', () => {
-		console.log(component);
 		const ksmSpy = spyOn(component.dataService, 'getKsmValue');
 
 		spyOn((component as any).snackBarService, 'messageSuccess').and.callThrough();

@@ -124,7 +124,21 @@
             </mat-select>
           </mat-form-field>
         </div>
+
+        <span class="title">Zamknięcie kolejki:</span>
+        <mat-form-field>
+          <input matInput [matDatepicker]="picker" placeholder="Data" [(ngModel)]="date" />
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+          <input required matInput placeholder="Godzina" type="number" [(ngModel)]="options.hour" name="hour" />
+        </mat-form-field>
+        <mat-form-field>
+          <input required matInput placeholder="Minuta" type="number" [(ngModel)]="options.minute" name="minute" />
+        </mat-form-field>
       </div>
+
     </mat-tab>
   </mat-tab-group>
 </div>

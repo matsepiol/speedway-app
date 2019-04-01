@@ -8,7 +8,7 @@ import { DataService } from '@app/home/services/data.service';
 })
 
 export class GamesInfoComponent {
-	public loadingMessage = 'Wczytywanie...';  
+	public loadingMessage = 'Wczytywanie...';
 
 	constructor(public dataService: DataService) { }
 }

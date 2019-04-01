@@ -30,7 +30,9 @@ export class DataService {
 	private selectedPlayersSubject = new BehaviorSubject<Player[]>([]);
 	public selectedPlayers$: Observable<Player[]> = this.selectedPlayersSubject.asObservable();
 
-	private optionsSubject = new BehaviorSubject<Options>({ currentRound: null, games: []});
+	private optionsSubject = new BehaviorSubject<Options>(
+		{ currentRound: null, games: [], date: null, hour: null, minute: null }
+	);
 	public options$: Observable<Options> = this.optionsSubject.asObservable();
 
 	private currentSquadSubject = new BehaviorSubject<string[]>([]);
@@ -48,7 +50,7 @@ export class DataService {
 	public getData() {
 		this.db.list<Player>('/data').valueChanges().subscribe(data => this.dataSubject.next(data));
 	}
-	
+
 	public getOptions() {
 		this.db.object<Options>(`options`).valueChanges().subscribe(options => this.optionsSubject.next(options));
 	}
@@ -112,7 +114,7 @@ export class DataService {
 	public getKsmValue(): number {
 		return this.ksmSumSubject.getValue();
 	}
-	
+
 	public getSelectedPlayersValue(): Player[] {
 		return this.selectedPlayersSubject.getValue();
 	}
@@ -173,9 +175,9 @@ export class DataService {
 					.map(item => (item.ksm && item.ksm[options.currentRound - 1]) || 0)
 					.reduce((a, b) => a + b).toFixed(2))
 				: 0;
-	
+
 			const ksmLeft = parseFloat((this.maxKsm - ksmSum).toFixed(2));
-	
+
 			this.ksmSumSubject.next(ksmSum);
 			this.ksmLeftSubject.next(ksmLeft);
 		});

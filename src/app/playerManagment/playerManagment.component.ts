@@ -13,7 +13,7 @@ import { isUndefined, isNumber } from 'lodash';
 import { ROUNDS_ITERABLE } from '@app/variables';
 import { Options, Game } from './playerManagment.model';
 
-const games : Game[] = [
+const games: Game[] = [
 	{
 		home: '',
 		away: ''
@@ -52,7 +52,7 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 		hour: null,
 		minute: null,
 		games
-	}
+	};
 	public date: Date;
 	public roundsIterable = ROUNDS_ITERABLE;
 	public filter: Filter = {
@@ -61,7 +61,7 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 	private editPlayerDialog: MatDialogRef<EditPlayerDialogComponent>;
 	private confirmationDialog: MatDialogRef<GenericConfirmationDialogComponent>;
 	private dataSubscribtion: Subscription;
-	public players$: Observable<Player[]>
+	public players$: Observable<Player[]>;
 
 	constructor(
 		public dialog: MatDialog,
@@ -177,7 +177,7 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 
 		this.confirmationDialog.afterClosed().subscribe(result => {
 			if (result) {
-				this.options.date = this.date.toISOString()
+				this.options.date = this.date.toISOString();
 				this.dataService.saveOptions(this.options).then(() => {
 					this.snackBarService.messageSuccess('Opcje kolejki zapisane');
 				});

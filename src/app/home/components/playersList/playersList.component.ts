@@ -1,9 +1,7 @@
 import { cloneDeep, countBy } from 'lodash';
 import { ClipboardService } from 'ngx-clipboard';
-
 import { Component, OnInit } from '@angular/core';
-import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
-
+import { MatDialog, MatDialogRef } from '@angular/material';
 import { Filter, Player, teamPlaceholder } from '../../home.model';
 import { DataService } from '../../services/data.service';
 import { SnackBarService } from '../../services/snack-bar.service';
@@ -13,6 +11,7 @@ import {
 } from '@app/shared/genericConfirmationDialog/generic-confirmation-dialog.component';
 import { Observable, combineLatest } from 'rxjs';
 import { first, tap, map } from 'rxjs/operators';
+import { Options } from '@app/playerManagment/playerManagment.model';
 
 @Component({
 	selector: 'app-players-list',
@@ -27,8 +26,9 @@ export class PlayersListComponent implements OnInit {
 	public filter: Filter = {
 		team: [], type: [], sort: 'ksm', searchQuery: '', showPossiblePlayers: false, showMinimum: false
 	};
+	public date: Date;
 
-	public players$: Observable<Player[]>
+	public players$: Observable<Player[]>;
 	public selectedPlayers$: Observable<Player[]>;
 	public availablePlayers$: Observable<Player[]>;
 	public currentRound$: Observable<number>;
@@ -41,7 +41,6 @@ export class PlayersListComponent implements OnInit {
 		public clipboardService: ClipboardService,
 		public dataService: DataService,
 		public dialog: MatDialog,
-		public snackBar: MatSnackBar,
 		private snackBarService: SnackBarService,
 	) { }
 
@@ -59,7 +58,7 @@ export class PlayersListComponent implements OnInit {
 			this.selectedPlayers$
 		).pipe(
 			map(([players, selected]) => players.filter(
-				players => selected.every(selection => selection.name !== players.name)
+				player => selected.every(selection => selection.name !== player.name)
 			))
 		);
 
@@ -68,6 +67,7 @@ export class PlayersListComponent implements OnInit {
 		);
 
 		this.currentRound$ = this.dataService.options$.pipe(
+			tap(options => this.prepareRoundClosingTime(options)),
 			map(options => options.currentRound),
 			tap(() => this.dataService.getCurrentRoundSquad())
 		);

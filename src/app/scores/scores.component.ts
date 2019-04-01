@@ -45,10 +45,10 @@ export class ScoresComponent implements OnInit, OnDestroy {
 				return combineLatest(
 					this.dataService.data$,
 					this.dataService.getRoundScore(round)
-				)
+				);
 			}),
 			map(([data, score]) => {
-				let teams = Object.values(groupBy(data, 'team'));
+				const teams = Object.values(groupBy(data, 'team'));
 				each(teams, (team) => {
 					each(team, (player) => {
 						const playerData = find(score, { name: player.name });
@@ -82,7 +82,7 @@ export class ScoresComponent implements OnInit, OnDestroy {
 			this.dataService.saveResults(savedPlayers, chosenRound).then(() => {
 				this.snackBarService.messageSuccess('Wyniki zapisane');
 			});
-		})
+		});
 	}
 
 	public ngOnDestroy(): void {

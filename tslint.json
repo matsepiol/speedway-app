@@ -2,11 +2,6 @@
   "rulesDirectory": [
     "node_modules/codelyzer"
   ],
-  "linterOptions": {
-    "exclude": [
-        "src/environments/.env.ts",
-    ]
-  },
   "rules": {
     "arrow-return-shorthand": true,
     "callable-types": true,
@@ -140,9 +135,6 @@
       "kebab-case"
     ],
     "no-output-on-prefix": true,
-    "use-input-property-decorator": true,
-    "use-output-property-decorator": true,
-    "use-host-property-decorator": true,
     "no-input-rename": true,
     "no-output-rename": true,
     "use-life-cycle-interface": true,

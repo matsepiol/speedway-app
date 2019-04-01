@@ -16,7 +16,10 @@ const emailList = [
 	'riccaldi@gmail.com',
 	'smaciek1@op.pl',
 	'tomaszpawelbedkowski@gmail.com',
-	'niemiec.agnieszka@interia.pl'
+	'niemiec.agnieszka@interia.pl',
+	'odi0@onet.eu',
+	'gieksanalepka@op.pl',
+	'marek.k83@gmail.com'
 ];
 
 @Component({
@@ -46,8 +49,10 @@ export class LoginComponent {
 					this.error = null;
 					localStorage.setItem('currentUser', JSON.stringify(res));
 					this.authenticationService.authenticate();
-					this.router.navigate(['']);
-					window.location.reload();
+					this.router.navigate(['/']);
+					setTimeout(() => {
+						window.location.reload();
+					}, 0)
 				} else {
 					this.isLoading = false;
 					this.error = 'Nie masz uprawnień, by się zalogować. Skontaktuj się z administratorem.';

@@ -9,5 +9,6 @@ export enum Users {
 	'Gxhqkwmu0VfaMAsiWy6xSPj367z1' = 'Łukasz Ligięza',
 	'SitmIh3X0shIWueB47xGngHeqHH3' = 'Dawid Poziomski',
 	'irHsihWshPXjcoEhmD3ryogcJCo1' = 'Witek Suwalski',
-	'nCnHvhYvcubTEVxJ3cUfrJyg04P2' = 'Maciej Sobol'
+	'nCnHvhYvcubTEVxJ3cUfrJyg04P2' = 'Maciej Sobol',
+	'NP9ALDcSdEUS1fmoqEZTvW5cYbB2' = 'Marek Konieczny'
 }

@@ -95,13 +95,15 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 		this.editPlayerDialog.afterClosed().pipe(
 			first()
 		).subscribe(result => {
-			result.ksm.forEach((ksmValue: number, index: number) => {
-				if (isUndefined(ksmValue)) {
-					result.ksm[index] = null;
-				}
-			});
-
-			Object.assign(player, result);
+			if (result) {
+				result.ksm.forEach((ksmValue: number, index: number) => {
+					if (isUndefined(ksmValue)) {
+						result.ksm[index] = null;
+					}
+				});
+	
+				Object.assign(player, result);
+			}
 		});
 	}
 
@@ -172,7 +174,7 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 
 		this.confirmationDialog.afterClosed().subscribe(result => {
 			if (result) {
-				this.options.date = this.date.toISOString()
+				this.options.date = this.date.toISOString();
 				this.dataService.saveOptions(this.options).then(() => {
 					this.snackBarService.messageSuccess('Opcje kolejki zapisane');
 				});

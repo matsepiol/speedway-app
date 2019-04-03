@@ -7,7 +7,7 @@ import { Squad, StatsData } from './result.model';
 import { Player, PlayerResult } from '../home/home.model';
 import { TableData } from '@app/scores/scores.model';
 import { combineLatest, Subscription } from 'rxjs';
-import { CURRENT_ROUND, ROUNDS_ITERABLE } from '@app/variables';
+import { ROUNDS_ITERABLE } from '@app/variables';
 
 @Component({
 	selector: 'app-results',
@@ -106,7 +106,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
 
 	public fetchStatsData(): void {
 		this.isLoading = true;
-		
+
 		this.dataSubscribtion = this.dataService.getData().subscribe((players: Player[]) => {
 			this.dataService.getRoundScore(this.currentStatsRound).subscribe((scores: PlayerResult[]) => {
 				this.statsData = [];

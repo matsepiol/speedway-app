@@ -8,7 +8,7 @@ import { Options } from '@app/playerManagment/playerManagment.model';
 	styleUrls: ['./gamesInfo.component.scss'],
 })
 
-export class GamesInfoComponent implements OnInit{
+export class GamesInfoComponent implements OnInit {
 	public options: Options;
 	public isLoading: Boolean;
 	public loadingMessage = 'Wczytywanie...';
@@ -16,7 +16,7 @@ export class GamesInfoComponent implements OnInit{
 	constructor(public dataService: DataService) { }
 
 	public ngOnInit() {
-		this.isLoading = true;		 
+		this.isLoading = true;
 		this.dataService.getOptions().subscribe(options => {
 			this.isLoading = false;
 			this.options = options;

@@ -19,34 +19,39 @@ export class FilterPipe implements PipeTransform {
 		if (term.showPossiblePlayers) {
 			combineLatest(this.dataService.getSelection(), this.dataService.getKsmLeft())
 			.subscribe(([selected, ksmLeft]) => {
-
 				const selection = countBy(selected.filter((item) => !item.placeholder), 'type');
+
+				selection.Obcokrajowiec = selection.Obcokrajowiec || 0;
+				selection.Senior = selection.Senior || 0;
+				selection.Junior = selection.Junior || 0;
+
 				if (selection.Obcokrajowiec === 3) {
-					tempItems = tempItems.filter((player) => PlayerType.OBCOKRAJOWIEC.indexOf(player.type) === -1);
+					tempItems = tempItems.filter(player => PlayerType.OBCOKRAJOWIEC.indexOf(player.type) === -1);
 				}
 
 				if (selection.Obcokrajowiec + selection.Senior >= 5) {
-					tempItems = tempItems.filter((player) => PlayerType.SENIOR.indexOf(player.type) === -1);
+					tempItems = tempItems.filter(player => PlayerType.SENIOR.indexOf(player.type) === -1);
+					tempItems = tempItems.filter(player => PlayerType.OBCOKRAJOWIEC.indexOf(player.type) === -1);
 				}
 
 				if (selection.Obcokrajowiec + selection.Senior + selection.Junior >= 7) {
-					tempItems = tempItems.filter((player) => PlayerType.JUNIOR.indexOf(player.type) === -1);
+					tempItems = tempItems.filter(player => PlayerType.JUNIOR.indexOf(player.type) === -1);
 				}
 
-				tempItems = tempItems.filter( (player) => player.ksm && player.ksm[CURRENT_ROUND - 1] <= ksmLeft);
+				tempItems = tempItems.filter(player => player.ksm && player.ksm[CURRENT_ROUND - 1] <= ksmLeft);
 			});
 		}
 
 		if (term.searchQuery.length) {
-			tempItems = tempItems.filter((player) => player.name.toLowerCase().includes(term.searchQuery.toLowerCase()));
+			tempItems = tempItems.filter(player => player.name.toLowerCase().includes(term.searchQuery.toLowerCase()));
 		}
 
 		if (term.team.length) {
-			tempItems = tempItems.filter((player) => term.team.indexOf(player.team) >= 0);
+			tempItems = tempItems.filter(player => term.team.indexOf(player.team) >= 0);
 		}
 
 		if (term.type.length) {
-			tempItems = tempItems.filter((player) => term.type.indexOf(player.type) >= 0);
+			tempItems = tempItems.filter(player => term.type.indexOf(player.type) >= 0);
 		}
 
 		if (term.sort === 'team') {
@@ -55,7 +60,7 @@ export class FilterPipe implements PipeTransform {
 
 		if (term.sort === 'ksm') {
 			if (tempItems) {
-				tempItems.sort( (a, b) => b.ksm[CURRENT_ROUND - 1] - a.ksm[CURRENT_ROUND - 1]);
+				tempItems.sort((a, b) => b.ksm[CURRENT_ROUND - 1] - a.ksm[CURRENT_ROUND - 1]);
 			}
 		}
 

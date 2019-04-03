@@ -1,7 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule, MatSelectModule, MatDialogModule, MatCheckboxModule, MatTabsModule, MatDatepickerModule, MatNativeDateModule } from '@angular/material';
+import {
+	MatButtonModule,
+	MatSelectModule,
+	MatDialogModule,
+	MatCheckboxModule,
+	MatTabsModule,
+	MatDatepickerModule,
+	MatNativeDateModule
+} from '@angular/material';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';

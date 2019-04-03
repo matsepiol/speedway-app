@@ -18,7 +18,7 @@ const emailList = [
 	'tomaszpawelbedkowski@gmail.com',
 	'niemiec.agnieszka@interia.pl',
 	'odi0@onet.eu',
-	'gieksanalepka@op.pl',
+	'malgorzatanalepa@op.pl',
 	'marek.k83@gmail.com'
 ];
 
@@ -52,7 +52,7 @@ export class LoginComponent {
 					this.router.navigate(['/']);
 					setTimeout(() => {
 						window.location.reload();
-					}, 0)
+					}, 0);
 				} else {
 					this.isLoading = false;
 					this.error = 'Nie masz uprawnień, by się zalogować. Skontaktuj się z administratorem.';

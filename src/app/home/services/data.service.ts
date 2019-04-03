@@ -9,7 +9,6 @@ import { AngularFireDatabase } from '@angular/fire/database';
 import { AuthenticationService } from '@app/authentication/authentication.service';
 import { StatsData } from '@app/results/result.model';
 import { TableData } from '@app/scores/scores.model';
-import { CURRENT_ROUND } from '@app/variables';
 import { Options } from '@app/playerManagment/playerManagment.model';
 
 @Injectable()
@@ -23,7 +22,7 @@ export class DataService {
 		private snackBarService: SnackBarService,
 		private authenticationService: AuthenticationService,
 		private db: AngularFireDatabase
-	) { 
+	) {
 	}
 
 	public getData(): Observable<Player[]> {
@@ -33,7 +32,7 @@ export class DataService {
 	public getRoundScore(round: number): Observable<PlayerResult[]> {
 		return this.db.list<PlayerResult>(`/scores/${round}`).valueChanges();
 	}
-	
+
 	public getOptions(): Observable<Options> {
 		return this.db.object<Options>(`options`).valueChanges();
 	}
@@ -171,6 +170,7 @@ export class DataService {
 
 		if (player.type === PlayerType.OBCOKRAJOWIEC) {
 			index = selectedPlayers.findIndex(item => item.type === PlayerType.OBCOKRAJOWIEC && item.placeholder);
+
 			if (index === -1) {
 				this.snackBarService.messageError('Za dużo obcokrajowców');
 			}
@@ -178,16 +178,22 @@ export class DataService {
 
 		if (player.type === PlayerType.SENIOR) {
 			index = selectedPlayers.findIndex(item => item.type === PlayerType.SENIOR && item.placeholder);
+
 			if (index === -1) {
 				index = selectedPlayers.findIndex(item => item.type === PlayerType.OBCOKRAJOWIEC && item.placeholder);
-				if (index === -1) {
-					this.snackBarService.messageError('Musisz dodać juniora');
-				}
+			}
+
+			if (index === -1) {
+				this.snackBarService.messageError('Musisz dodać juniora');
 			}
 		}
 
 		if (player.type === PlayerType.JUNIOR) {
 			index = selectedPlayers.findIndex(item => item.type === PlayerType.JUNIOR && item.placeholder);
+
+			if (index === -1) {
+				index = selectedPlayers.findIndex(item => item.type === PlayerType.SENIOR && item.placeholder);
+			}
 
 			if (index === -1) {
 				index = selectedPlayers.findIndex(item => item.placeholder);

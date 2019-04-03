@@ -30,7 +30,7 @@ export class ScoresComponent implements OnInit, OnDestroy {
 	public ngOnInit(): void {
 		this.dataService.getOptions().subscribe(options => {
 			this.currentRound = options.currentRound;
-			
+
 			this.dataSubscribtion = this.dataService.getData().subscribe((data: Player[]) => {
 				this.teams = Object.values(groupBy(data, 'team'));
 				this.fetchRoundScore();

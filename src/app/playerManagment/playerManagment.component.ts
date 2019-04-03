@@ -13,7 +13,7 @@ import { isUndefined, isNumber } from 'lodash';
 import { ROUNDS_ITERABLE } from '@app/variables';
 import { Options, Game } from './playerManagment.model';
 
-const games : Game[] = [
+const games: Game[] = [
 	{
 		home: '',
 		away: ''
@@ -52,7 +52,7 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 		hour: null,
 		minute: null,
 		games
-	}
+	};
 	public date: Date;
 	public roundsIterable = ROUNDS_ITERABLE;
 	public filter: Filter = {
@@ -101,7 +101,7 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 						result.ksm[index] = null;
 					}
 				});
-	
+
 				Object.assign(player, result);
 			}
 		});

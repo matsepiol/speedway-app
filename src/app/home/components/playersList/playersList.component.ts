@@ -13,7 +13,7 @@ import {
 } from '@app/shared/genericConfirmationDialog/generic-confirmation-dialog.component';
 import { Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { Options } from '@app/playerManagment/playerManagment.model';
+
 @Component({
 	selector: 'app-players-list',
 	templateUrl: './playersList.component.html',
@@ -52,7 +52,7 @@ export class PlayersListComponent implements OnInit, OnDestroy {
 		this.isLoading = true;
 		this.dataService.getOptions().subscribe(options => {
 			this.currentRound = options.currentRound;
-			this.prepareRoundClosingTime(options);
+			this.date = new Date(options.date);
 			this.init();
 		});
 	}
@@ -164,12 +164,6 @@ export class PlayersListComponent implements OnInit, OnDestroy {
 
 		this.typeFilters = this.availablePlayers.map(item => item.type)
 			.filter((value, index, self) => self.indexOf(value) === index);
-	}
-
-	private prepareRoundClosingTime(options: Options) {
-		this.date = new Date(options.date);
-		this.date.setHours(options.hour);
-		this.date.setMinutes(options.minute);
 	}
 
 	public disableSendSquadButton(): boolean {

@@ -49,8 +49,6 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 	public options: Options = {
 		currentRound: null,
 		date: null,
-		hour: null,
-		minute: null,
 		games
 	};
 	public date: Date;
@@ -155,7 +153,7 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 
 	public onSelect(event: MatTabChangeEvent) {
 		if (event.tab.textLabel === 'Kolejka') {
-			this.dataService.getOptions().subscribe( (options) => {
+			this.dataService.getOptions().subscribe(options => {
 				this.options = options;
 				this.date = new Date(options.date);
 			});

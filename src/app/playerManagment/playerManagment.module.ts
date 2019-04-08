@@ -10,6 +10,7 @@ import {
 	MatDatepickerModule,
 	MatNativeDateModule
 } from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -23,9 +24,11 @@ import { EditPlayerDialogComponent } from './editPlayerDialog/editPlayer-dialog.
 import {
 	GenericConfirmationDialogComponent
 } from '@app/shared/genericConfirmationDialog/generic-confirmation-dialog.component';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 
 @NgModule({
 	imports: [
+		BrowserAnimationsModule,
 		CommonModule,
 		FormsModule,
 		MatButtonModule,
@@ -40,6 +43,8 @@ import {
 		MatSelectModule,
 		MatDatepickerModule,
 		MatNativeDateModule,
+		OwlDateTimeModule,
+		OwlNativeDateTimeModule,
 		PlayerManagmentRoutingModule,
 		SharedModule
 	],

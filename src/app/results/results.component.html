@@ -9,7 +9,7 @@
         <div class="container options">
           <mat-form-field>
 
-            <mat-select [(ngModel)]="currentRound" (ngModelChange)="onRoundChange()">
+            <mat-select [value]="chosenRound$ | async" (selectionChange)="changeRound($event)">
               <mat-option *ngFor="let number of roundsIterable" [value]="number">Kolejka {{number}}</mat-option>
             </mat-select>
 
@@ -17,24 +17,24 @@
 
         </div>
 
-        <div *ngIf="isUserSquadSent">
-          <app-loader [isLoading]="isLoading" [message]="loadingMessage"></app-loader>
-          <app-round-score [squads]="squads"></app-round-score>
+        <div *ngIf="(isUserSquadSent$ | async)">
+          <app-loader [isLoading]="isLoading$ | async" [message]="loadingMessage"></app-loader>
+          <app-round-score class="round-score" [squads]="squads$ | async" [ngClass]="{ 'hidden': isLoading$ | async }"></app-round-score>
         </div>
 
-        <h3 class="container" *ngIf="!isUserSquadSent">Musisz wysłać skład dla tej kolejki, by mieć dostęp do składow pozostałych graczy</h3>
+        <h3 class="container" *ngIf="!(isUserSquadSent$ | async)">Musisz wysłać skład dla tej kolejki, by mieć dostęp do składow pozostałych graczy</h3>
       </mat-tab>
 
       <mat-tab label="Tabela">
-        <app-loader [isLoading]="isLoading" [message]="loadingMessage"></app-loader>
-        <app-table-score [dataSource]="dataSource"></app-table-score>
+        <app-loader [isLoading]="isLoading$ | async" [message]="loadingMessage"></app-loader>
+        <app-table-score [dataSource]="tableData$ | async"></app-table-score>
       </mat-tab>
 
       <mat-tab label="Wybory kolejki" *ngIf="true">
         <div class="container options">
           <mat-form-field>
 
-            <mat-select [(ngModel)]="currentStatsRound" (ngModelChange)="onStatsRoundChange()">
+            <mat-select [value]="chosenRound$ | async" (selectionChange)="changeRound($event)">
               <mat-option *ngFor="let number of roundsIterable" [value]="number">Kolejka {{number}}</mat-option>
             </mat-select>
 
@@ -42,9 +42,9 @@
 
         </div>
 
-        <app-loader [isLoading]="isLoading" [message]="loadingMessage"></app-loader>
+        <app-loader [isLoading]="isLoading$ | async" [message]="loadingMessage"></app-loader>
 
-        <table mat-table *ngIf="!!statsData.length" [dataSource]="statsTableData" class="mat-elevation-z8">
+        <table mat-table [ngClass]="{ 'hidden': isLoading$ | async }" *ngIf="(statsData$ | async)?.data.length" [dataSource]="statsData$ | async" class="mat-elevation-z8">
 
           <ng-container matColumnDef="position">
             <th mat-header-cell *matHeaderCellDef> No. </th>
@@ -63,7 +63,7 @@
 
           <ng-container matColumnDef="ksm">
             <th mat-header-cell *matHeaderCellDef> KSM </th>
-            <td mat-cell *matCellDef="let element"> {{element.ksm[currentStatsRound - 1]}} </td>
+            <td mat-cell *matCellDef="let element"> {{element.ksm[(chosenRound$ | async) - 1]}} </td>
           </ng-container>
 
           <ng-container matColumnDef="ratio">
@@ -76,7 +76,7 @@
 
         </table>
 
-        <h3 class="container" *ngIf="!statsData.length">Brak danych dla tej kolejki</h3>
+        <h3 class="container" *ngIf="!(statsData$ | async)?.data.length">Brak danych dla tej kolejki</h3>
 
       </mat-tab>
 

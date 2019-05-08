@@ -3,7 +3,7 @@ import { ClipboardService } from 'ngx-clipboard';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { Filter, Player, teamPlaceholder } from '../../home.model';
-import { DataService } from '../../services/data.service';
+import { Store } from '../../services/store.service';
 import { SnackBarService } from '../../services/snack-bar.service';
 import { AuthenticationService } from '@app/authentication/authentication.service';
 import {
@@ -11,7 +11,6 @@ import {
 } from '@app/shared/genericConfirmationDialog/generic-confirmation-dialog.component';
 import { Observable, combineLatest } from 'rxjs';
 import { first, tap, map } from 'rxjs/operators';
-import { Options } from '@app/playerManagment/playerManagment.model';
 
 @Component({
 	selector: 'app-players-list',
@@ -39,17 +38,17 @@ export class PlayersListComponent implements OnInit {
 	constructor(
 		public authenticationService: AuthenticationService,
 		public clipboardService: ClipboardService,
-		public dataService: DataService,
+		public store: Store,
 		public dialog: MatDialog,
 		private snackBarService: SnackBarService,
 	) { }
 
 	public ngOnInit(): void {
 		const initialSelection = JSON.parse(localStorage.getItem('teamSelection')) || cloneDeep(teamPlaceholder);
-		this.dataService.setSelection(initialSelection);
+		this.store.setSelection(initialSelection);
 
-		this.players$ = this.dataService.data$;
-		this.selectedPlayers$ = this.dataService.selectedPlayers$.pipe(
+		this.players$ = this.store.data$;
+		this.selectedPlayers$ = this.store.selectedPlayers$.pipe(
 			tap(selected => this.saveSelectionToLocalStorage(selected))
 		);
 
@@ -59,30 +58,29 @@ export class PlayersListComponent implements OnInit {
 		).pipe(
 			map(([players, selected]) => players.filter(
 				player => selected.every(selection => selection.name !== player.name)
-			))
+			)),
 		);
 
-		this.isUserSquadSent$ = this.dataService.currentSquad$.pipe(
+		this.isUserSquadSent$ = this.store.currentSquad$.pipe(
 			map(team => !!team.length),
 		);
 
-		this.currentRound$ = this.dataService.options$.pipe(
-			tap(options => this.prepareRoundClosingTime(options)),
+		this.currentRound$ = this.store.options$.pipe(
 			map(options => options.currentRound),
-			tap(() => this.dataService.getCurrentRoundSquad())
+			tap(() => this.store.getCurrentRoundSquad())
 		);
 
-		this.dataService.calculateKsmSum();
+		this.store.calculateKsmSum();
 		this.prepareFiltering();
 	}
 
 	public selectPlayer(player: Player): void {
-		this.dataService.selectPlayer(player);
+		this.store.selectPlayer(player);
 		this.filter.searchQuery = '';
 	}
 
 	public unselectPlayer(player: Player, index: number): void {
-		this.dataService.unselectPlayer(player, index);
+		this.store.unselectPlayer(player, index);
 	}
 
 	public clearFilters(): void {
@@ -97,17 +95,17 @@ export class PlayersListComponent implements OnInit {
 	}
 
 	public exportSquad(): void {
-		const selectedPlayers = this.dataService.getSelectedPlayersValue();
+		const selectedPlayers = this.store.getSelectedPlayersValue();
 		if ((countBy(selectedPlayers, 'placeholder').true)) {
 			this.snackBarService.messageError('Skład nie jest kompletny!');
-		} else if (this.dataService.getKsmValue() > 45) {
+		} else if (this.store.getKsmValue() > 45) {
 			this.snackBarService.messageError('Skład przekracza dopuszczalny ksm!');
 		} else {
 			let textToCopy = '';
 			selectedPlayers.forEach((selected, index) => {
 				textToCopy += `${index + 1}. ${selected.name} `;
 			});
-			textToCopy += `Ksm: ${this.dataService.getKsmValue()}`;
+			textToCopy += `Ksm: ${this.store.getKsmValue()}`;
 
 			this.clipboardService.copyFromContent(textToCopy);
 			this.snackBarService.messageSuccess('Skład skopiowany do schowka!');
@@ -115,7 +113,7 @@ export class PlayersListComponent implements OnInit {
 	}
 
 	public sendSquad(): void {
-		const playersToSend = this.dataService.getSelectedPlayersValue().map((player) => {
+		const playersToSend = this.store.getSelectedPlayersValue().map((player) => {
 			return player['name'];
 		});
 
@@ -133,7 +131,7 @@ export class PlayersListComponent implements OnInit {
 			first()
 		).subscribe(result => {
 			if (result) {
-				this.dataService.sendSquad(playersToSend, this.dataService.getCurrentRound()).then(() => {
+				this.store.sendSquad(playersToSend, this.store.getCurrentRound()).then(() => {
 					this.snackBarService.messageSuccess('Wyniki wysłane!');
 					this.clearSquad();
 				});
@@ -142,7 +140,7 @@ export class PlayersListComponent implements OnInit {
 	}
 
 	public clearSquad(): void {
-		this.dataService.setSelection(cloneDeep(teamPlaceholder));
+		this.store.setSelection(cloneDeep(teamPlaceholder));
 	}
 
 	private saveSelectionToLocalStorage(selection: Player[]) {
@@ -156,15 +154,9 @@ export class PlayersListComponent implements OnInit {
 		});
 	}
 
-	private prepareRoundClosingTime(options: Options) {
-		this.date = new Date(options.date);
-		this.date.setHours(options.hour);
-		this.date.setMinutes(options.minute);
-	}
-
 	public disableSendSquadButton(): boolean {
-		return !!(countBy(this.dataService.getSelectedPlayersValue(), 'placeholder').true)
-			|| this.dataService.getKsmValue() > 45
+		return !!(countBy(this.store.getSelectedPlayersValue(), 'placeholder').true)
+			|| this.store.getKsmValue() > 45
 			|| new Date() > this.date;
 	}
 

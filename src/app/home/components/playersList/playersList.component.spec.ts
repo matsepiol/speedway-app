@@ -10,7 +10,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { AuthenticationService } from '@app/authentication/authentication.service';
 
-import { DataService } from '@app/home/services/data.service';
+import { Store } from '@app/home/services/store.service';
 import { MockDataService } from '@app/home/services/data.service.mock';
 
 import { SnackBarService } from '@app/home/services/snack-bar.service';
@@ -43,7 +43,7 @@ describe('PlayersListComponent', () => {
 			providers: [
 				{ provide: AngularFireAuth, useClass: class { } },
 				{ provide: AuthenticationService, useClass: class { } },
-				{ provide: DataService, useClass: MockDataService },
+				{ provide: Store, useClass: MockDataService },
 				{ provide: ClipboardService, useClass: class { public copyFromContent() {}  }},
 				SnackBarService,
 				MatSnackBar

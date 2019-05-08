@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DataService } from '@app/home/services/data.service';
+import { Store } from '@app/home/services/store.service';
 
 @Component({
 	selector: 'app-games-info',
@@ -10,5 +10,5 @@ import { DataService } from '@app/home/services/data.service';
 export class GamesInfoComponent {
 	public loadingMessage = 'Wczytywanie...';
 
-	constructor(public dataService: DataService) { }
+	constructor(public store: Store) { }
 }

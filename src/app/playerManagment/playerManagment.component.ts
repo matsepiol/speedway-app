@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { DataService } from '@app/home/services/data.service';
+import { Store } from '@app/home/services/store.service';
 import { Player, Filter } from '@app/home/home.model';
 import { EditPlayerDialogComponent } from './editPlayerDialog/editPlayer-dialog.component';
 import { MatDialogRef, MatDialog, MatTabChangeEvent } from '@angular/material';
@@ -49,8 +49,6 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 	public options: Options = {
 		currentRound: null,
 		date: null,
-		hour: null,
-		minute: null,
 		games
 	};
 	public date: Date;
@@ -65,17 +63,17 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 
 	constructor(
 		public dialog: MatDialog,
-		public dataService: DataService,
+		public store: Store,
 		private snackBarService: SnackBarService,
 	) { }
 
 	ngOnInit(): void {
-		this.players$ = this.dataService.data$;
+		this.players$ = this.store.data$;
 
-		this.dataService.getData();
+		this.store.getData();
 		this.prepareFiltering();
 
-		// this.dataSubscribtion = this.dataService.getData().subscribe((data: Player[]) => {
+		// this.dataSubscribtion = this.store.getData().subscribe((data: Player[]) => {
 		// 	this.isLoading = false;
 		// 	this.players = data;
 		// 	this.prepareFiltering();
@@ -101,13 +99,15 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 		this.editPlayerDialog.afterClosed().pipe(
 			first()
 		).subscribe(result => {
-			result.ksm.forEach((ksmValue: number, index: number) => {
-				if (isUndefined(ksmValue)) {
-					result.ksm[index] = null;
-				}
-			});
+			if (result) {
+				result.ksm.forEach((ksmValue: number, index: number) => {
+					if (isUndefined(ksmValue)) {
+						result.ksm[index] = null;
+					}
+				});
 
-			Object.assign(player, result);
+				Object.assign(player, result);
+			}
 		});
 	}
 
@@ -142,7 +142,7 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 
 		this.confirmationDialog.afterClosed().subscribe(result => {
 			if (result) {
-				this.dataService.changePlayersData(this.players).then(() => {
+				this.store.changePlayersData(this.players).then(() => {
 					this.snackBarService.messageSuccess('Zmiany zawodników zapisane');
 				});
 			}
@@ -158,7 +158,7 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 
 	public onSelect(event: MatTabChangeEvent) {
 		if (event.tab.textLabel === 'Kolejka') {
-			this.dataService.getOptions().subscribe( (options) => {
+			this.store.getOptions().subscribe(options => {
 				this.options = options;
 				this.date = new Date(options.date);
 			});
@@ -178,7 +178,7 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 		this.confirmationDialog.afterClosed().subscribe(result => {
 			if (result) {
 				this.options.date = this.date.toISOString();
-				this.dataService.saveOptions(this.options).then(() => {
+				this.store.saveOptions(this.options).then(() => {
 					this.snackBarService.messageSuccess('Opcje kolejki zapisane');
 				});
 			}

@@ -1,13 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { DataService } from '../home/services/data.service';
+import { Store } from '../home/services/store.service';
 import { Users } from '@app/users.model';
 import { find, orderBy, remove } from 'lodash';
-import { MatTableDataSource, MatTabChangeEvent } from '@angular/material';
+import { MatTableDataSource, MatTabChangeEvent, MatSelectChange } from '@angular/material';
 import { Squad, StatsData } from './result.model';
 import { Player, PlayerResult } from '../home/home.model';
 import { TableData } from '@app/scores/scores.model';
-import { combineLatest, Subscription } from 'rxjs';
+import { combineLatest, Subscription, BehaviorSubject, Observable } from 'rxjs';
 import { ROUNDS_ITERABLE } from '@app/variables';
+import { map } from 'rxjs/internal/operators/map';
+import { tap, switchMap, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
 	selector: 'app-results',
@@ -16,168 +18,160 @@ import { ROUNDS_ITERABLE } from '@app/variables';
 })
 
 export class ResultsComponent implements OnInit, OnDestroy {
-	public currentRound: number;
-	public currentStatsRound: number;
-	public isLoading = false;
-	public isUserSquadSent: boolean;
 	public loadingMessage = 'Wczytywanie...';
 	public roundsIterable = ROUNDS_ITERABLE;
-	public squads: Squad[] = [];
 	public users = Users;
-	public tableData: TableData[] = [];
-	public dataSource: MatTableDataSource<TableData>;
-	public statsData: StatsData[] = [];
-	public statsTableData: MatTableDataSource<StatsData>;
+	public displayedStatsColumns: string[] = ['position', 'name', 'score', 'ksm', 'ratio'];
 
-	displayedStatsColumns: string[] = ['position', 'name', 'score', 'ksm', 'ratio'];
+	private chosenRoundSubject = new BehaviorSubject<number>(null);
+	public chosenRound$: Observable<number> = this.chosenRoundSubject.asObservable();
 
-	private roundSquadSubscribtion: Subscription;
-	private scoringSubscribtion: Subscription;
-	private dataSubscribtion: Subscription;
-	private roundResultSubscribtion: Subscription;
+	private isLoadingSubject = new BehaviorSubject<boolean>(true);
+	public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
+
+	public isUserSquadSent$: Observable<boolean>;
+	public squads$: Observable<Squad[]>;
+	public tableData$: Observable<MatTableDataSource<TableData>>;
+	public statsData$: Observable<MatTableDataSource<StatsData>>;
+
+	private roundSubscription: Subscription;
 
 	constructor(
-		public dataService: DataService,
+		public store: Store,
 	) {
 	}
 
 	public ngOnInit(): void {
-		this.dataService.getOptions().subscribe(options => {
-			this.isLoading = true;
-			this.currentRound = options.currentRound;
-			this.currentStatsRound = options.currentRound;
-			this.fetchRoundSquad();
-		});
-	}
+		this.roundSubscription = this.store.options$.subscribe(options => this.chosenRoundSubject.next(options.currentRound));
 
-	private fetchRoundSquad(): void {
-		this.squads = [];
+		this.isUserSquadSent$ = this.chosenRound$.pipe(
+			switchMap(round => {
+				return this.store.getRoundSquadsById(
+					round,
+					JSON.parse(localStorage.getItem('currentUser')).user.uid
+				);
+			}),
+			map(team => !!team.length),
+		);
 
-		this.roundSquadSubscribtion = this.dataService.getRoundSquads(
-			this.currentRound,
-			JSON.parse(localStorage.getItem('currentUser')).user.uid
-		).subscribe((team: string[]) => {
-			this.isUserSquadSent = !!team.length;
-		});
+		this.squads$ = this.chosenRound$.pipe(
+			tap(() => this.isLoadingSubject.next(true)),
+			switchMap(round => {
+				return combineLatest(
+					this.store.getRoundSquads(round),
+					this.store.getRoundScore(round),
+					this.chosenRound$
+				);
+			}),
+			map(([squads, scores, round]) => {
+				const playersResult: Squad[] = [];
+				squads.forEach(s => {
+					playersResult.push({ userId: s.key, team: s.value, results: [] });
+				});
 
-		Object.keys(Users).forEach((userId: string) => {
-			this.scoringSubscribtion = combineLatest(
-				this.dataService.getRoundSquads(this.currentRound, userId),
-				this.dataService.getRoundScore(this.currentRound)
-			).subscribe(
-				([team, scores]) => {
-					const playerSquad = find(this.squads, squad => squad.userId === userId);
-					if (!playerSquad) {
-						this.squads.push({ userId, team, results: [] });
-					} else if (!playerSquad.team.length && team.length === 7) {
-						remove(this.squads, squad => squad.userId === userId);
-						this.squads.unshift({ userId, team, results: [] });
-					}
+				playersResult.forEach(playerResult => {
+					playerResult.results = [];
+					playerResult.scoreSum = 0;
+					playerResult.bonusSum = 0;
+					playerResult.team.forEach((player: string) => {
+						let playerScore: PlayerResult = find(scores, { 'name': player });
 
-					this.squads.forEach((squad) => {
-						squad.results = [];
-						squad.scoreSum = 0;
-						squad.bonusSum = 0;
-						squad.team.forEach((player: string) => {
-							let playerScore: PlayerResult = find(scores, { 'name': player });
-
-							if (!playerScore) {
-								playerScore = {
-									name: player,
-									score: 0,
-									bonus: 0
-								};
-							}
-							squad.scoreSum += playerScore ? playerScore.score : 0;
-							squad.bonusSum += playerScore ? playerScore.bonus : 0;
-							squad.results.push(playerScore);
-						});
-
-						if (squad.scoreSum) {
-							this.dataService.setRoundResult(squad.userId, this.currentRound, [squad.scoreSum, squad.bonusSum]);
+						if (!playerScore) {
+							playerScore = {
+								name: player,
+								score: 0,
+								bonus: 0
+							};
 						}
+						playerResult.scoreSum += playerScore ? playerScore.score : 0;
+						playerResult.bonusSum += playerScore ? playerScore.bonus : 0;
+						playerResult.results.push(playerScore);
 					});
 
-					this.isLoading = false;
-				}
-			);
-		});
+					if (playerResult.scoreSum) {
+						this.store.setRoundResult(
+							playerResult.userId,
+							round,
+							[playerResult.scoreSum, playerResult.bonusSum]
+						);
+					}
+				});
+
+				return playersResult;
+			}),
+			tap(() => this.isLoadingSubject.next(false)),
+
+		);
+	}
+
+	public changeRound(event: MatSelectChange): void {
+		this.chosenRoundSubject.next(event.value);
 	}
 
 	public fetchStatsData(): void {
-		this.isLoading = true;
+		this.statsData$ = this.chosenRound$.pipe(
+			switchMap(round => {
+				return combineLatest(
+					this.store.data$,
+					this.store.getRoundScore(round),
+					this.chosenRound$
+				);
+			}),
+			tap(() => this.isLoadingSubject.next(true)),
+			map(([players, scores, round]) => {
 
-		this.dataSubscribtion = this.dataService.getData().subscribe((players: Player[]) => {
-			this.dataService.getRoundScore(this.currentStatsRound).subscribe((scores: PlayerResult[]) => {
-				this.statsData = [];
+				let statsData: StatsData[] = [];
 				if (scores.length) {
 					players.forEach((player) => {
 						const playerScore = find(scores, { 'name': player.name });
 						if (playerScore) {
 							player.score = playerScore.score;
-							player.ratio = parseFloat((player.score / player.ksm[this.currentStatsRound - 1]).toFixed(2));
-							this.statsData.push(player);
+							player.ratio = parseFloat((player.score / player.ksm[round - 1]).toFixed(2));
+							statsData.push(player);
 						}
 					});
 				}
 
-				this.statsData = orderBy(this.statsData, ['ratio'], ['desc']).filter(player => player.score);
-				this.statsTableData = new MatTableDataSource(this.statsData);
-				this.isLoading = false;
-			});
-		});
+				statsData = orderBy(statsData, ['ratio'], ['desc']).filter(player => player.score);
+				return new MatTableDataSource(statsData);
+			}),
+			tap(() => this.isLoadingSubject.next(false)),
+		);
 	}
 
-	public onRoundChange(): void {
-		this.fetchRoundSquad();
-	}
+	private fetchTableData() {
+		this.tableData$ = this.store.getRoundResult().pipe(
+			tap(() => this.isLoadingSubject.next(true)),
+			map(results => {
+				const dataTable: TableData[] = [];
 
-	public onStatsRoundChange(): void {
-		this.fetchStatsData();
+				results.forEach(result => {
+					dataTable.push({
+						userName: this.users[result.key],
+						scoreSum: result.value.reduce((a: number, b) => a + parseInt(b[0], 10), 0),
+						bonusSum: result.value.reduce((a: number, b) => a + parseInt(b[1], 10), 0),
+					});
+				});
+
+				return new MatTableDataSource(dataTable);
+			}),
+			tap(() => this.isLoadingSubject.next(false)),
+		);
 	}
 
 	public onSelect(event: MatTabChangeEvent): void {
-		if (event.tab.textLabel === 'Tabela' && !this.tableData.length) {
-
-			this.isLoading = true;
-			Object.keys(Users).forEach((userId) => {
-				this.roundResultSubscribtion = this.dataService.getRoundResult(userId).subscribe((data) => {
-					const userName: string = this.users[userId];
-					const playerScore = find(this.tableData, { 'userName': userName });
-					if (playerScore) {
-						playerScore.scoreSum = data.reduce((a: number, b) => a + parseInt(b[0], 10), 0);
-						playerScore.bonusSum = data.reduce((a: number, b) => a + parseInt(b[1], 10), 0);
-					} else {
-						this.tableData.push({
-							userName: this.users[userId],
-							scoreSum: data.reduce((a: number, b) => a + parseInt(b[0], 10), 0),
-							bonusSum: data.reduce((a: number, b) => a + parseInt(b[1], 10), 0),
-						});
-					}
-
-					this.dataSource = new MatTableDataSource(this.tableData);
-					this.isLoading = false;
-				});
-			});
+		if (event.tab.textLabel === 'Tabela') {
+			this.fetchTableData();
 		}
 
-		if (event.tab.textLabel === 'Wybory kolejki' && !this.statsData.length) {
+		if (event.tab.textLabel === 'Wybory kolejki') {
 			this.fetchStatsData();
 		}
 	}
 
 	public ngOnDestroy() {
-		if (this.roundSquadSubscribtion) {
-			this.roundSquadSubscribtion.unsubscribe();
-		}
-		if (this.scoringSubscribtion) {
-			this.scoringSubscribtion.unsubscribe();
-		}
-		if (this.dataSubscribtion) {
-			this.dataSubscribtion.unsubscribe();
-		}
-		if (this.roundResultSubscribtion) {
-			this.roundResultSubscribtion.unsubscribe();
+		if (this.roundSubscription) {
+			this.roundSubscription.unsubscribe();
 		}
 	}
 }

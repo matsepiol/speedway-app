@@ -4,16 +4,19 @@ import { Injectable } from '@angular/core';
 import {
 	juniorPlaceholder, obcokrajowiecPlaceholder, Player, PlayerResult, PlayerType, seniorPlaceholder
 } from '../home.model';
-import { SnackBarService } from '../services/snack-bar.service';
+import { SnackBarService } from './snack-bar.service';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { AuthenticationService } from '@app/authentication/authentication.service';
 import { StatsData } from '@app/results/result.model';
 import { TableData } from '@app/scores/scores.model';
 import { Options } from '@app/playerManagment/playerManagment.model';
+import { map, take } from 'rxjs/operators';
 
-@Injectable()
-export class DataService {
-	public maxKsm = 45;
+@Injectable({
+	providedIn: 'root'
+})
+export class Store {
+	private maxKsm = 45;
 
 	private ksmSumSubject = new BehaviorSubject<number>(0);
 	private ksmLeftSubject = new BehaviorSubject<number>(this.maxKsm);
@@ -31,7 +34,7 @@ export class DataService {
 	public selectedPlayers$: Observable<Player[]> = this.selectedPlayersSubject.asObservable();
 
 	private optionsSubject = new BehaviorSubject<Options>(
-		{ currentRound: null, games: [], date: null, hour: null, minute: null }
+		{ currentRound: null, games: [], date: null }
 	);
 	public options$: Observable<Options> = this.optionsSubject.asObservable();
 
@@ -42,7 +45,9 @@ export class DataService {
 		private snackBarService: SnackBarService,
 		private authenticationService: AuthenticationService,
 		private db: AngularFireDatabase
-	) {
+	) { }
+
+	public init() {
 		this.getOptions();
 		this.getData();
 	}
@@ -60,7 +65,7 @@ export class DataService {
 	}
 
 	public getCurrentRoundSquad() {
-		this.getRoundSquads(this.getCurrentRound(), JSON.parse(localStorage.getItem('currentUser')).user.uid)
+		this.getRoundSquadsById(this.getCurrentRound(), JSON.parse(localStorage.getItem('currentUser')).user.uid)
 			.subscribe(team => this.currentSquadSubject.next(team));
 	}
 
@@ -80,7 +85,13 @@ export class DataService {
 		return this.db.object(`data`).set(players);
 	}
 
-	public getRoundSquads(round: number, id: string): Observable<string[]> {
+	public getRoundSquads(round: number): Observable<{key: string; value: string[]; }[] > {
+		return this.db.list<string[]>(`/squads/${round}`).snapshotChanges().pipe(
+			map(actions => actions.map(a => ({ key: a.key, value: a.payload.val() })))
+		);
+	}
+
+	public getRoundSquadsById(round: number, id: string): Observable<string[]> {
 		return this.db.list<string>(`/squads/${round}/${id}`).valueChanges();
 	}
 
@@ -99,8 +110,10 @@ export class DataService {
 		return this.db.object(`squads/${round}/${id}`).set(playersToSend);
 	}
 
-	public getRoundResult(id: string): Observable<number[]> {
-		return this.db.list<number>(`table/${id}`).valueChanges();
+	public getRoundResult(): Observable<{key: string; value: number[]; }[] > {
+		return this.db.list<number[]>(`table`).snapshotChanges().pipe(
+			map(actions => actions.map(a => ({ key: a.key, value: a.payload.val() })))
+		);
 	}
 
 	public setRoundResult(id: string, round: number, score: number[]): Promise<void> {
@@ -195,6 +208,7 @@ export class DataService {
 
 		if (player.type === PlayerType.OBCOKRAJOWIEC) {
 			index = selectedPlayers.findIndex(item => item.type === PlayerType.OBCOKRAJOWIEC && item.placeholder);
+
 			if (index === -1) {
 				this.snackBarService.messageError('Za dużo obcokrajowców');
 			}
@@ -202,16 +216,22 @@ export class DataService {
 
 		if (player.type === PlayerType.SENIOR) {
 			index = selectedPlayers.findIndex(item => item.type === PlayerType.SENIOR && item.placeholder);
+
 			if (index === -1) {
 				index = selectedPlayers.findIndex(item => item.type === PlayerType.OBCOKRAJOWIEC && item.placeholder);
-				if (index === -1) {
-					this.snackBarService.messageError('Musisz dodać juniora');
-				}
+			}
+
+			if (index === -1) {
+				this.snackBarService.messageError('Musisz dodać juniora');
 			}
 		}
 
 		if (player.type === PlayerType.JUNIOR) {
 			index = selectedPlayers.findIndex(item => item.type === PlayerType.JUNIOR && item.placeholder);
+
+			if (index === -1) {
+				index = selectedPlayers.findIndex(item => item.type === PlayerType.SENIOR && item.placeholder);
+			}
 
 			if (index === -1) {
 				index = selectedPlayers.findIndex(item => item.placeholder);

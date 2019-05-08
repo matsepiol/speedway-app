@@ -24,9 +24,9 @@
       Tryb minimalistyczny
     </mat-checkbox>
 
-    <div class="ksm-counter" [ngClass]="{ 'is-wrong': (dataService.ksmSum$ | async) > 45 }">
-      <span>{{ dataService.ksmSum$ | async}}</span>
-      <p>Pozostały KSM: {{ dataService.ksmLeft$ | async}}</p>
+    <div class="ksm-counter" [ngClass]="{ 'is-wrong': (store.ksmSum$ | async) > 45 }">
+      <span>{{ store.ksmSum$ | async}}</span>
+      <p>Pozostały KSM: {{ store.ksmLeft$ | async}}</p>
     </div>
 
   </div>
@@ -99,8 +99,8 @@
     </div>
   </div>
 
-  <div class="ksm-counter" [ngClass]="{ 'is-wrong': (dataService.ksmSum$ | async) > 45 }">
-    <span>{{ dataService.ksmSum$ | async}}</span>
+  <div class="ksm-counter" [ngClass]="{ 'is-wrong': (store.ksmSum$ | async) > 45 }">
+    <span>{{ store.ksmSum$ | async}}</span>
   </div>
 
 </div>

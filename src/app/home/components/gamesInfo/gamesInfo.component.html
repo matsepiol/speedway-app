@@ -1,9 +1,9 @@
-<app-loader [isLoading]="!(dataService.options$ | async).currentRound" [message]="loadingMessage"></app-loader>
+<app-loader [isLoading]="!(store.options$ | async).currentRound" [message]="loadingMessage"></app-loader>
 
-<div *ngIf="(dataService.options$ | async).currentRound">
-    <h4>Kolejka {{(dataService.options$ | async).currentRound}}:</h4>
-    <app-game [home]="(dataService.options$ | async).games[0].home" [away]="(dataService.options$ | async).games[0].away"></app-game>
-    <app-game [home]="(dataService.options$ | async).games[1].home" [away]="(dataService.options$ | async).games[1].away"></app-game>
-    <app-game [home]="(dataService.options$ | async).games[2].home" [away]="(dataService.options$ | async).games[2].away"></app-game>
-    <app-game [home]="(dataService.options$ | async).games[3].home" [away]="(dataService.options$ | async).games[3].away"></app-game>
+<div *ngIf="(store.options$ | async).currentRound">
+    <h4>Kolejka {{(store.options$ | async).currentRound}}:</h4>
+    <app-game [home]="(store.options$ | async).games[0].home" [away]="(store.options$ | async).games[0].away"></app-game>
+    <app-game [home]="(store.options$ | async).games[1].home" [away]="(store.options$ | async).games[1].away"></app-game>
+    <app-game [home]="(store.options$ | async).games[2].home" [away]="(store.options$ | async).games[2].away"></app-game>
+    <app-game [home]="(store.options$ | async).games[3].home" [away]="(store.options$ | async).games[3].away"></app-game>
 </div>

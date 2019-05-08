@@ -14,7 +14,6 @@ import { GamesInfoComponent } from './components/gamesInfo/gamesInfo.component';
 import { PlayersListComponent } from './components/playersList/playersList.component';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
-import { DataService } from './services/data.service';
 import { SnackBarService } from './services/snack-bar.service';
 
 @NgModule({
@@ -40,7 +39,6 @@ import { SnackBarService } from './services/snack-bar.service';
 		PlayersListComponent,
 	],
 	providers: [
-		DataService,
 		SnackBarService,
 	]
 })

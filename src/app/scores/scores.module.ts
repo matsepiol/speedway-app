@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule, MatSelectModule } from '@angular/material';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -16,6 +16,7 @@ import { AuthenticationService } from '@app/authentication/authentication.servic
 	imports: [
 		CommonModule,
 		FormsModule,
+		ReactiveFormsModule,
 		MatButtonModule,
 		MatDividerModule,
 		MatExpansionModule,

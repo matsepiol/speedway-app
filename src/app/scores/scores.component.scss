@@ -1,7 +1,5 @@
 .container {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
+
 
   button {
     margin: 20px;
@@ -30,12 +28,17 @@
     width: 60%;
   }
 
-  form {
-    width: 65px;
-    display: inline-block;
+  .team-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
 
     mat-form-field {
       width: 30px;
+    }
+
+    .input-wrapper {
+      display: inline-block;
     }
   }
 }

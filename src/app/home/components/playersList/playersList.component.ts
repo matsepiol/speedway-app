@@ -1,4 +1,4 @@
-import { cloneDeep, countBy } from 'lodash';
+import { cloneDeep, countBy, find } from 'lodash';
 import { ClipboardService } from 'ngx-clipboard';
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
@@ -58,14 +58,14 @@ export class PlayersListComponent implements OnInit, OnDestroy {
 	}
 
 	public init(): void {
-		const initialSelection = JSON.parse(localStorage.getItem('teamSelection')) || cloneDeep(teamPlaceholder);
-		this.dataService.setSelection(initialSelection, this.currentRound);
+		this.selectSquadFromLocalStorage();
 		this.playersSubscribtion = this.dataService.getData().subscribe((data) => {
 			this.isLoading = false;
 			this.availablePlayers = data.filter(
 				players => this.selectedPlayers.every(selection => selection.name !== players.name)
 			);
 
+			this.updateSelectedPlayers(data);
 			this.prepareFiltering();
 		});
 
@@ -80,6 +80,25 @@ export class PlayersListComponent implements OnInit, OnDestroy {
 		).subscribe((team) => {
 			this.isUserSquadSent = !!team.length;
 		});
+	}
+
+	public updateSelectedPlayers(data: Player[]) {
+		// update selected players in app and in local storage with newest data
+		this.selectedPlayers.forEach((player, i) => {
+			if (!player.placeholder) {
+				this.selectedPlayers[i] = find(data, { name: player.name });
+			}
+		});
+
+		this.dataService.setSelection(this.selectedPlayers, this.currentRound);
+		this.saveSelectionToLocalStorage(this.selectedPlayers);
+	}
+
+	public selectSquadFromLocalStorage() {
+		const initialSelection = !!JSON.parse(localStorage.getItem('teamSelection')) ?
+			JSON.parse(localStorage.getItem('teamSelection')) : cloneDeep(teamPlaceholder);
+
+		this.dataService.setSelection(initialSelection, this.currentRound);
 	}
 
 	public selectPlayer(player: Player): void {

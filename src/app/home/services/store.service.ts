@@ -2,7 +2,7 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 
 import {
-	juniorPlaceholder, obcokrajowiecPlaceholder, Player, PlayerResult, PlayerType, seniorPlaceholder
+	juniorPlaceholder, obcokrajowiecPlaceholder, Player, PlayerResult, PlayerType, seniorPlaceholder, teamPlaceholder
 } from '../home.model';
 import { SnackBarService } from './snack-bar.service';
 import { AngularFireDatabase } from '@angular/fire/database';
@@ -11,6 +11,7 @@ import { StatsData } from '@app/results/result.model';
 import { TableData } from '@app/scores/scores.model';
 import { Options } from '@app/playerManagment/playerManagment.model';
 import { map, take } from 'rxjs/operators';
+import { find, cloneDeep } from 'lodash';
 
 @Injectable({
 	providedIn: 'root'
@@ -53,11 +54,29 @@ export class Store {
 	}
 
 	public getData() {
-		this.db.list<Player>('/data').valueChanges().subscribe(data => this.dataSubject.next(data));
+		this.db.list<Player>('/data').valueChanges().subscribe(data => {
+			this.dataSubject.next(data);
+			this.updateSquadFromLocalStorage(data);
+		});
 	}
 
 	public getOptions() {
 		this.db.object<Options>(`options`).valueChanges().subscribe(options => this.optionsSubject.next(options));
+	}
+
+	public updateSquadFromLocalStorage(data: Player[]) {
+		const localStorageSquad: Player[] = JSON.parse(localStorage.getItem('teamSelection'));
+		const initialSquad = (localStorageSquad && localStorageSquad.length) ? localStorageSquad : cloneDeep(teamPlaceholder);
+
+		initialSquad.forEach((player, i) => {
+			if (!player.placeholder) {
+				initialSquad[i] = find(data, { name: player.name });
+				console.log(find(data, { name: player.name }));
+			}
+		});
+		this.setSelection(initialSquad);
+		this.saveSelectionToLocalStorage(initialSquad);
+
 	}
 
 	public getCurrentRound() {
@@ -85,7 +104,7 @@ export class Store {
 		return this.db.object(`data`).set(players);
 	}
 
-	public getRoundSquads(round: number): Observable<{key: string; value: string[]; }[] > {
+	public getRoundSquads(round: number): Observable<{ key: string; value: string[]; }[]> {
 		return this.db.list<string[]>(`/squads/${round}`).snapshotChanges().pipe(
 			map(actions => actions.map(a => ({ key: a.key, value: a.payload.val() })))
 		);
@@ -110,7 +129,7 @@ export class Store {
 		return this.db.object(`squads/${round}/${id}`).set(playersToSend);
 	}
 
-	public getRoundResult(): Observable<{key: string; value: number[]; }[] > {
+	public getRoundResult(): Observable<{ key: string; value: number[]; }[]> {
 		return this.db.list<number[]>(`table`).snapshotChanges().pipe(
 			map(actions => actions.map(a => ({ key: a.key, value: a.payload.val() })))
 		);
@@ -130,6 +149,10 @@ export class Store {
 
 	public getSelectedPlayersValue(): Player[] {
 		return this.selectedPlayersSubject.getValue();
+	}
+
+	public saveSelectionToLocalStorage(selection: Player[]) {
+		localStorage.setItem('teamSelection', JSON.stringify(selection));
 	}
 
 	public selectPlayer(player: Player): boolean {

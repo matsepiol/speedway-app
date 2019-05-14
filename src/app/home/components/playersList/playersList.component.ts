@@ -1,4 +1,4 @@
-import { cloneDeep, countBy } from 'lodash';
+import { cloneDeep, countBy, find } from 'lodash';
 import { ClipboardService } from 'ngx-clipboard';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
@@ -10,7 +10,7 @@ import {
 	GenericConfirmationDialogComponent
 } from '@app/shared/genericConfirmationDialog/generic-confirmation-dialog.component';
 import { Observable, combineLatest } from 'rxjs';
-import { first, tap, map } from 'rxjs/operators';
+import { first, tap, map, filter } from 'rxjs/operators';
 
 @Component({
 	selector: 'app-players-list',
@@ -44,12 +44,13 @@ export class PlayersListComponent implements OnInit {
 	) { }
 
 	public ngOnInit(): void {
-		const initialSelection = JSON.parse(localStorage.getItem('teamSelection')) || cloneDeep(teamPlaceholder);
-		this.store.setSelection(initialSelection);
+		// const initialSelection = JSON.parse(localStorage.getItem('teamSelection')) || cloneDeep(teamPlaceholder);
+		// this.store.setSelection(initialSelection);
 
 		this.players$ = this.store.data$;
 		this.selectedPlayers$ = this.store.selectedPlayers$.pipe(
-			tap(selected => this.saveSelectionToLocalStorage(selected))
+			filter(selected => !!selected.length),
+			tap(selected => this.store.saveSelectionToLocalStorage(selected))
 		);
 
 		this.availablePlayers$ = combineLatest(
@@ -141,10 +142,6 @@ export class PlayersListComponent implements OnInit {
 
 	public clearSquad(): void {
 		this.store.setSelection(cloneDeep(teamPlaceholder));
-	}
-
-	private saveSelectionToLocalStorage(selection: Player[]) {
-		localStorage.setItem('teamSelection', JSON.stringify(selection));
 	}
 
 	private prepareFiltering(): void {

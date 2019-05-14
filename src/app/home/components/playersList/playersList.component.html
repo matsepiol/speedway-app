@@ -1,5 +1,5 @@
-<app-loader [isLoading]="!(availablePlayers$ | async).length" [message]="loadingMessage"></app-loader>
-<div class="container row player-list" *ngIf="(availablePlayers$ | async).length">
+<app-loader [isLoading]="!(availablePlayers$ | async)?.length" [message]="loadingMessage"></app-loader>
+<div class="container row player-list" *ngIf="(availablePlayers$ | async)?.length">
 
   <div class="filter-wrapper">
     <mat-form-field>

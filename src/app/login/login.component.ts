@@ -19,7 +19,6 @@ const emailList = [
 	'niemiec.agnieszka@interia.pl',
 	'odi0@onet.eu',
 	'malgorzatanalepa@op.pl',
-	'marek.k83@gmail.com'
 ];
 
 @Component({

@@ -61,9 +61,9 @@ export class PlayersListComponent implements OnInit, OnDestroy {
 		this.selectSquadFromLocalStorage();
 		this.playersSubscribtion = this.dataService.getData().subscribe((data) => {
 			this.isLoading = false;
-			this.availablePlayers = data.filter(
-				players => this.selectedPlayers.every(selection => selection.name !== players.name)
-			);
+			this.availablePlayers = data
+				.filter(player => !player.szrot)
+				.filter(player => this.selectedPlayers.every(selection => selection.name !== player.name));
 
 			this.updateSelectedPlayers(data);
 			this.prepareFiltering();

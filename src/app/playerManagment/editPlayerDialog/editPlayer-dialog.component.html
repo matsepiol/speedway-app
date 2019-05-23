@@ -43,6 +43,10 @@
     </mat-select>
   </mat-form-field>
 
+  <div>
+    <mat-checkbox name="szrot" [(ngModel)]="playerData.szrot">Szrot</mat-checkbox>
+  </div>
+
   <div mat-dialog-actions>
     <button mat-button [matDialogClose]="false">Wróć</button>
     <button mat-button [matDialogClose]="playerData" [disabled]="editForm.form.invalid">Zapisz</button>

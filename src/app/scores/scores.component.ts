@@ -32,7 +32,9 @@ export class ScoresComponent implements OnInit, OnDestroy {
 			this.currentRound = options.currentRound;
 
 			this.dataSubscribtion = this.dataService.getData().subscribe((data: Player[]) => {
-				this.teams = Object.values(groupBy(data, 'team'));
+				const players = data.filter(player => !player.szrot);
+
+				this.teams = Object.values(groupBy(players, 'team'));
 				this.fetchRoundScore();
 			});
 		});

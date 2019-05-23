@@ -13,6 +13,7 @@ export interface Player {
 	score?: number;
 	bonus?: number;
 	ratio?: number;
+	szrot?: boolean;
 }
 
 export interface PlayerResult {

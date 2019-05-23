@@ -59,6 +59,10 @@ export class FilterPipe implements PipeTransform {
 				tempItems = tempItems.filter(player => term.type.indexOf(player.type) >= 0);
 			}
 
+			if (!term.showSzrot) {
+				tempItems = tempItems.filter(player => !player.szrot);
+			}
+
 			if (term.sort === 'team') {
 				tempItems = orderBy(tempItems, ['team', 'ksm'], ['asc', 'desc']);
 			}

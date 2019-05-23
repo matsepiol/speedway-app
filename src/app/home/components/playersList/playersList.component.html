@@ -20,10 +20,15 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-checkbox [(ngModel)]="filter.showMinimum" title="Schowaj grafiki i typ zawodników">
-      Tryb minimalistyczny
-    </mat-checkbox>
+    <div class="checkbox-wrapper">
+      <mat-checkbox [(ngModel)]="filter.showMinimum" title="Schowaj grafiki i typ zawodników">
+        Tryb minimalistyczny
+      </mat-checkbox>
 
+      <mat-checkbox [(ngModel)]="filter.showSzrot" title="Pokaż szrotowych zawodników">
+        Pokaż szrotowców
+      </mat-checkbox>
+    </div>
     <div class="ksm-counter" [ngClass]="{ 'is-wrong': (dataService.getKsmSum() | async) > 45 }">
       <span>{{ dataService.getKsmSum() | async}}</span>
       <p>Pozostały KSM: {{ dataService.getKsmLeft() | async}}</p>
@@ -39,18 +44,21 @@
 
 
   <div class="button-row">
-    <mat-checkbox [(ngModel)]="filter.showPossiblePlayers" title="Pokaż tylko zawodników, ktorzy pasują typem do składu i nie przekroczą wymagany KSM">
+    <mat-checkbox [(ngModel)]="filter.showPossiblePlayers"
+      title="Pokaż tylko zawodników, ktorzy pasują typem do składu i nie przekroczą wymagany KSM">
       Pokaż dostępnych zawodników
     </mat-checkbox>
     <button mat-raised-button color="primary" (click)="clearFilters()">Wyczyść filtry</button>
     <button mat-raised-button color="primary" (click)="clearSquad()">Wyczyść skład</button>
     <button mat-raised-button color="primary" (click)="exportSquad()">Eksportuj skład</button>
-    <button mat-raised-button color="primary" (click)="sendSquad()" *ngIf="!isUserSquadSent" [disabled]="disableSendSquadButton()">Wyślij skład</button>
+    <button mat-raised-button color="primary" (click)="sendSquad()" *ngIf="!isUserSquadSent"
+      [disabled]="disableSendSquadButton()">Wyślij skład</button>
   </div>
 
   <div class="available-players col-xs-6">
 
-    <div *ngFor="let player of availablePlayers | filter: filter" class="card" [ngClass]="{ 'minimal': filter.showMinimum }">
+    <div *ngFor="let player of availablePlayers | filter: filter" class="card"
+      [ngClass]="{ 'minimal': filter.showMinimum }">
       <div class="card-body" (click)="selectPlayer(player)">
         <h5 class="card-title">{{player.name}}
           <span class="ksm">KSM: <b>{{player.ksm[currentRound - 1]}}</b></span>

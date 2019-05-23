@@ -29,7 +29,7 @@ export class PlayersListComponent implements OnInit, OnDestroy {
 	public teamFilters: string[] = [];
 	public typeFilters: string[] = [];
 	public filter: Filter = {
-		team: [], type: [], sort: 'ksm', searchQuery: '', showPossiblePlayers: false, showMinimum: false
+		team: [], type: [], sort: 'ksm', searchQuery: '', showPossiblePlayers: false, showMinimum: false, showSzrot: false
 	};
 	public selectedPlayers: Player[] = [];
 	public currentRound: number;
@@ -62,7 +62,6 @@ export class PlayersListComponent implements OnInit, OnDestroy {
 		this.playersSubscribtion = this.dataService.getData().subscribe((data) => {
 			this.isLoading = false;
 			this.availablePlayers = data
-				.filter(player => !player.szrot)
 				.filter(player => this.selectedPlayers.every(selection => selection.name !== player.name));
 
 			this.updateSelectedPlayers(data);

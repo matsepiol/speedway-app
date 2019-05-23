@@ -28,7 +28,8 @@ export interface Filter {
 	sort: string;
 	searchQuery: string;
 	showPossiblePlayers?: boolean;
-	showMinimum?: false;
+	showMinimum?: boolean;
+	showSzrot?: boolean;
 }
 
 export const seniorPlaceholder: Player = {

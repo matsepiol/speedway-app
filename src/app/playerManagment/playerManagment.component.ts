@@ -54,7 +54,7 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 	public date: Date;
 	public roundsIterable = ROUNDS_ITERABLE;
 	public filter: Filter = {
-		team: [], type: [], sort: 'team', searchQuery: ''
+		team: [], type: [], sort: 'team', searchQuery: '', showSzrot: true
 	};
 	private editPlayerDialog: MatDialogRef<EditPlayerDialogComponent>;
 	private confirmationDialog: MatDialogRef<GenericConfirmationDialogComponent>;

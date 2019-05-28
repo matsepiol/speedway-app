@@ -29,6 +29,19 @@
           <input matInput [(ngModel)]="filter.searchQuery" placeholder="Szukaj zawodnika" />
         </mat-form-field>
 
+        <div class="copy-ksm">
+          Skopiuj ksmy z kolejki
+          <mat-form-field class="round">
+            <input matInput type="number" step="1" min="1" max="14" [(ngModel)]="copyKsm.from" />
+          </mat-form-field>
+
+          do kolejki
+          <mat-form-field class="round">
+            <input matInput type="number" step="1" min="1" max="14" [(ngModel)]="copyKsm.to" />
+          </mat-form-field>
+
+          <button mat-raised-button color="primary" (click)="copyRoundKsm()">Skopiuj KSM</button>
+        </div>
       </div>
 
       <div class="players">
@@ -127,7 +140,7 @@
 
         <span class="title">Zamknięcie kolejki:</span>
         <input [owlDateTime]="dt" [(ngModel)]="date" [owlDateTimeTrigger]="dt" />
-        <owl-date-time #dt></owl-date-time> 
+        <owl-date-time #dt></owl-date-time>
       </div>
 
     </mat-tab>

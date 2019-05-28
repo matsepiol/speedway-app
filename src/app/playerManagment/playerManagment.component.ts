@@ -56,6 +56,12 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 	public filter: Filter = {
 		team: [], type: [], sort: 'team', searchQuery: '', showSzrot: true
 	};
+
+	public copyKsm: any = {
+		from: null,
+		to: null
+	};
+
 	private editPlayerDialog: MatDialogRef<EditPlayerDialogComponent>;
 	private confirmationDialog: MatDialogRef<GenericConfirmationDialogComponent>;
 	private dataSubscribtion: Subscription;
@@ -75,7 +81,7 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 	}
 
 	public addPlayer(): void {
-		this.editPlayerDialog = this.dialog.open(EditPlayerDialogComponent, { width: '400px', data: { ksm: []} });
+		this.editPlayerDialog = this.dialog.open(EditPlayerDialogComponent, { width: '400px', data: { ksm: [] } });
 		this.editPlayerDialog.afterClosed().pipe(
 			first()
 		).subscribe(result => {
@@ -136,6 +142,7 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 
 		this.confirmationDialog.afterClosed().subscribe(result => {
 			if (result) {
+
 				this.dataService.changePlayersData(this.players).then(() => {
 					this.snackBarService.messageSuccess('Zmiany zawodników zapisane');
 				});
@@ -175,6 +182,38 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 				this.options.date = this.date.toISOString();
 				this.dataService.saveOptions(this.options).then(() => {
 					this.snackBarService.messageSuccess('Opcje kolejki zapisane');
+				});
+			}
+		});
+	}
+
+	public copyRoundKsm() {
+		if (
+			!this.copyKsm.from ||
+			!this.copyKsm.to ||
+			this.copyKsm.from > 14 ||
+			this.copyKsm.to > 14 ||
+			this.copyKsm.from < 1 ||
+			this.copyKsm.to < 1 ||
+			this.copyKsm.from === this.copyKsm.to
+		) {
+			this.snackBarService.messageError('Niepoprawne dane do kopiowania');
+			return;
+		}
+
+		this.confirmationDialog = this.dialog.open(GenericConfirmationDialogComponent,
+			{
+				width: '400px',
+				data: {
+					title: 'Czy na pewno chcesz skopiować ten ksm?',
+					confirmText: 'Zapisz'
+				}
+			});
+
+		this.confirmationDialog.afterClosed().subscribe(result => {
+			if (result) {
+				this.players.forEach(player => {
+					player.ksm[this.copyKsm.to - 1] = player.ksm[this.copyKsm.from - 1];
 				});
 			}
 		});

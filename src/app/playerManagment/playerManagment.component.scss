@@ -26,6 +26,15 @@
   margin-bottom: 10px;
 }
 
+.copy-ksm {
+  display: inline-block;
+  margin-left: 30px;
+
+  .round {
+    width: 50px;
+  }
+}
+
 .card {
   height: 60px;
   margin: 5px;
@@ -42,7 +51,6 @@
       float: right;
     }
   }
-
 
   &.placeholder {
     border-style: dashed;

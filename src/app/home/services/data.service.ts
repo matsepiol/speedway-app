@@ -53,6 +53,10 @@ export class DataService {
 		return this.db.list<string>(`/squads/${round}/${id}`).valueChanges();
 	}
 
+	public setHistory(historyData) {
+		return this.db.object(`history/2019`).set(historyData);
+	}
+
 	public getHistorySquads(season: number, round: number): Observable<StatsData[]> {
 		return this.db.list<StatsData>(`/history/${season}/squads/${round}`).valueChanges();
 	}

@@ -142,7 +142,6 @@ export class PlayerManagmentComponent implements OnInit, OnDestroy {
 
 		this.confirmationDialog.afterClosed().subscribe(result => {
 			if (result) {
-
 				this.dataService.changePlayersData(this.players).then(() => {
 					this.snackBarService.messageSuccess('Zmiany zawodników zapisane');
 				});

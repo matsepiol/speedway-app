@@ -13,7 +13,7 @@ export class TableScoreComponent implements OnChanges {
 	displayedColumns: string[] = ['position', 'userName', 'scoreSum', 'bonusSum'];
 
 	@Input() dataSource: MatTableDataSource<TableData>;
-	@ViewChild(MatSort) sort: MatSort;
+	@ViewChild(MatSort, { static: true }) sort: MatSort;
 
 	ngOnChanges(): void {
 		if (this.dataSource) {

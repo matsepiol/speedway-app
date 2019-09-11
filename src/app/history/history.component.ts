@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
 })
 
 export class HistoryComponent implements OnInit, OnDestroy {
-	public seasonIterable = [2018];
+	public seasonIterable = [2018, 2019];
 	public currentSeason = this.seasonIterable[0];
 	public currentRound = ROUNDS_QUANTITY;
 	public roundsIterable = ROUNDS_ITERABLE;

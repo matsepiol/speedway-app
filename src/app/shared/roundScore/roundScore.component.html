@@ -7,5 +7,5 @@
     <mat-divider></mat-divider>
   </div>
   <p class="round-score" *ngIf="squad.scoreSum">Wynik kolejki: {{squad.scoreSum}} + {{ squad.bonusSum }}</p>
-  <p *ngIf="!squad.results.length">Ten gracz nie wysłał jeszcze składu.</p>
+  <p *ngIf="!squad.results?.length">Ten gracz nie wysłał jeszcze składu.</p>
 </mat-expansion-panel>

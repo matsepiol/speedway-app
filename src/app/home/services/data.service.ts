@@ -9,7 +9,7 @@ import { AngularFireDatabase } from '@angular/fire/database';
 import { AuthenticationService } from '@app/authentication/authentication.service';
 import { StatsData } from '@app/results/result.model';
 import { TableData } from '@app/scores/scores.model';
-import { Options } from '@app/playerManagment/playerManagment.model';
+import { Options } from '@app/playerManagement/playerManagement.model';
 
 @Injectable()
 export class DataService {
@@ -53,9 +53,9 @@ export class DataService {
 		return this.db.list<string>(`/squads/${round}/${id}`).valueChanges();
 	}
 
-	public setHistory(historyData) {
-		return this.db.object(`history/2019`).set(historyData);
-	}
+	// public setHistory(historyData) {
+	// 	return this.db.object(`history/2019`).set(historyData);
+	// }
 
 	public getHistorySquads(season: number, round: number): Observable<StatsData[]> {
 		return this.db.list<StatsData>(`/history/${season}/squads/${round}`).valueChanges();

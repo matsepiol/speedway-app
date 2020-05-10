@@ -79,25 +79,6 @@ export class PlayersListComponent implements OnInit {
 		this.prepareFiltering();
 	}
 
-	public updateSelectedPlayers(data: Player[]) {
-		// update selected players in app and in local storage with newest data
-		this.selectedPlayers.forEach((player, i) => {
-			if (!player.placeholder) {
-				this.selectedPlayers[i] = find(data, { name: player.name });
-			}
-		});
-
-		this.dataService.setSelection(this.selectedPlayers, this.currentRound);
-		this.saveSelectionToLocalStorage(this.selectedPlayers);
-	}
-
-	public selectSquadFromLocalStorage() {
-		const initialSelection = !!JSON.parse(localStorage.getItem('teamSelection')) ?
-			JSON.parse(localStorage.getItem('teamSelection')) : cloneDeep(teamPlaceholder);
-
-		this.dataService.setSelection(initialSelection, this.currentRound);
-	}
-
 	public selectPlayer(player: Player): void {
 		this.store.selectPlayer(player);
 		this.filter.searchQuery = '';

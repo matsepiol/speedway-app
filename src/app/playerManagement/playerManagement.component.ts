@@ -64,6 +64,11 @@ export class PlayerManagementComponent implements OnInit {
 	private _isLoadingSubject = new BehaviorSubject<boolean>(true);
 	public isLoading$: Observable<boolean> = this._isLoadingSubject.asObservable();
 
+	public copyKsm: any = {
+		from: null,
+		to: null
+	};
+
 	constructor(
 		public dialog: MatDialog,
 		public store: Store,
@@ -146,6 +151,41 @@ export class PlayerManagementComponent implements OnInit {
 		this.tempPlayers$.subscribe(players => {
 			this.teamFilters = players.map(item => item.team).filter((value, index, self) => self.indexOf(value) === index);
 			this.typeFilters = players.map(item => item.type).filter((value, index, self) => self.indexOf(value) === index);
+		});
+	}
+
+	public copyRoundKsm() {
+		if (
+			!this.copyKsm.from ||
+			!this.copyKsm.to ||
+			this.copyKsm.from > 14 ||
+			this.copyKsm.to > 14 ||
+			this.copyKsm.from < 1 ||
+			this.copyKsm.to < 1 ||
+			this.copyKsm.from === this.copyKsm.to
+		) {
+			this.snackBarService.messageError('Niepoprawne dane do kopiowania');
+			return;
+		}
+
+		this._confirmationDialog = this.dialog.open(GenericConfirmationDialogComponent,
+			{
+				width: '400px',
+				data: {
+					title: 'Czy na pewno chcesz skopiować ten ksm?',
+					confirmText: 'Zapisz'
+				}
+			});
+
+		this._confirmationDialog.afterClosed().subscribe(result => {
+			if (result) {
+				const players = this._tempPlayersSubject.getValue();
+				players.forEach(player => {
+					player.ksm[this.copyKsm.to - 1] = player.ksm[this.copyKsm.from - 1];
+				});
+
+				this._tempPlayersSubject.next(players);
+			}
 		});
 	}
 

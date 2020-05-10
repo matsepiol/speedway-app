@@ -1,12 +1,15 @@
+import { Component, OnInit } from '@angular/core';
+import { MatSelectChange } from '@angular/material/select';
+
+import { Observable, combineLatest, BehaviorSubject } from 'rxjs';
+import { map, tap, switchMap, first } from 'rxjs/operators';
+
 import { each, find, groupBy, pick, Dictionary } from 'lodash';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+
 import { SnackBarService } from '@app/home/services/snack-bar.service';
+import { ROUNDS_ITERABLE } from '@app/variables';
 import { Store } from '../home/services/store.service';
 import { Player, PlayerResult } from '../home/home.model';
-import { ROUNDS_ITERABLE } from '@app/variables';
-import { Observable, combineLatest, BehaviorSubject, Subscription } from 'rxjs';
-import { map, tap, switchMap } from 'rxjs/operators';
-import { MatSelectChange } from '@angular/material/select';
 
 @Component({
 	selector: 'app-scores',
@@ -14,32 +17,33 @@ import { MatSelectChange } from '@angular/material/select';
 	styleUrls: ['./scores.component.scss']
 })
 
-export class ScoresComponent implements OnInit, OnDestroy {
+export class ScoresComponent implements OnInit {
 	public teams$: Observable<Dictionary<Player[]>>;
 
-	private chosenRoundSubject = new BehaviorSubject<number>(null);
-	public chosenRound$: Observable<number> = this.chosenRoundSubject.asObservable();
+	private _chosenRoundSubject = new BehaviorSubject<number>(null);
+	public chosenRound$: Observable<number> = this._chosenRoundSubject.asObservable();
 
-	private isLoadingSubject = new BehaviorSubject<boolean>(true);
-	public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
+	private _isLoadingSubject = new BehaviorSubject<boolean>(true);
+	public isLoading$: Observable<boolean> = this._isLoadingSubject.asObservable();
 
 	public roundsIterable = ROUNDS_ITERABLE;
 	public loadingMessage = 'Wczytywanie...';
 
-	private roundSubscription: Subscription;
-	private tempScore: Dictionary<Player[]>;
+	private _tempScore: Dictionary<Player[]>;
 
 	constructor(
 		public store: Store,
-		private snackBarService: SnackBarService,
+		private _snackBarService: SnackBarService,
 	) {
 	}
 
 	public ngOnInit(): void {
-		this.roundSubscription = this.store.options$.subscribe(options => this.chosenRoundSubject.next(options.currentRound));
+		this.store.options$.pipe(
+			first(options => !!options.currentRound)
+		).subscribe(options => this._chosenRoundSubject.next(options.currentRound));
 
 		this.teams$ = this.chosenRound$.pipe(
-			tap(() => this.isLoadingSubject.next(true)),
+			tap(() => this._isLoadingSubject.next(true)),
 			switchMap(round => {
 				return combineLatest(
 					this.store.data$,
@@ -58,37 +62,31 @@ export class ScoresComponent implements OnInit, OnDestroy {
 
 				return teams;
 			}),
-			tap(teams => this.tempScore = teams),
-			tap(() => this.isLoadingSubject.next(false)),
+			tap(teams => this._tempScore = teams),
+			tap(() => this._isLoadingSubject.next(false)),
 		);
 	}
 
 	public changeRound(event: MatSelectChange): void {
-		this.chosenRoundSubject.next(event.value);
+		this._chosenRoundSubject.next(event.value);
 	}
 
 	public onScoreChange(player: Player, value: string, type: string): void {
-		this.tempScore[player.team].find(p => p.name === player.name)[type] = parseInt(value, 10);
+		this._tempScore[player.team].find(p => p.name === player.name)[type] = parseInt(value, 10);
 	}
 
 	public save(): void {
 		const savedPlayers: PlayerResult[] = [];
-		const chosenRound = this.chosenRoundSubject.getValue();
+		const chosenRound = this._chosenRoundSubject.getValue();
 
-		each(this.tempScore, (team) => {
+		each(this._tempScore, (team) => {
 			each(team, player => {
 				savedPlayers.push(pick(player, ['name', 'score', 'bonus']));
 			});
 		});
 
 		this.store.saveResults(savedPlayers, chosenRound).then(() => {
-			this.snackBarService.messageSuccess('Wyniki zapisane');
+			this._snackBarService.messageSuccess('Wyniki zapisane');
 		});
-	}
-
-	public ngOnDestroy() {
-		if (this.roundSubscription) {
-			this.roundSubscription.unsubscribe();
-		}
 	}
 }

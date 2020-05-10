@@ -9,7 +9,7 @@ import { AngularFireDatabase } from '@angular/fire/database';
 import { AuthenticationService } from '@app/authentication/authentication.service';
 import { StatsData } from '@app/results/result.model';
 import { TableData } from '@app/scores/scores.model';
-import { Options } from '@app/playerManagment/playerManagment.model';
+import { Options } from '@app/playerManagement/playerManagement.model';
 import { map, take } from 'rxjs/operators';
 import { find, cloneDeep } from 'lodash';
 
@@ -48,42 +48,40 @@ export class Store {
 		private db: AngularFireDatabase
 	) { }
 
-	public init() {
-		this.getOptions();
-		this.getData();
+	public init(): void {
+		this.fetchOptions();
+		this.fetchData();
 	}
 
-	public getData() {
+	public fetchData(): void {
 		this.db.list<Player>('/data').valueChanges().subscribe(data => {
 			this.dataSubject.next(data);
 			this.updateSquadFromLocalStorage(data);
 		});
 	}
 
-	public getOptions() {
+	public fetchOptions(): void {
 		this.db.object<Options>(`options`).valueChanges().subscribe(options => this.optionsSubject.next(options));
 	}
 
-	public updateSquadFromLocalStorage(data: Player[]) {
+	public updateSquadFromLocalStorage(data: Player[]): void {
 		const localStorageSquad: Player[] = JSON.parse(localStorage.getItem('teamSelection'));
 		const initialSquad = (localStorageSquad && localStorageSquad.length) ? localStorageSquad : cloneDeep(teamPlaceholder);
 
 		initialSquad.forEach((player, i) => {
 			if (!player.placeholder) {
 				initialSquad[i] = find(data, { name: player.name });
-				console.log(find(data, { name: player.name }));
 			}
 		});
 		this.setSelection(initialSquad);
 		this.saveSelectionToLocalStorage(initialSquad);
-
 	}
 
-	public getCurrentRound() {
+	public getCurrentRound(): number {
 		return this.optionsSubject.getValue().currentRound;
 	}
 
-	public getCurrentRoundSquad() {
+	public getCurrentRoundSquad(): void {
 		this.getRoundSquadsById(this.getCurrentRound(), JSON.parse(localStorage.getItem('currentUser')).user.uid)
 			.subscribe(team => this.currentSquadSubject.next(team));
 	}

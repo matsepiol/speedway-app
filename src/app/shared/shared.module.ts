@@ -8,7 +8,12 @@ import { TableScoreComponent } from './tableScore/tableScore.component';
 import { SortPlayersPipe } from '@app/shared/filterPipe/sortPipe';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { MatSortModule, MatTableModule, MatDialogModule, MatButtonModule } from '@angular/material';
+
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+
 import { GenericConfirmationDialogComponent } from './genericConfirmationDialog/generic-confirmation-dialog.component';
 import { FormsModule } from '@angular/forms';
 

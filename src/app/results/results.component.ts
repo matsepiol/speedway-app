@@ -1,15 +1,20 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Store } from '../home/services/store.service';
+import { Component, OnInit } from '@angular/core';
+
+import { MatTableDataSource } from '@angular/material/table';
+import { MatTabChangeEvent } from '@angular/material/tabs';
+import { MatSelectChange } from '@angular/material/select';
+
+import { combineLatest, BehaviorSubject, Observable } from 'rxjs';
+import { map, tap, switchMap, first } from 'rxjs/operators';
+
+import { find, orderBy } from 'lodash';
+
 import { Users } from '@app/users.model';
-import { find, orderBy, remove } from 'lodash';
-import { MatTableDataSource, MatTabChangeEvent, MatSelectChange } from '@angular/material';
-import { Squad, StatsData } from './result.model';
-import { Player, PlayerResult } from '../home/home.model';
 import { TableData } from '@app/scores/scores.model';
-import { combineLatest, Subscription, BehaviorSubject, Observable } from 'rxjs';
 import { ROUNDS_ITERABLE } from '@app/variables';
-import { map } from 'rxjs/internal/operators/map';
-import { tap, switchMap, distinctUntilChanged } from 'rxjs/operators';
+import { Store } from '../home/services/store.service';
+import { Squad, StatsData } from './result.model';
+import { PlayerResult } from '../home/home.model';
 
 @Component({
 	selector: 'app-results',
@@ -17,32 +22,29 @@ import { tap, switchMap, distinctUntilChanged } from 'rxjs/operators';
 	styleUrls: ['./results.component.scss']
 })
 
-export class ResultsComponent implements OnInit, OnDestroy {
+export class ResultsComponent implements OnInit {
 	public loadingMessage = 'Wczytywanie...';
 	public roundsIterable = ROUNDS_ITERABLE;
 	public users = Users;
 	public displayedStatsColumns: string[] = ['position', 'name', 'score', 'ksm', 'ratio'];
 
-	private chosenRoundSubject = new BehaviorSubject<number>(null);
-	public chosenRound$: Observable<number> = this.chosenRoundSubject.asObservable();
+	private _chosenRoundSubject = new BehaviorSubject<number>(null);
+	public chosenRound$: Observable<number> = this._chosenRoundSubject.asObservable();
 
-	private isLoadingSubject = new BehaviorSubject<boolean>(true);
-	public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
+	private _isLoadingSubject = new BehaviorSubject<boolean>(true);
+	public isLoading$: Observable<boolean> = this._isLoadingSubject.asObservable();
 
 	public isUserSquadSent$: Observable<boolean>;
 	public squads$: Observable<Squad[]>;
 	public tableData$: Observable<MatTableDataSource<TableData>>;
 	public statsData$: Observable<MatTableDataSource<StatsData>>;
 
-	private roundSubscription: Subscription;
-
-	constructor(
-		public store: Store,
-	) {
-	}
+	constructor(public store: Store) {}
 
 	public ngOnInit(): void {
-		this.roundSubscription = this.store.options$.subscribe(options => this.chosenRoundSubject.next(options.currentRound));
+		this.store.options$.pipe(
+			first(options => !!options.currentRound)
+		).subscribe(options => this._chosenRoundSubject.next(options.currentRound));
 
 		this.isUserSquadSent$ = this.chosenRound$.pipe(
 			switchMap(round => {
@@ -55,7 +57,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
 		);
 
 		this.squads$ = this.chosenRound$.pipe(
-			tap(() => this.isLoadingSubject.next(true)),
+			tap(() => this._isLoadingSubject.next(true)),
 			switchMap(round => {
 				return combineLatest(
 					this.store.getRoundSquads(round),
@@ -99,16 +101,16 @@ export class ResultsComponent implements OnInit, OnDestroy {
 
 				return playersResult;
 			}),
-			tap(() => this.isLoadingSubject.next(false)),
+			tap(() => this._isLoadingSubject.next(false)),
 
 		);
 	}
 
 	public changeRound(event: MatSelectChange): void {
-		this.chosenRoundSubject.next(event.value);
+		this._chosenRoundSubject.next(event.value);
 	}
 
-	public fetchStatsData(): void {
+	private _fetchStatsData(): void {
 		this.statsData$ = this.chosenRound$.pipe(
 			switchMap(round => {
 				return combineLatest(
@@ -117,7 +119,7 @@ export class ResultsComponent implements OnInit, OnDestroy {
 					this.chosenRound$
 				);
 			}),
-			tap(() => this.isLoadingSubject.next(true)),
+			tap(() => this._isLoadingSubject.next(true)),
 			map(([players, scores, round]) => {
 
 				let statsData: StatsData[] = [];
@@ -135,13 +137,13 @@ export class ResultsComponent implements OnInit, OnDestroy {
 				statsData = orderBy(statsData, ['ratio'], ['desc']).filter(player => player.score);
 				return new MatTableDataSource(statsData);
 			}),
-			tap(() => this.isLoadingSubject.next(false)),
+			tap(() => this._isLoadingSubject.next(false)),
 		);
 	}
 
-	private fetchTableData() {
+	private _fetchTableData(): void {
 		this.tableData$ = this.store.getRoundResult().pipe(
-			tap(() => this.isLoadingSubject.next(true)),
+			tap(() => this._isLoadingSubject.next(true)),
 			map(results => {
 				const dataTable: TableData[] = [];
 
@@ -155,23 +157,17 @@ export class ResultsComponent implements OnInit, OnDestroy {
 
 				return new MatTableDataSource(dataTable);
 			}),
-			tap(() => this.isLoadingSubject.next(false)),
+			tap(() => this._isLoadingSubject.next(false)),
 		);
 	}
 
 	public onSelect(event: MatTabChangeEvent): void {
 		if (event.tab.textLabel === 'Tabela') {
-			this.fetchTableData();
+			this._fetchTableData();
 		}
 
 		if (event.tab.textLabel === 'Wybory kolejki') {
-			this.fetchStatsData();
-		}
-	}
-
-	public ngOnDestroy() {
-		if (this.roundSubscription) {
-			this.roundSubscription.unsubscribe();
+			this._fetchStatsData();
 		}
 	}
 }

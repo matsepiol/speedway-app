@@ -1,12 +1,16 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Users } from '@app/users.model';
-import { MatTableDataSource, MatTabChangeEvent, MatSelectChange } from '@angular/material';
-import { Store } from '../home/services/store.service';
-import { StatsData, TableData, Squad } from '@app/results/result.model';
-import { ROUNDS_QUANTITY, ROUNDS_ITERABLE } from '@app/variables';
-import { Subscription, BehaviorSubject, Observable } from 'rxjs';
-import { combineLatest } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+
+import { MatTableDataSource } from '@angular/material/table';
+import { MatTabChangeEvent } from '@angular/material/tabs';
+import { MatSelectChange } from '@angular/material/select';
+
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { switchMap, tap, map } from 'rxjs/operators';
+
+import { Users } from '@app/users.model';
+import { StatsData, TableData } from '@app/results/result.model';
+import { ROUNDS_QUANTITY, ROUNDS_ITERABLE } from '@app/variables';
+import { Store } from '../home/services/store.service';
 
 @Component({
 	selector: 'app-history',
@@ -15,19 +19,19 @@ import { switchMap, tap, map } from 'rxjs/operators';
 })
 
 export class HistoryComponent implements OnInit {
-	public seasonIterable = [2018];
+	public seasonIterable = [2018, 2019];
 	public roundsIterable = ROUNDS_ITERABLE;
 	public users = Users;
 	public loadingMessage = 'Wczytywanie...';
 
-	private chosenSeasonSubject = new BehaviorSubject<number>(null);
-	public chosenSeason$: Observable<number> = this.chosenSeasonSubject.asObservable();
+	private _chosenSeasonSubject = new BehaviorSubject<number>(null);
+	public chosenSeason$: Observable<number> = this._chosenSeasonSubject.asObservable();
 
-	private chosenRoundSubject = new BehaviorSubject<number>(null);
-	public chosenRound$: Observable<number> = this.chosenRoundSubject.asObservable();
+	private _chosenRoundSubject = new BehaviorSubject<number>(null);
+	public chosenRound$: Observable<number> = this._chosenRoundSubject.asObservable();
 
-	private isLoadingSubject = new BehaviorSubject<boolean>(true);
-	public isLoading$: Observable<boolean> = this.isLoadingSubject.asObservable();
+	private _isLoadingSubject = new BehaviorSubject<boolean>(true);
+	public isLoading$: Observable<boolean> = this._isLoadingSubject.asObservable();
 
 	public squads$: Observable<StatsData[]>;
 	public dataSource$: Observable<MatTableDataSource<TableData>>;
@@ -38,34 +42,34 @@ export class HistoryComponent implements OnInit {
 	}
 
 	public ngOnInit(): void {
-		this.chosenSeasonSubject.next(this.seasonIterable[0]);
-		this.chosenRoundSubject.next(ROUNDS_QUANTITY);
+		this._chosenSeasonSubject.next(this.seasonIterable[0]);
+		this._chosenRoundSubject.next(ROUNDS_QUANTITY);
 
 		this.squads$ = combineLatest(
 			this.chosenSeason$,
 			this.chosenRound$
 		).pipe(
-			tap(() => this.isLoadingSubject.next(true)),
+			tap(() => this._isLoadingSubject.next(true)),
 			switchMap(([season, round]) => this.store.getHistorySquads(season, round)),
-			tap(() => this.isLoadingSubject.next(false)),
+			tap(() => this._isLoadingSubject.next(false)),
 		);
 	}
 
-	private fetchTableData() {
+	private fetchTableData(): void {
 		this.dataSource$ = this.chosenSeason$.pipe(
-			tap(() => this.isLoadingSubject.next(true)),
+			tap(() => this._isLoadingSubject.next(true)),
 			switchMap(season => this.store.getHistoryTable(season)),
 			map(table => new MatTableDataSource(table)),
-			tap(() => this.isLoadingSubject.next(false)),
+			tap(() => this._isLoadingSubject.next(false)),
 		);
 	}
 
 	public changeRound(event: MatSelectChange): void {
-		this.chosenRoundSubject.next(event.value);
+		this._chosenRoundSubject.next(event.value);
 	}
 
 	public changeSeason(event: MatSelectChange): void {
-		this.chosenSeasonSubject.next(event.value);
+		this._chosenSeasonSubject.next(event.value);
 	}
 
 	public onSelect(event: MatTabChangeEvent): void {

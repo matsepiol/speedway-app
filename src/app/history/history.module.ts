@@ -1,10 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import {
-		MatButtonModule, MatSelectModule, MatSortModule, MatTableModule,
-		MatTabsModule
-} from '@angular/material';
+
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatTableModule } from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
+
 import { HistoryRoutingModule } from '@app/history/history-routing.module';
 import { SharedModule } from '@app/shared';
 

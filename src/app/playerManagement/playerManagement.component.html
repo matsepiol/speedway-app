@@ -6,7 +6,7 @@
   <mat-tab-group (selectedTabChange)="onSelect($event)">
     <mat-tab label="Zawodnicy">
 
-      <app-loader [isLoading]="isLoading" [message]="loadingMessage"></app-loader>
+      <app-loader [isLoading]="isLoading$ | async" [message]="loadingMessage"></app-loader>
 
       <div class="buttons">
         <button mat-raised-button color="primary" (click)="addPlayer()">Dodaj zawodnika</button>
@@ -32,7 +32,7 @@
       </div>
 
       <div class="players">
-        <div *ngFor="let player of players$ | async | filter: filter" class="card">
+        <div *ngFor="let player of tempPlayers$ | async | filter: filter" class="card">
           <div class="card-body">
             <h5 class="card-title">{{player.name}}</h5>
             <p class="card-text">{{player.type}}</p>
@@ -54,7 +54,7 @@
         <div class="round">
           <mat-form-field>
             <mat-label>Aktualna kolejka</mat-label>
-            <mat-select name="round" [(ngModel)]="options.currentRound">
+            <mat-select name="round" [ngModel]="(tempOptions$ | async)?.currentRound" (ngModelChange)="changeCurrentRound($event)">
               <mat-option *ngFor="let round of roundsIterable" [value]="round">{{round}}
               </mat-option>
             </mat-select>
@@ -64,14 +64,14 @@
         <div class="game1">
           <mat-form-field>
             <mat-label>Klub</mat-label>
-            <mat-select required [(ngModel)]="options.games[0].home" name="team">
+            <mat-select required [ngModel]="(tempOptions$ | async)?.games[0].home" (ngModelChange)="changeGame($event, 0, 'home')" name="team">
               <mat-option *ngFor="let team of teamFilters" [value]="team">{{team}}</mat-option>
             </mat-select>
           </mat-form-field>
           <span>vs</span>
           <mat-form-field>
             <mat-label>Klub</mat-label>
-            <mat-select required [(ngModel)]="options.games[0].away" name="team">
+            <mat-select required [ngModel]="(tempOptions$ | async)?.games[0].away" (ngModelChange)="changeGame($event, 0, 'away')" name="team">
               <mat-option *ngFor="let team of teamFilters" [value]="team">{{team}}</mat-option>
             </mat-select>
           </mat-form-field>
@@ -80,14 +80,14 @@
         <div class="game2">
           <mat-form-field>
             <mat-label>Klub</mat-label>
-            <mat-select required [(ngModel)]="options.games[1].home" name="team">
+            <mat-select required [ngModel]="(tempOptions$ | async)?.games[1].home" (ngModelChange)="changeGame($event, 1, 'home')" name="team">
               <mat-option *ngFor="let team of teamFilters" [value]="team">{{team}}</mat-option>
             </mat-select>
           </mat-form-field>
           <span>vs</span>
           <mat-form-field>
             <mat-label>Klub</mat-label>
-            <mat-select required [(ngModel)]="options.games[1].away" name="team">
+            <mat-select required [ngModel]="(tempOptions$ | async)?.games[1].away" (ngModelChange)="changeGame($event, 1, 'away')" name="team">
               <mat-option *ngFor="let team of teamFilters" [value]="team">{{team}}</mat-option>
             </mat-select>
           </mat-form-field>
@@ -96,14 +96,14 @@
         <div class="game3">
           <mat-form-field>
             <mat-label>Klub</mat-label>
-            <mat-select required [(ngModel)]="options.games[2].home" name="team">
+            <mat-select required [ngModel]="(tempOptions$ | async)?.games[2].home" (ngModelChange)="changeGame($event, 2, 'home')" name="team">
               <mat-option *ngFor="let team of teamFilters" [value]="team">{{team}}</mat-option>
             </mat-select>
           </mat-form-field>
           <span>vs</span>
           <mat-form-field>
             <mat-label>Klub</mat-label>
-            <mat-select required [(ngModel)]="options.games[2].away" name="team">
+            <mat-select required [ngModel]="(tempOptions$ | async)?.games[2].away" (ngModelChange)="changeGame($event, 2, 'away')" name="team">
               <mat-option *ngFor="let team of teamFilters" [value]="team">{{team}}</mat-option>
             </mat-select>
           </mat-form-field>
@@ -112,14 +112,14 @@
         <div class="game4">
           <mat-form-field>
             <mat-label>Klub</mat-label>
-            <mat-select required [(ngModel)]="options.games[3].home" name="team">
+            <mat-select required [ngModel]="(tempOptions$ | async)?.games[3].home" (ngModelChange)="changeGame($event, 3, 'home')" name="team">
               <mat-option *ngFor="let team of teamFilters" [value]="team">{{team}}</mat-option>
             </mat-select>
           </mat-form-field>
           <span>vs</span>
           <mat-form-field>
             <mat-label>Klub</mat-label>
-            <mat-select required [(ngModel)]="options.games[3].away" name="team">
+            <mat-select required [ngModel]="(tempOptions$ | async)?.games[3].away" (ngModelChange)="changeGame($event, 3, 'away')" name="team">
               <mat-option *ngFor="let team of teamFilters" [value]="team">{{team}}</mat-option>
             </mat-select>
           </mat-form-field>

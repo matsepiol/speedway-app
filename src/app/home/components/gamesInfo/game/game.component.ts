@@ -11,7 +11,7 @@ export class GameComponent {
 	@Input() away: string;
 
 	public teamMapping = {
-		'Toruń': 'Get Well Toruń',
+		'Rybnik': 'ROW Rybnik',
 		'Zielona Góra': 'Falubaz Zielona Góra',
 		'Wrocław': 'Betard Sparta Wrocław',
 		'Lublin': 'Speed Car Motor Lublin',

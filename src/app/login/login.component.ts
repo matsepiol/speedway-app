@@ -41,9 +41,13 @@ export class LoginComponent {
 
 	public signInWithFacebook() {
 		this.isLoading = true;
-
+		// const res = {
+		// 	user: {
+		// 		uid: '4h41P3l8XqYRW7YSBy3LA9pYGOt2'
+		// 	}
+		// };
 		this.authenticationService.signInWithFacebook()
-			.then((res) => {
+			.then(res => {
 				if (emailList.indexOf(res.user.email) !== -1) {
 					this.isLoading = false;
 					this.error = null;

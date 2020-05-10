@@ -2,15 +2,15 @@ import { NgModule } from '@angular/core';
 import { Route } from '@app/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { PlayerManagmentComponent } from './playerManagment.component';
-import { PlayerManagmentGuard } from './playerManagment.guard';
+import { PlayerManagementComponent } from './playerManagement.component';
+import { PlayerManagementGuard } from './playerManagement.guard';
 
 const routes: Routes = [
 	Route.withShell([
 		{
-			path: 'player-managment',
-			component: PlayerManagmentComponent,
-			canActivate: [PlayerManagmentGuard],
+			path: 'player-management',
+			component: PlayerManagementComponent,
+			canActivate: [PlayerManagementGuard],
 			data: { title: 'Zarządzanie zawodnikami' }
 		}
 	])
@@ -21,4 +21,4 @@ const routes: Routes = [
 	exports: [RouterModule],
 	providers: []
 })
-export class PlayerManagmentRoutingModule { }
+export class PlayerManagementRoutingModule { }

@@ -1,10 +1,15 @@
-import { each, find, flatten, groupBy, pick } from 'lodash';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { MatSelectChange } from '@angular/material/select';
+
+import { Observable, combineLatest, BehaviorSubject } from 'rxjs';
+import { map, tap, switchMap, first } from 'rxjs/operators';
+
+import { each, find, groupBy, pick, Dictionary } from 'lodash';
+
 import { SnackBarService } from '@app/home/services/snack-bar.service';
-import { DataService } from '../home/services/data.service';
-import { Player, PlayerResult } from '../home/home.model';
 import { ROUNDS_ITERABLE } from '@app/variables';
-import { Subscription } from 'rxjs';
+import { Store } from '../home/services/store.service';
+import { Player, PlayerResult } from '../home/home.model';
 
 @Component({
 	selector: 'app-scores',
@@ -12,72 +17,76 @@ import { Subscription } from 'rxjs';
 	styleUrls: ['./scores.component.scss']
 })
 
-export class ScoresComponent implements OnInit, OnDestroy {
-	public teams: Player[][];
-	public isLoading: boolean;
+export class ScoresComponent implements OnInit {
+	public teams$: Observable<Dictionary<Player[]>>;
+
+	private _chosenRoundSubject = new BehaviorSubject<number>(null);
+	public chosenRound$: Observable<number> = this._chosenRoundSubject.asObservable();
+
+	private _isLoadingSubject = new BehaviorSubject<boolean>(true);
+	public isLoading$: Observable<boolean> = this._isLoadingSubject.asObservable();
+
 	public roundsIterable = ROUNDS_ITERABLE;
-	public currentRound: number;
 	public loadingMessage = 'Wczytywanie...';
-	private dataSubscribtion: Subscription;
-	private roundScoreSubscribtion: Subscription;
+
+	private _tempScore: Dictionary<Player[]>;
 
 	constructor(
-		public dataService: DataService,
-		private snackBarService: SnackBarService,
+		public store: Store,
+		private _snackBarService: SnackBarService,
 	) {
 	}
 
 	public ngOnInit(): void {
-		this.dataService.getOptions().subscribe(options => {
-			this.currentRound = options.currentRound;
+		this.store.options$.pipe(
+			first(options => !!options.currentRound)
+		).subscribe(options => this._chosenRoundSubject.next(options.currentRound));
 
-			this.dataSubscribtion = this.dataService.getData().subscribe((data: Player[]) => {
-				const players = data.filter(player => !player.szrot);
-
-				this.teams = Object.values(groupBy(players, 'team'));
-				this.fetchRoundScore();
-			});
-		});
-
-	}
-
-	public onRoundChange(): void {
-		this.fetchRoundScore();
-	}
-
-	private fetchRoundScore(): void {
-		this.isLoading = true;
-
-		this.roundScoreSubscribtion = this.dataService.getRoundScore(this.currentRound).subscribe((data: PlayerResult[]) => {
-			each(this.teams, (team) => {
-				each(team, (player) => {
-					const playerData = find(data, { name: player.name });
-					player.score = playerData ? playerData.score : 0;
-					player.bonus = playerData ? playerData.bonus : 0;
+		this.teams$ = this.chosenRound$.pipe(
+			tap(() => this._isLoadingSubject.next(true)),
+			switchMap(round => {
+				return combineLatest(
+					this.store.data$,
+					this.store.getRoundScore(round)
+				);
+			}),
+			map(([data, score]) => {
+				const teams = groupBy(data, 'team');
+				each(teams, (team) => {
+					each(team, (player) => {
+						const playerData = find(score, { name: player.name });
+						player.score = playerData ? playerData.score : 0;
+						player.bonus = playerData ? playerData.bonus : 0;
+					});
 				});
-			});
-			this.isLoading = false;
-		});
+
+				return teams;
+			}),
+			tap(teams => this._tempScore = teams),
+			tap(() => this._isLoadingSubject.next(false)),
+		);
+	}
+
+	public changeRound(event: MatSelectChange): void {
+		this._chosenRoundSubject.next(event.value);
+	}
+
+	public onScoreChange(player: Player, value: string, type: string): void {
+		this._tempScore[player.team].find(p => p.name === player.name)[type] = parseInt(value, 10);
 	}
 
 	public save(): void {
 		const savedPlayers: PlayerResult[] = [];
-		each(flatten(this.teams), (player) => {
-			savedPlayers.push(pick(player, ['name', 'score', 'bonus']));
+		const chosenRound = this._chosenRoundSubject.getValue();
+
+		each(this._tempScore, (team) => {
+			each(team, player => {
+				savedPlayers.push(pick(player, ['name', 'score', 'bonus']));
+			});
 		});
 
-		this.dataService.saveResults(savedPlayers, this.currentRound).then(() => {
-			this.snackBarService.messageSuccess('Wyniki zapisane');
+		this.store.saveResults(savedPlayers, chosenRound).then(() => {
+			this._snackBarService.messageSuccess('Wyniki zapisane');
 		});
-	}
-
-	public ngOnDestroy(): void {
-		if (this.dataSubscribtion) {
-			this.dataSubscribtion.unsubscribe();
-		}
-
-		if (this.roundScoreSubscribtion) {
-			this.roundScoreSubscribtion.unsubscribe();
-		}
 	}
 }

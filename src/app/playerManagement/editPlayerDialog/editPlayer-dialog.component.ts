@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Player } from '@app/home/home.model';
 import { cloneDeep } from 'lodash';
 import { CURRENT_ROUND, ROUNDS_ITERABLE } from '@app/variables';

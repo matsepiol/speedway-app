@@ -1,10 +1,16 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+
+import { MatTableDataSource } from '@angular/material/table';
+import { MatTabChangeEvent } from '@angular/material/tabs';
+import { MatSelectChange } from '@angular/material/select';
+
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { switchMap, tap, map } from 'rxjs/operators';
+
 import { Users } from '@app/users.model';
-import { MatTableDataSource, MatTabChangeEvent } from '@angular/material';
-import { DataService } from '../home/services/data.service';
 import { StatsData, TableData } from '@app/results/result.model';
 import { ROUNDS_QUANTITY, ROUNDS_ITERABLE } from '@app/variables';
-import { Subscription } from 'rxjs';
+import { Store } from '../home/services/store.service';
 
 @Component({
 	selector: 'app-history',
@@ -12,65 +18,63 @@ import { Subscription } from 'rxjs';
 	styleUrls: ['./history.component.scss']
 })
 
-export class HistoryComponent implements OnInit, OnDestroy {
+export class HistoryComponent implements OnInit {
 	public seasonIterable = [2018, 2019];
-	public currentSeason = this.seasonIterable[0];
-	public currentRound = ROUNDS_QUANTITY;
 	public roundsIterable = ROUNDS_ITERABLE;
-	public squads: StatsData[] = [];
-	public isLoading = false;
 	public users = Users;
-	public tableData: TableData[] = [];
-	public dataSource: MatTableDataSource<TableData>;
 	public loadingMessage = 'Wczytywanie...';
-	private historySquadsSubscribtion: Subscription;
-	historyTableSubscribtion: Subscription;
+
+	private _chosenSeasonSubject = new BehaviorSubject<number>(null);
+	public chosenSeason$: Observable<number> = this._chosenSeasonSubject.asObservable();
+
+	private _chosenRoundSubject = new BehaviorSubject<number>(null);
+	public chosenRound$: Observable<number> = this._chosenRoundSubject.asObservable();
+
+	private _isLoadingSubject = new BehaviorSubject<boolean>(true);
+	public isLoading$: Observable<boolean> = this._isLoadingSubject.asObservable();
+
+	public squads$: Observable<StatsData[]>;
+	public dataSource$: Observable<MatTableDataSource<TableData>>;
 
 	constructor(
-		public dataService: DataService,
+		public store: Store,
 	) {
 	}
 
 	public ngOnInit(): void {
-		this.fetchHistorySquads();
+		this._chosenSeasonSubject.next(this.seasonIterable[0]);
+		this._chosenRoundSubject.next(ROUNDS_QUANTITY);
+
+		this.squads$ = combineLatest(
+			this.chosenSeason$,
+			this.chosenRound$
+		).pipe(
+			tap(() => this._isLoadingSubject.next(true)),
+			switchMap(([season, round]) => this.store.getHistorySquads(season, round)),
+			tap(() => this._isLoadingSubject.next(false)),
+		);
 	}
 
-	public onRoundChange(): void {
-		this.fetchHistorySquads();
+	private fetchTableData(): void {
+		this.dataSource$ = this.chosenSeason$.pipe(
+			tap(() => this._isLoadingSubject.next(true)),
+			switchMap(season => this.store.getHistoryTable(season)),
+			map(table => new MatTableDataSource(table)),
+			tap(() => this._isLoadingSubject.next(false)),
+		);
 	}
 
-	public onSeasonChange(): void {
-		this.fetchHistorySquads();
+	public changeRound(event: MatSelectChange): void {
+		this._chosenRoundSubject.next(event.value);
 	}
 
-	public fetchHistorySquads(): void {
-		this.isLoading = true;
-		this.squads = [];
-
-		this.historySquadsSubscribtion = this.dataService.getHistorySquads(this.currentSeason, this.currentRound)
-			.subscribe((squads: StatsData[]) => {
-				this.squads = squads;
-				this.isLoading = false;
-			});
+	public changeSeason(event: MatSelectChange): void {
+		this._chosenSeasonSubject.next(event.value);
 	}
 
 	public onSelect(event: MatTabChangeEvent): void {
-		if (event.tab.textLabel === 'Tabela' && !this.tableData.length) {
-			this.historyTableSubscribtion = this.dataService.getHistoryTable(this.currentSeason)
-				.subscribe((table: TableData[]) => {
-					this.dataSource = new MatTableDataSource(table);
-					this.isLoading = false;
-				});
-		}
-	}
-
-	public ngOnDestroy(): void {
-		if (this.historySquadsSubscribtion) {
-			this.historySquadsSubscribtion.unsubscribe();
-		}
-
-		if (this.historyTableSubscribtion) {
-			this.historyTableSubscribtion.unsubscribe();
+		if (event.tab.textLabel === 'Tabela') {
+			this.fetchTableData();
 		}
 	}
 }

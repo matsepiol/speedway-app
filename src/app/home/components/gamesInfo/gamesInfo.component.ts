@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { DataService } from '@app/home/services/data.service';
-import { Options } from '@app/playerManagment/playerManagment.model';
+import { Component } from '@angular/core';
+import { Store } from '@app/home/services/store.service';
 
 @Component({
 	selector: 'app-games-info',
@@ -8,18 +7,8 @@ import { Options } from '@app/playerManagment/playerManagment.model';
 	styleUrls: ['./gamesInfo.component.scss'],
 })
 
-export class GamesInfoComponent implements OnInit {
-	public options: Options;
-	public isLoading: Boolean;
+export class GamesInfoComponent {
 	public loadingMessage = 'Wczytywanie...';
 
-	constructor(public dataService: DataService) { }
-
-	public ngOnInit() {
-		this.isLoading = true;
-		this.dataService.getOptions().subscribe(options => {
-			this.isLoading = false;
-			this.options = options;
-		});
-	}
+	constructor(public store: Store) { }
 }

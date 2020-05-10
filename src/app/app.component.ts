@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { filter, map, mergeMap } from 'rxjs/operators';
+import { Store } from './home/services/store.service';
 
 @Component({
 	selector: 'app-root',
@@ -13,10 +14,13 @@ export class AppComponent implements OnInit {
 	constructor(
 		private router: Router,
 		private activatedRoute: ActivatedRoute,
-		private titleService: Title
+		private titleService: Title,
+		private store: Store
 	) { }
 
 	ngOnInit() {
+		this.store.init();
+
 		const onNavigationEnd = this.router.events.pipe(filter(event => event instanceof NavigationEnd));
 
 		onNavigationEnd

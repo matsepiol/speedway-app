@@ -24,8 +24,8 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { ScoresGuard } from '@app/scores/scores.guard';
-import { PlayerManagmentModule } from './playerManagment/playerManagment.module';
-import { PlayerManagmentGuard } from './playerManagment/playerManagment.guard';
+import { PlayerManagementModule } from './playerManagement/playerManagement.module';
+import { PlayerManagementGuard } from './playerManagement/playerManagement.guard';
 
 @NgModule({
 	imports: [
@@ -42,7 +42,7 @@ import { PlayerManagmentGuard } from './playerManagment/playerManagment.guard';
 		HomeModule,
 		ScoresModule,
 		ResultsModule,
-		PlayerManagmentModule,
+		PlayerManagementModule,
 		HistoryModule,
 		LoginModule,
 		AppRoutingModule
@@ -51,7 +51,7 @@ import { PlayerManagmentGuard } from './playerManagment/playerManagment.guard';
 	providers: [
 		HomeGuard,
 		ScoresGuard,
-		PlayerManagmentGuard,
+		PlayerManagementGuard,
 		AuthenticationService
 	],
 	bootstrap: [AppComponent]

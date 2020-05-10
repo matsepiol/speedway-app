@@ -7,8 +7,8 @@
     <div class="container options">
       <mat-form-field>
 
-        <mat-select [(ngModel)]="currentSeason" (ngModelChange)="onSeasonChange()">
-          <mat-option *ngFor="let number of seasonIterable" [value]="number">Sezon {{number}}</mat-option>
+        <mat-select [value]="chosenSeason$ | async" (selectionChange)="changeSeason($event)">
+          <mat-option *ngFor="let number of seasonIterable" [value]="number">{{number}}</mat-option>
         </mat-select>
 
       </mat-form-field>
@@ -18,22 +18,23 @@
 
           <div>
             <mat-form-field>
-              <mat-select [(ngModel)]="currentRound" (ngModelChange)="onRoundChange()">
+
+              <mat-select [value]="chosenRound$ | async" (selectionChange)="changeRound($event)">
                 <mat-option *ngFor="let number of roundsIterable" [value]="number">Kolejka {{number}}</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
 
           <div>
-            <app-loader [isLoading]="isLoading" [message]="loadingMessage"></app-loader>
-            <app-round-score [squads]="squads"></app-round-score>
+            <app-loader [isLoading]="isLoading$ | async" [message]="loadingMessage"></app-loader>
+            <app-round-score [ngClass]="{ 'hidden': isLoading$ | async }" [squads]="squads$ | async"></app-round-score>
           </div>
 
         </mat-tab>
 
         <mat-tab label="Tabela">
-          <app-loader [isLoading]="isLoading" [message]="loadingMessage"></app-loader>
-          <app-table-score [dataSource]="dataSource"></app-table-score>
+          <app-loader [isLoading]="isLoading$ | async" [message]="loadingMessage"></app-loader>
+          <app-table-score [dataSource]="dataSource$ | async"></app-table-score>
         </mat-tab>
 
       </mat-tab-group>

@@ -1,5 +1,5 @@
-<app-loader [isLoading]="isLoading" [message]="loadingMessage"></app-loader>
-<div class="container row player-list" *ngIf="!isLoading">
+<app-loader [isLoading]="!(availablePlayers$ | async)?.length" [message]="loadingMessage"></app-loader>
+<div class="container row player-list" *ngIf="(availablePlayers$ | async)?.length">
 
   <div class="filter-wrapper">
     <mat-form-field>
@@ -20,18 +20,13 @@
       </mat-select>
     </mat-form-field>
 
-    <div class="checkbox-wrapper">
-      <mat-checkbox [(ngModel)]="filter.showMinimum" title="Schowaj grafiki i typ zawodników">
-        Tryb minimalistyczny
-      </mat-checkbox>
+    <mat-checkbox [(ngModel)]="filter.showMinimum" title="Schowaj grafiki i typ zawodników">
+      Tryb minimalistyczny
+    </mat-checkbox>
 
-      <mat-checkbox [(ngModel)]="filter.showSzrot" title="Pokaż szrotowych zawodników">
-        Pokaż szrotowców
-      </mat-checkbox>
-    </div>
-    <div class="ksm-counter" [ngClass]="{ 'is-wrong': (dataService.getKsmSum() | async) > 45 }">
-      <span>{{ dataService.getKsmSum() | async}}</span>
-      <p>Pozostały KSM: {{ dataService.getKsmLeft() | async}}</p>
+    <div class="ksm-counter" [ngClass]="{ 'is-wrong': (store.ksmSum$ | async) > 45 }">
+      <span>{{ store.ksmSum$ | async}}</span>
+      <p>Pozostały KSM: {{ store.ksmLeft$ | async}}</p>
     </div>
 
   </div>
@@ -51,17 +46,15 @@
     <button mat-raised-button color="primary" (click)="clearFilters()">Wyczyść filtry</button>
     <button mat-raised-button color="primary" (click)="clearSquad()">Wyczyść skład</button>
     <button mat-raised-button color="primary" (click)="exportSquad()">Eksportuj skład</button>
-    <button mat-raised-button color="primary" (click)="sendSquad()" *ngIf="!isUserSquadSent"
-      [disabled]="disableSendSquadButton()">Wyślij skład</button>
+    <button mat-raised-button color="primary" (click)="sendSquad()" *ngIf="!(isUserSquadSent$ | async)" [disabled]="disableSendSquadButton()">Wyślij skład</button>
   </div>
 
   <div class="available-players col-xs-6">
 
-    <div *ngFor="let player of availablePlayers | filter: filter" class="card"
-      [ngClass]="{ 'minimal': filter.showMinimum }">
+    <div *ngFor="let player of availablePlayers$ | async | filter: filter" class="card" [ngClass]="{ 'minimal': filter.showMinimum }">
       <div class="card-body" (click)="selectPlayer(player)">
         <h5 class="card-title">{{player.name}}
-          <span class="ksm">KSM: <b>{{player.ksm[currentRound - 1]}}</b></span>
+          <span class="ksm">KSM: <b>{{player.ksm[(currentRound$ | async) - 1]}}</b></span>
         </h5>
         <p class="card-text" *ngIf="!filter.showMinimum">{{player.type}}</p>
         <img *ngIf="!filter.showMinimum" src="../../../../assets/logos/{{ player.team }}.jpg" />
@@ -69,7 +62,7 @@
     </div>
   </div>
   <div class="selected-players col-xs-6">
-    <div class="selected-player" *ngFor="let player of selectedPlayers; let i = index">
+    <div class="selected-player" *ngFor="let player of selectedPlayers$ | async; let i = index">
       <span class="player-counter">{{i + 1 }}.</span>
       <div class="card" [ngClass]="{ 'placeholder': player.placeholder }">
 
@@ -79,7 +72,7 @@
 
         <div class="card-body" *ngIf="!player.placeholder" (click)="unselectPlayer(player, i)">
           <h5 class="card-title">{{player.name}} KSM:
-            <b>{{player.ksm[currentRound - 1]}}</b>
+            <b>{{player.ksm[(currentRound$ | async) - 1]}}</b>
           </h5>
           <p class="card-text">{{player.type}}</p>
           <img src="../../../../assets/logos/{{ player.team }}.jpg" />
@@ -90,7 +83,7 @@
 
 </div>
 <div class="mobile-selected-players">
-  <div class="mobile-selected-player" *ngFor="let player of selectedPlayers; let i = index">
+  <div class="mobile-selected-player" *ngFor="let player of selectedPlayers$ | async; let i = index">
     <div class="card" [ngClass]="{ 'placeholder': player.placeholder }">
 
       <div *ngIf="player.placeholder">
@@ -100,15 +93,15 @@
       <div class="card-body" *ngIf="!player.placeholder" (click)="unselectPlayer(player, i)">
         <h5 class="card-title">{{player.name}}
           <span>KSM:
-            <b>{{player.ksm[currentRound - 1]}}</b>
+            <b>{{player.ksm[(currentRound$ | async) - 1]}}</b>
           </span>
         </h5>
       </div>
     </div>
   </div>
 
-  <div class="ksm-counter" [ngClass]="{ 'is-wrong': (dataService.getKsmSum() | async) > 45 }">
-    <span>{{ dataService.getKsmSum() | async}}</span>
+  <div class="ksm-counter" [ngClass]="{ 'is-wrong': (store.ksmSum$ | async) > 45 }">
+    <span>{{ store.ksmSum$ | async}}</span>
   </div>
 
 </div>

@@ -19,6 +19,7 @@ const emailList = [
 	'niemiec.agnieszka@interia.pl',
 	'odi0@onet.eu',
 	'malgorzatanalepa@op.pl',
+	'marek.k83@gmail.com'
 ];
 
 @Component({
@@ -42,7 +43,7 @@ export class LoginComponent {
 		this.isLoading = true;
 
 		this.authenticationService.signInWithFacebook()
-			.then((res) => {
+			.then(res => {
 				if (emailList.indexOf(res.user.email) !== -1) {
 					this.isLoading = false;
 					this.error = null;

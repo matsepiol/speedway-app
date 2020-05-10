@@ -7,33 +7,34 @@
     <button mat-raised-button color="primary" (click)="save()">Save</button>
     <mat-form-field class="round-picker">
 
-      <mat-select [(ngModel)]="currentRound" (ngModelChange)="onRoundChange()">
+      <mat-select [value]="(store.options$ | async).currentRound" (selectionChange)="changeRound($event)">
         <mat-option *ngFor="let number of roundsIterable" [value]="number">Kolejka {{number}}</mat-option>
       </mat-select>
     </mat-form-field>
   </div>
 
+
   <div class="container">
 
-    <app-loader [isLoading]="isLoading" [message]="loadingMessage"></app-loader>
+    <app-loader [isLoading]="isLoading$ | async" [message]="loadingMessage"></app-loader>
+    <div class="team-wrapper">
+      <mat-expansion-panel [expanded]="true" *ngFor="let team of (teams$ | async) | keyvalue" class="card" [ngClass]="{ 'hidden': isLoading$ | async }">
+        <mat-expansion-panel-header>{{team.key}}</mat-expansion-panel-header>
+        <div *ngFor="let player of team.value">
+          <span class="player">{{player.name}}</span>
 
-    <mat-expansion-panel [expanded]="true" *ngFor="let team of teams" class="card">
-      <mat-expansion-panel-header>{{team[0].team}}</mat-expansion-panel-header>
-      <div *ngFor="let player of team">
-        <span class="player">{{player.name}}</span>
-        <form>
+          <form class="input-wrapper">
+            <mat-form-field>
+              <input matInput type="number" min="0" [value]="player.score" name="score" (input)="onScoreChange(player, $event.target.value, 'score')" />
+            </mat-form-field>
+            <mat-form-field>
+              <input matInput type="number" min="0" [value]="player.bonus" name="bonus" (input)="onScoreChange(player, $event.target.value, 'bonus')" />
+            </mat-form-field>
+          </form>
 
-          <mat-form-field>
-            <input matInput type="number" min="0" [(ngModel)]="player.score" name="score" />
-          </mat-form-field>
-          <mat-form-field>
-            <input matInput type="number" min="0" [(ngModel)]="player.bonus" name="bonus" />
-          </mat-form-field>
-
-        </form>
-
-        <mat-divider></mat-divider>
-      </div>
-    </mat-expansion-panel>
+          <mat-divider></mat-divider>
+        </div>
+      </mat-expansion-panel>
+    </div>
   </div>
 </div>

@@ -24,7 +24,7 @@ export class AuthenticationService {
 	}
 
 	signInWithFacebook(): Promise<firebase.auth.UserCredential> {
-		return this._firebaseAuth.auth.signInWithPopup(
+		return this._firebaseAuth.signInWithPopup(
 			new firebase.auth.FacebookAuthProvider()
 		);
 	}

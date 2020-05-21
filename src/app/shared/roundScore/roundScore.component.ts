@@ -11,9 +11,8 @@ import { Squad } from '@app/scores/scores.model';
 
 export class RoundScoreComponent {
 	public users = Users;
+	@Input() public squads: Squad[];
 
-	@Input() squads: Squad[];
-
-	constructor() {	}
+	constructor() {}
 
 }

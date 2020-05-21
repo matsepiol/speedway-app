@@ -67,8 +67,14 @@ export class ResultsComponent implements OnInit {
 			}),
 			map(([squads, scores, round]) => {
 				const playersResult: Squad[] = [];
+
+				Object.keys(Users).forEach((userId: string) => {
+					playersResult.push({ userId, team: [], results: [] });
+				});
+
 				squads.forEach(s => {
-					playersResult.push({ userId: s.key, team: s.value, results: [] });
+					const playerResult = playersResult.find(result => result.userId === s.key);
+					playerResult.team = s.value;
 				});
 
 				playersResult.forEach(playerResult => {

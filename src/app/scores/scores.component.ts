@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 
 import { Observable, combineLatest, BehaviorSubject } from 'rxjs';
-import { map, tap, switchMap, first } from 'rxjs/operators';
+import { map, first, take } from 'rxjs/operators';
 
 import { each, find, groupBy, pick, Dictionary } from 'lodash';
 
@@ -20,11 +20,10 @@ import { Player, PlayerResult } from '../home/home.model';
 export class ScoresComponent implements OnInit {
 	public teams$: Observable<Dictionary<Player[]>>;
 
-	private _chosenRoundSubject = new BehaviorSubject<number>(null);
-	public chosenRound$: Observable<number> = this._chosenRoundSubject.asObservable();
+	public chosenRound: number;
 
 	private _isLoadingSubject = new BehaviorSubject<boolean>(true);
-	public isLoading$: Observable<boolean> = this._isLoadingSubject.asObservable();
+	public isLoading$: Observable<boolean>;
 
 	public roundsIterable = ROUNDS_ITERABLE;
 	public loadingMessage = 'Wczytywanie...';
@@ -38,18 +37,25 @@ export class ScoresComponent implements OnInit {
 	}
 
 	public ngOnInit(): void {
+		this.isLoading$ = this._isLoadingSubject.asObservable();
+
 		this.store.options$.pipe(
 			first(options => !!options.currentRound)
-		).subscribe(options => this._chosenRoundSubject.next(options.currentRound));
+		).subscribe(options => {
+			this.chosenRound = options.currentRound;
+			this.teams$ = this._getTeamsResults(options.currentRound);
+		});
 
-		this.teams$ = this.chosenRound$.pipe(
-			tap(() => this._isLoadingSubject.next(true)),
-			switchMap(round => {
-				return combineLatest(
-					this.store.data$,
-					this.store.getRoundScore(round)
-				);
-			}),
+	}
+
+	private _getTeamsResults(round: number): Observable<Dictionary<Player[]>> {
+		this._isLoadingSubject.next(true);
+
+		return combineLatest(
+			this.store.data$,
+			this.store.getRoundScore(round)
+		).pipe(
+			take(1),
 			map(([data, score]) => {
 				const teams = groupBy(data, 'team');
 				each(teams, (team) => {
@@ -60,15 +66,17 @@ export class ScoresComponent implements OnInit {
 					});
 				});
 
+				this._tempScore = teams;
+				this._isLoadingSubject.next(false);
+
 				return teams;
 			}),
-			tap(teams => this._tempScore = teams),
-			tap(() => this._isLoadingSubject.next(false)),
 		);
 	}
 
 	public changeRound(event: MatSelectChange): void {
-		this._chosenRoundSubject.next(event.value);
+		this.chosenRound = event.value;
+		this.teams$ = this._getTeamsResults(event.value);
 	}
 
 	public onScoreChange(player: Player, value: string, type: string): void {
@@ -77,15 +85,13 @@ export class ScoresComponent implements OnInit {
 
 	public save(): void {
 		const savedPlayers: PlayerResult[] = [];
-		const chosenRound = this._chosenRoundSubject.getValue();
-
 		each(this._tempScore, (team) => {
 			each(team, player => {
 				savedPlayers.push(pick(player, ['name', 'score', 'bonus']));
 			});
 		});
 
-		this.store.saveResults(savedPlayers, chosenRound).then(() => {
+		this.store.saveResults(savedPlayers, this.chosenRound).then(() => {
 			this._snackBarService.messageSuccess('Wyniki zapisane');
 		});
 	}

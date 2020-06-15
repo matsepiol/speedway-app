@@ -18,7 +18,6 @@ const emailList = [
 	'tomaszpawelbedkowski@gmail.com',
 	'niemiec.agnieszka@interia.pl',
 	'odi0@onet.eu',
-	'malgorzatanalepa@op.pl',
 ];
 
 @Component({

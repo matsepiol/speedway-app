@@ -10,6 +10,5 @@ export enum Users {
 	'SitmIh3X0shIWueB47xGngHeqHH3' = 'Dawid Poziomski',
 	'irHsihWshPXjcoEhmD3ryogcJCo1' = 'Witek Suwalski',
 	'nCnHvhYvcubTEVxJ3cUfrJyg04P2' = 'Maciej Sobol',
-	'KnUEiXOQToPNuBe69iJb8iFz5nE2' = 'Małgorzata Nalepa',
 	'2d30gEMjuzQvPrywspZb5JKkyWv1' = 'Artur Szombierski'
 }

@@ -50,7 +50,9 @@ export class PlayersListComponent implements OnInit {
 		// const initialSelection = JSON.parse(localStorage.getItem('teamSelection')) || cloneDeep(teamPlaceholder);
 		// this.store.setSelection(initialSelection);
 
-		this.players$ = this.store.data$;
+		this.players$ = this.store.data$.pipe(
+			map(players => players.filter(player => !player.szrot))
+		);
 
 		this.selectedPlayers$ = this.store.selectedPlayers$.pipe(
 			filter(selected => !!selected.length),

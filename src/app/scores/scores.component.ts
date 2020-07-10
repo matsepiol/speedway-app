@@ -45,14 +45,15 @@ export class ScoresComponent implements OnInit {
 			this.chosenRound = options.currentRound;
 			this.teams$ = this._getTeamsResults(options.currentRound);
 		});
-
 	}
 
 	private _getTeamsResults(round: number): Observable<Dictionary<Player[]>> {
 		this._isLoadingSubject.next(true);
 
 		return combineLatest(
-			this.store.data$,
+			this.store.data$.pipe(
+				map(players => players.filter(player => !player.szrot))
+			),
 			this.store.getRoundScore(round)
 		).pipe(
 			take(1),

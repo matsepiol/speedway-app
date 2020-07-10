@@ -4,6 +4,7 @@ import { Filter, PlayerType, Player } from '../../home/home.model';
 import { Store } from '../../home/services/store.service';
 import { combineLatest } from 'rxjs';
 import { CURRENT_ROUND } from '@app/variables';
+import { take } from 'rxjs/operators';
 
 @Pipe({
 	name: 'filter',
@@ -17,29 +18,33 @@ export class FilterPipe implements PipeTransform {
 		let tempItems = items;
 
 		if (term.showPossiblePlayers) {
-			combineLatest(this.store.selectedPlayers$, this.store.ksmLeft$)
-			.subscribe(([selected, ksmLeft]) => {
-				const selection = countBy(selected.filter((item) => !item.placeholder), 'type');
+			combineLatest(
+				this.store.selectedPlayers$,
+				this.store.ksmLeft$,
+				this.store.options$
+			).pipe(take(1))
+				.subscribe(([selected, ksmLeft, options]) => {
+					const selection = countBy(selected.filter((item) => !item.placeholder), 'type');
 
-				selection.Obcokrajowiec = selection.Obcokrajowiec || 0;
-				selection.Senior = selection.Senior || 0;
-				selection.Junior = selection.Junior || 0;
+					selection.Obcokrajowiec = selection.Obcokrajowiec || 0;
+					selection.Senior = selection.Senior || 0;
+					selection.Junior = selection.Junior || 0;
 
-				if (selection.Obcokrajowiec === 3) {
-					tempItems = tempItems.filter(player => PlayerType.OBCOKRAJOWIEC.indexOf(player.type) === -1);
-				}
+					if (selection.Obcokrajowiec === 3) {
+						tempItems = tempItems.filter(player => PlayerType.OBCOKRAJOWIEC.indexOf(player.type) === -1);
+					}
 
-				if (selection.Obcokrajowiec + selection.Senior >= 5) {
-					tempItems = tempItems.filter(player => PlayerType.SENIOR.indexOf(player.type) === -1);
-					tempItems = tempItems.filter(player => PlayerType.OBCOKRAJOWIEC.indexOf(player.type) === -1);
-				}
+					if (selection.Obcokrajowiec + selection.Senior >= 5) {
+						tempItems = tempItems.filter(player => PlayerType.SENIOR.indexOf(player.type) === -1);
+						tempItems = tempItems.filter(player => PlayerType.OBCOKRAJOWIEC.indexOf(player.type) === -1);
+					}
 
-				if (selection.Obcokrajowiec + selection.Senior + selection.Junior >= 7) {
-					tempItems = tempItems.filter(player => PlayerType.JUNIOR.indexOf(player.type) === -1);
-				}
+					if (selection.Obcokrajowiec + selection.Senior + selection.Junior >= 7) {
+						tempItems = tempItems.filter(player => PlayerType.JUNIOR.indexOf(player.type) === -1);
+					}
 
-				tempItems = tempItems.filter(player => player.ksm && player.ksm[CURRENT_ROUND - 1] <= ksmLeft);
-			});
+					tempItems = tempItems.filter(player => player.ksm && player.ksm[options.currentRound - 1] <= ksmLeft);
+				});
 		}
 
 		if (term.searchQuery.length) {
@@ -60,8 +65,11 @@ export class FilterPipe implements PipeTransform {
 
 		if (term.sort === 'ksm') {
 			if (tempItems) {
-				tempItems.sort((a, b) => b.ksm[CURRENT_ROUND - 1] - a.ksm[CURRENT_ROUND - 1]);
+				this.store.options$.pipe(take(1)).subscribe(options => {
+					tempItems.sort((a, b) => b.ksm[options.currentRound - 1] - a.ksm[options.currentRound - 1]);
+				});
 			}
+
 		}
 
 		return tempItems;

@@ -5,17 +5,25 @@
     <div class="container">
       <div class="card col-md-6 mt-3 mx-auto">
         <div class="card-body">
-          <h4 class="card-title text-center">
-            <i class="far fa-3x fa-user-circle text-muted"></i>
-          </h4>
 
-          <button type="submit" class="btn btn-primary w-100" (click)="signInWithFacebook()">
-            <i class="fas fa-cog fa-spin" *ngIf="isLoading"></i>
-            Zaloguj się przez Facebooka
+          <form [formGroup]="signInForm">
+            <mat-form-field>
+              <mat-label>Login</mat-label>
+              <input matInput type="text" formControlName="login" />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Password</mat-label>
+                <input matInput type="password" formControlName="password" />
+            </mat-form-field>
+          </form>
+
+          <button type="submit" class="btn btn-primary w-100" (click)="signInWithLoginAndPassword()">
+            <i class="fas fa-cog fa-spin" *ngIf="isSignInLoading"></i>
+            Zaloguj się
           </button>
         </div>
 
-        <p class="error-msg" *ngIf="error">{{error}}</p>
+        <p class="error-msg" *ngIf="signInError">{{signInError}}</p>
       </div>
     </div>
   </div>

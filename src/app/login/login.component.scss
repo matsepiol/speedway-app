@@ -7,6 +7,16 @@
   bottom: 0;
   left: 0;
   right: 0;
+
+  .container {
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+form {
+  display: flex;
+  flex-direction: column;
 }
 
 .error-msg {
@@ -15,6 +25,10 @@
   margin: 10px 0;
   padding: 12px;
   text-align: center;
+}
+
+.card {
+  margin: 20px;
 }
 
 .login-box {

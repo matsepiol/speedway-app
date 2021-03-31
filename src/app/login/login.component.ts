@@ -1,34 +1,23 @@
-import { Component, ChangeDetectorRef  } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AuthenticationService } from '../authentication/authentication.service';
-
-const emailList = [
-	'matsepiol@interia.pl',
-	'szymoneczek134@op.pl',
-	'ligieza.lukasz@gmail.com',
-	'orlikowskimichal@wp.pl',
-	'zioma@o2.pl',
-	'aleksandra_nalepa@op.pl',
-	'oxloczekxo@o2.pl',
-	'areksuwalski@gmail.com',
-	'witek0709@poczta.onet.pl',
-	'riccaldi@gmail.com',
-	'smaciek1@op.pl',
-	'tomaszpawelbedkowski@gmail.com',
-	'niemiec.agnieszka@interia.pl',
-	'odi0@onet.eu',
-];
+import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({
 	selector: 'app-login',
 	templateUrl: './login.component.html',
 	styleUrls: ['./login.component.scss']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
-	error: string;
-	isLoading = false;
+	registerError: string;
+	signInError: string;
+	isRegisterLoading = false;
+	isSignInLoading = false;
+
+	registerForm: FormGroup;
+	signInForm: FormGroup;
 
 	constructor(
 		private router: Router,
@@ -37,30 +26,59 @@ export class LoginComponent {
 	) {
 	}
 
-	public signInWithFacebook() {
-		this.isLoading = true;
+	ngOnInit() {
+		this.registerForm = new FormGroup({
+			login: new FormControl(''),
+			password: new FormControl('')
+		});
 
-		this.authenticationService.signInWithFacebook()
-			.then(res => {
-				if (emailList.indexOf(res.user.email) !== -1) {
-					this.isLoading = false;
-					this.error = null;
-					localStorage.setItem('currentUser', JSON.stringify(res));
-					this.authenticationService.authenticate();
-					this.router.navigate(['/']);
-					setTimeout(() => {
-						window.location.reload();
-					}, 0);
-				} else {
-					this.isLoading = false;
-					this.error = 'Nie masz uprawnień, by się zalogować. Skontaktuj się z administratorem.';
-					this.cdr.detectChanges();
-				}
-			})
-			.catch((err) => {
-				this.isLoading = false;
-				console.log(err);
-			});
+		this.signInForm = new FormGroup({
+			login: new FormControl(''),
+			password: new FormControl('')
+		});
+	}
+
+	public signInWithLoginAndPassword() {
+		this.isSignInLoading = true;
+		this.authenticationService.signIn(
+			this.signInForm.controls.login.value,
+			this.signInForm.controls.password.value
+		).then(res => {
+			this.isSignInLoading = false;
+			this.signInError = null;
+			localStorage.setItem('currentUser', JSON.stringify(res));
+			this.authenticationService.authenticate();
+			this.router.navigate(['/']);
+			setTimeout(() => {
+				window.location.reload();
+			}, 0);
+		}).catch(err => {
+			this.isSignInLoading = false;
+			this.signInError = err;
+		});
+	}
+
+	public registerWithLoginAndPassword() {
+		this.isRegisterLoading = true;
+
+		this.authenticationService.createUser(
+			this.registerForm.controls.login.value,
+			this.registerForm.controls.password.value
+		).then(res => {
+			this.isRegisterLoading = false;
+			this.registerError = null;
+
+			localStorage.setItem('currentUser', JSON.stringify(res));
+			this.authenticationService.authenticate();
+			this.router.navigate(['/']);
+			setTimeout(() => {
+				window.location.reload();
+			}, 0);
+
+		}).catch(err => {
+			this.isRegisterLoading = false;
+			this.registerError = err;
+		});
 	}
 
 }

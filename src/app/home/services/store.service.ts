@@ -116,6 +116,14 @@ export class Store {
 		return this.db.list<StatsData>(`/history/${season}/squads/${round}`).valueChanges();
 	}
 
+	public getHistory(): Observable<StatsData[]> {
+		return this.db.list<StatsData>(`/history`).valueChanges();
+	}
+
+	public saveHistory(data: any) {
+		return this.db.object<any>(`/history`).set(data);
+	}
+
 	public getHistoryTable(season: number): Observable<TableData[]> {
 		return this.db.list<TableData>(`/history/${season}/table`).valueChanges();
 	}

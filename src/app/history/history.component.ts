@@ -19,7 +19,7 @@ import { Store } from '../home/services/store.service';
 })
 
 export class HistoryComponent implements OnInit {
-	public seasonIterable = [2018, 2019];
+	public seasonIterable = [2018, 2019, 2020];
 	public roundsIterable = ROUNDS_ITERABLE;
 	public users = Users;
 	public loadingMessage = 'Wczytywanie...';
@@ -42,7 +42,7 @@ export class HistoryComponent implements OnInit {
 	}
 
 	public ngOnInit(): void {
-		this._chosenSeasonSubject.next(this.seasonIterable[0]);
+		this._chosenSeasonSubject.next(this.seasonIterable[this.seasonIterable.length - 1]);
 		this._chosenRoundSubject.next(ROUNDS_QUANTITY);
 
 		this.squads$ = combineLatest(

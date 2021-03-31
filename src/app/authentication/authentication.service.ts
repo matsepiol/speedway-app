@@ -29,20 +29,32 @@ export class AuthenticationService {
 		);
 	}
 
+	createUser(email: string, password: string) {
+		return this._firebaseAuth.createUserWithEmailAndPassword(email, password).then((credentials => {
+			return credentials;
+		}));
+	}
+
+	signIn(email: string, password: string) {
+		return this._firebaseAuth.signInWithEmailAndPassword(email, password).then((credentials) => {
+			return credentials;
+		})
+	}
+
 	isLoggedIn(): boolean {
 		return !!localStorage.getItem('currentUser');
 	}
 
 	isAdmin(): boolean {
 		// admin id
-		return JSON.parse(localStorage.getItem('currentUser')).user.uid === '4h41P3l8XqYRW7YSBy3LA9pYGOt2';
+		return JSON.parse(localStorage.getItem('currentUser')).user.uid === '5f0StLUdrFQkqTfy4Fbzahx26592';
 	}
 
 	isModerators(): boolean {
 		const userId = JSON.parse(localStorage.getItem('currentUser')).user.uid;
 
 		// Mati || Łukasz || Sobol
-		const moderators = ['4h41P3l8XqYRW7YSBy3LA9pYGOt2', 'Gxhqkwmu0VfaMAsiWy6xSPj367z1', 'nCnHvhYvcubTEVxJ3cUfrJyg04P2'];
+		const moderators = ['5f0StLUdrFQkqTfy4Fbzahx26592', 'S92wzyyzU5aAUgNjlS6EN1OJQVh2', 'QScmRVQyJ5VyyYu0r8wDU4Ybasi2'];
 		return moderators.indexOf(userId) !== -1;
 	}
 

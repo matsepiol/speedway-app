@@ -1,5 +1,5 @@
 <mat-expansion-panel [expanded]="true" *ngFor="let squad of squads | sortPlayers; let i = index" class="card">
-  <mat-expansion-panel-header>{{ i + 1 }}. {{users[squad.userId]}}</mat-expansion-panel-header>
+  <mat-expansion-panel-header>{{ i + 1 }}. {{squad.userName || users[squad.userId]}}</mat-expansion-panel-header>
   <div class="player" *ngFor="let result of squad.results">
     <span class="name">{{result.name}}</span>
     <span class="score">{{result.score}} + {{result.bonus}}</span>

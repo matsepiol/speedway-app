@@ -26,7 +26,7 @@ export class HeaderComponent implements OnInit {
 	}
 
 	get username(): string | null {
-		return this.authenticationService.userDetails ? this.authenticationService.userDetails.displayName : null;
+		return this.authenticationService.userDetails ? this.authenticationService.userDetails.email : null;
 	}
 
 }

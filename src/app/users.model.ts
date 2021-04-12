@@ -10,5 +10,7 @@ export enum Users {
 	'q4513BAFbDM9lTPeALv7BYfZPml1' = 'Tomasz Będkowski',
 	'rFx1venNKKTRgocPA92DFcoIqgd2' = 'Dawid Poziomski',
 	'CccBEcS8N1M5rGQczzatbmbbiHj2' = 'Witek Suwalski',
-	'2d30gEMjuzQvPrywspZb5JKkyWv1' = 'Artur Szombierski',
+	'KTRZR26iTZXj6pJmty7rK14cfij1' = 'Artur Szombierski',
+	'9jIA1qkuJCN7QXnPdCcBqqRgBd72' = 'Bartek Jagusiak',
+	'J5H1sgUWx7hmRP3XRlQ0BWSeMzH2' = 'Ewa Skibińska',
 }

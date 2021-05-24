@@ -73,8 +73,9 @@ export class PlayersListComponent implements OnInit {
 		);
 
 		this.currentRound$ = this.store.options$.pipe(
+			tap((options) => this.date = new Date(options.date)),
 			map(options => options.currentRound),
-			tap(() => this.store.getCurrentRoundSquad())
+			tap(() => this.store.getCurrentRoundSquad()),
 		);
 
 		this.store.calculateKsmSum();
@@ -165,3 +166,54 @@ export class PlayersListComponent implements OnInit {
 	}
 
 }
+
+const input = {
+	Tony: ['C++', 'JavaScript', 'Ruby'],
+	Maria: ['C', 'Python'],
+	George: ['C++', 'Python'],
+	Matt: 'JavaScript'
+}
+
+const output = {
+	'C': ['Maria'],
+	'C++': ['Tony', 'George'],
+	'JavaScript': ['Tony', 'Matt'],
+	'Ruby': ['Tony'],
+	'Python': ['Maria', 'George']
+}
+
+const newOutput = mappingFunction(input);
+
+function mappingFunction(input) {
+
+}
+
+
+let i = 0;
+
+for (i; i < 3; i++) {
+	setTimeout(() => {
+		console.log(i);
+	})
+}
+
+//////////////////////
+
+Object.prototype.toString = function () {
+	return JSON.stringify(this);
+}
+
+const obj = {
+	foo: 'bar'
+};
+
+alert(obj);
+
+//////////////////
+
+var foo = 1
+var foobar = function() {
+  console.log(foo)
+  var foo = 2
+}
+foobar()

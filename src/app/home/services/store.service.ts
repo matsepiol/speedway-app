@@ -178,7 +178,7 @@ export class Store {
 
 		if (index === 0 || index === 4) {
 			for (let i = 1; i < 4; i++) {
-				if (selectedPlayers[i].type === PlayerType.SENIOR) {
+				if (selectedPlayers[i].type === PlayerType.SENIOR && !selectedPlayers[i].u24) {
 					selectedPlayers[index] = selectedPlayers[i];
 					selectedPlayers[i] = obcokrajowiecPlaceholder;
 					this.setSelection(selectedPlayers);
@@ -236,27 +236,43 @@ export class Store {
 		}
 
 		if (player.type === PlayerType.OBCOKRAJOWIEC) {
-			index = selectedPlayers.findIndex(item => item.type === PlayerType.OBCOKRAJOWIEC && item.placeholder);
+			if (player.u24) {
+				index = selectedPlayers.findIndex((item, i) => item.type === PlayerType.OBCOKRAJOWIEC && item.placeholder && i === 3)
+			} else {
+				index = selectedPlayers.findIndex((item, i) => item.type === PlayerType.OBCOKRAJOWIEC && i !== 3 && item.placeholder);
+			}
 
-			if (index === -1) {
+			if (index === -1 && selectedPlayers[3].placeholder) {
+				this.snackBarService.messageError('Musisz dodać zawodnika U24');
+			} else if (index === -1) {
 				this.snackBarService.messageError('Za dużo obcokrajowców');
 			}
 		}
 
 		if (player.type === PlayerType.SENIOR) {
-			index = selectedPlayers.findIndex(item => item.type === PlayerType.SENIOR && item.placeholder);
-
-			if (index === -1) {
-				index = selectedPlayers.findIndex(item => item.type === PlayerType.OBCOKRAJOWIEC && item.placeholder);
+			if (player.u24) {
+				index = selectedPlayers.findIndex((item, i) => item.type === PlayerType.OBCOKRAJOWIEC && item.placeholder && i === 3)
+			} else {
+				index = selectedPlayers.findIndex(item => item.type === PlayerType.SENIOR && item.placeholder);
 			}
 
 			if (index === -1) {
+				index = selectedPlayers.findIndex((item, i) => item.type === PlayerType.OBCOKRAJOWIEC && i !== 3 && item.placeholder);
+			}
+
+			if (index === -1 && selectedPlayers[3].placeholder) {
+				this.snackBarService.messageError('Musisz dodać zawodnika U24');
+			} else if (index === -1) {
 				this.snackBarService.messageError('Musisz dodać juniora');
 			}
 		}
 
 		if (player.type === PlayerType.JUNIOR) {
 			index = selectedPlayers.findIndex(item => item.type === PlayerType.JUNIOR && item.placeholder);
+
+			if (index === -1) {
+				index = selectedPlayers.findIndex((item, i) => item.type === PlayerType.OBCOKRAJOWIEC && item.placeholder && i === 3)
+			}
 
 			if (index === -1) {
 				index = selectedPlayers.findIndex(item => item.type === PlayerType.SENIOR && item.placeholder);

@@ -56,7 +56,15 @@ export class FilterPipe implements PipeTransform {
 		}
 
 		if (term.type.length) {
-			tempItems = tempItems.filter(player => term.type.indexOf(player.type) >= 0);
+			let typeFilter = [...term.type];
+			if (term.type.indexOf('U24') >= 0) {
+				tempItems = tempItems.filter(player => player.u24);
+			}
+
+			typeFilter = typeFilter.filter(filter => filter !== 'U24');
+			if (typeFilter.length) {
+				tempItems = tempItems.filter(player => typeFilter.indexOf(player.type) >= 0);
+			}
 		}
 
 		if (term.sort === 'team') {

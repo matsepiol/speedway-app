@@ -10,6 +10,7 @@
     <mat-form-field>
       <mat-select multiple placeholder="Filtruj typ zawodnika" [(ngModel)]="filter.type">
         <mat-option *ngFor="let type of typeFilters" [value]="type">{{type}}</mat-option>
+        <mat-option value="U24">U24</mat-option>
       </mat-select>
     </mat-form-field>
 
@@ -67,7 +68,7 @@
       <div class="card" [ngClass]="{ 'placeholder': player.placeholder }">
 
         <div *ngIf="player.placeholder">
-          <p class="card-text">{{player.type}}</p>
+          <p class="card-text">{{player.type === 'Obcokrajowiec' && i === 3 ? 'U-24' : player.type}}</p>
         </div>
 
         <div class="card-body" *ngIf="!player.placeholder" (click)="unselectPlayer(player, i)">

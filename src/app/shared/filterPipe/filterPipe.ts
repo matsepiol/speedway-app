@@ -3,7 +3,6 @@ import { countBy, orderBy } from 'lodash';
 import { Filter, PlayerType, Player } from '../../home/home.model';
 import { Store } from '../../home/services/store.service';
 import { combineLatest } from 'rxjs';
-import { CURRENT_ROUND } from '@app/variables';
 import { take } from 'rxjs/operators';
 
 @Pipe({
@@ -30,8 +29,22 @@ export class FilterPipe implements PipeTransform {
 					selection.Senior = selection.Senior || 0;
 					selection.Junior = selection.Junior || 0;
 
-					if (selection.Obcokrajowiec === 3) {
+					const isU24 = !!selected.find(rider => rider.u24 && rider.type !== PlayerType.JUNIOR);
+
+					if (selection.Obcokrajowiec === 2 && !isU24) {
+						tempItems = tempItems.filter(player => PlayerType.OBCOKRAJOWIEC.indexOf(player.type) === -1 || player.u24);
+					}
+
+					if (selection.Obcokrajowiec === 2 && isU24) {
 						tempItems = tempItems.filter(player => PlayerType.OBCOKRAJOWIEC.indexOf(player.type) === -1);
+					}
+
+					if (selection.Obcokrajowiec >= 3) {
+						tempItems = tempItems.filter(player => PlayerType.OBCOKRAJOWIEC.indexOf(player.type) === -1);
+					}
+
+					if (selection.Obcokrajowiec + selection.Senior === 4 && !isU24) {
+						tempItems = tempItems.filter(player => player.u24);
 					}
 
 					if (selection.Obcokrajowiec + selection.Senior >= 5) {

@@ -88,7 +88,7 @@
     <div class="card" [ngClass]="{ 'placeholder': player.placeholder }">
 
       <div *ngIf="player.placeholder">
-        <p class="card-text">{{player.type}}</p>
+        <p class="card-text">{{player.type === 'Obcokrajowiec' && i === 3 ? 'U-24' : player.type}}</p>
       </div>
 
       <div class="card-body" *ngIf="!player.placeholder" (click)="unselectPlayer(player, i)">

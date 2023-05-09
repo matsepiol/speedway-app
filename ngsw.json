@@ -1,0 +1,96 @@
+{
+  "configVersion": 1,
+  "timestamp": 1680788489818,
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/5-es2015.6058ccf7fe585323a1f7.js",
+        "/5-es5.6058ccf7fe585323a1f7.js",
+        "/favicon.ico",
+        "/index.html",
+        "/main-es2015.5155d1a3a05b4b1b0a94.js",
+        "/main-es5.5155d1a3a05b4b1b0a94.js",
+        "/polyfills-es2015.7c8b864776fcbdd079aa.js",
+        "/polyfills-es5.d29163f7a6d459e5c32d.js",
+        "/runtime-es2015.366cd03f5fa1d33c5881.js",
+        "/runtime-es5.366cd03f5fa1d33c5881.js",
+        "/styles.78baed9d392e3b0a0126.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/assets/logos/Częstochowa.jpg",
+        "/assets/logos/Gorzów.jpg",
+        "/assets/logos/Grudziądz.jpg",
+        "/assets/logos/Krosno.jpg",
+        "/assets/logos/Leszno.jpg",
+        "/assets/logos/Lublin.jpg",
+        "/assets/logos/Ostrów.jpg",
+        "/assets/logos/Tarnów.jpg",
+        "/assets/logos/Toruń.jpg",
+        "/assets/logos/Wrocław.jpg",
+        "/assets/logos/Zielona Góra.jpg",
+        "/assets/logos/rybnik.jpg"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "/5-es2015.6058ccf7fe585323a1f7.js": "ad67263ce7091196896d836d9855224ff3dd0cbb",
+    "/5-es5.6058ccf7fe585323a1f7.js": "6697540706f9d095033f6d5972000b6d458d8bdc",
+    "/assets/logos/Częstochowa.jpg": "3086d44b211891d03fa2d10b1c812b6955000b94",
+    "/assets/logos/Gorzów.jpg": "b2f94318127aaebb09a2cbfa46b3cc9bccfba8e8",
+    "/assets/logos/Grudziądz.jpg": "9743a516129497eac047445a47cbe759494bfe47",
+    "/assets/logos/Krosno.jpg": "5bb87bfdb1a7b74f2a60434f6499c5ce094d3d26",
+    "/assets/logos/Leszno.jpg": "ac9d429dd4f973c8acfa8b0972ec53cb677ce559",
+    "/assets/logos/Lublin.jpg": "5fcce3c872d890c72eb29aed01f1746f2be3a0ac",
+    "/assets/logos/Ostrów.jpg": "a8b9167cb118c938e57bc3e6a9c842b42b6e3491",
+    "/assets/logos/Tarnów.jpg": "8fe0b6c8165e29505bbe35a4d52d9aa07550cbf1",
+    "/assets/logos/Toruń.jpg": "a3cfcd2df96d9335bfbdb6148e9fd1241ba2e7b9",
+    "/assets/logos/Wrocław.jpg": "c46a9083762c9b1e642d686a61615197a5f73f82",
+    "/assets/logos/Zielona Góra.jpg": "6b815f3560c67d9f11b4ae55060811508a9873b2",
+    "/assets/logos/rybnik.jpg": "449b20a95e4fb3931a652a6f966316a15a7edcbe",
+    "/favicon.ico": "4faf4a3acf81eb02fd479cef8136eb85dd6cbcbb",
+    "/index.html": "168e7809bb4af326e9408a3bb296b65c558be85a",
+    "/main-es2015.5155d1a3a05b4b1b0a94.js": "a9b31d427a0b8782c6587f31a02ab044eeb5ccca",
+    "/main-es5.5155d1a3a05b4b1b0a94.js": "135aac3c8b711535df61a0651cf11580a7f0b847",
+    "/polyfills-es2015.7c8b864776fcbdd079aa.js": "ec7fbbb21d60ed745a935ee42a55cb3e10ba1aa9",
+    "/polyfills-es5.d29163f7a6d459e5c32d.js": "f0e43fdc096a533677da9e0da704fcf81f961e7e",
+    "/runtime-es2015.366cd03f5fa1d33c5881.js": "fbff6a51b5f27a37ae2189f4a0dfe6adae6d3f6e",
+    "/runtime-es5.366cd03f5fa1d33c5881.js": "fed19689eed3b5696219c1106b1eb906b9e5381e",
+    "/styles.78baed9d392e3b0a0126.css": "818ca411a2f9168592024f401491cbdab1ef7882"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ]
+}

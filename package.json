@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "build": "npm run env -s && ng build --aot",
-    "build:prod": "ng build --prod --output-path docs --base-href /speedway-app/ --deploy-url /speedway-app/",
+    "build:prod": "ng build --prod --output-path docs --base-href /speedway-app/",
     "start": "npm run env -s && ng serve --aot",
     "start:prod": "npm run env -s && ng serve --prod",
     "lint": "ng lint && stylelint \"src/**/*.scss\" --syntax scss && htmlhint \"src\" --config .htmlhintrc",

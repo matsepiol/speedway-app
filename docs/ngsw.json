@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1683638242650,
+  "timestamp": 1683640479624,
   "index": "/speedway-app/index.html",
   "assetGroups": [
     {
@@ -19,8 +19,8 @@
         "/speedway-app/main-es5.5155d1a3a05b4b1b0a94.js",
         "/speedway-app/polyfills-es2015.7c8b864776fcbdd079aa.js",
         "/speedway-app/polyfills-es5.d29163f7a6d459e5c32d.js",
-        "/speedway-app/runtime-es2015.2f17a045533423b809ca.js",
-        "/speedway-app/runtime-es5.2f17a045533423b809ca.js",
+        "/speedway-app/runtime-es2015.366cd03f5fa1d33c5881.js",
+        "/speedway-app/runtime-es5.366cd03f5fa1d33c5881.js",
         "/speedway-app/styles.78baed9d392e3b0a0126.css"
       ],
       "patterns": []
@@ -66,13 +66,13 @@
     "/speedway-app/assets/logos/Zielona Góra.jpg": "6b815f3560c67d9f11b4ae55060811508a9873b2",
     "/speedway-app/assets/logos/rybnik.jpg": "449b20a95e4fb3931a652a6f966316a15a7edcbe",
     "/speedway-app/favicon.ico": "4faf4a3acf81eb02fd479cef8136eb85dd6cbcbb",
-    "/speedway-app/index.html": "1acac027e84895eaf4342d1adea3373d67f0ee5a",
+    "/speedway-app/index.html": "5a700ff4f395a4a63a8c19766b41fa5b3f81deeb",
     "/speedway-app/main-es2015.5155d1a3a05b4b1b0a94.js": "a9b31d427a0b8782c6587f31a02ab044eeb5ccca",
     "/speedway-app/main-es5.5155d1a3a05b4b1b0a94.js": "135aac3c8b711535df61a0651cf11580a7f0b847",
     "/speedway-app/polyfills-es2015.7c8b864776fcbdd079aa.js": "ec7fbbb21d60ed745a935ee42a55cb3e10ba1aa9",
     "/speedway-app/polyfills-es5.d29163f7a6d459e5c32d.js": "f0e43fdc096a533677da9e0da704fcf81f961e7e",
-    "/speedway-app/runtime-es2015.2f17a045533423b809ca.js": "60002e74ba36b5b5caea7c0602db80a2db8af6b6",
-    "/speedway-app/runtime-es5.2f17a045533423b809ca.js": "02e55e47e2cc4220cdc20e34b6790ff58fa1b13e",
+    "/speedway-app/runtime-es2015.366cd03f5fa1d33c5881.js": "fbff6a51b5f27a37ae2189f4a0dfe6adae6d3f6e",
+    "/speedway-app/runtime-es5.366cd03f5fa1d33c5881.js": "fed19689eed3b5696219c1106b1eb906b9e5381e",
     "/speedway-app/styles.78baed9d392e3b0a0126.css": "818ca411a2f9168592024f401491cbdab1ef7882"
   },
   "navigationUrls": [

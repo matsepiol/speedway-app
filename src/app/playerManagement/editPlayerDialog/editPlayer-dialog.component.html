@@ -33,7 +33,7 @@
     <mat-label>Klub</mat-label>
     <mat-select required [(ngModel)]="playerData.team" name="team">
       <mat-option value="Częstochowa">Częstochowa</mat-option>
-      <mat-option value="Zielona Góra">Zielona Góra</mat-option>
+      <mat-option value="Krosno">Krosno</mat-option>
       <mat-option value="Grudziądz">Grudziądz</mat-option>
       <mat-option value="Toruń">Toruń</mat-option>
       <mat-option value="Gorzów">Gorzów</mat-option>
@@ -42,6 +42,10 @@
       <mat-option value="Leszno">Leszno</mat-option>
     </mat-select>
   </mat-form-field>
+
+  <div>
+    <mat-checkbox name="u24" [(ngModel)]="playerData.u24">U24</mat-checkbox>
+  </div>
 
   <div>
     <mat-checkbox name="szrot" [(ngModel)]="playerData.szrot">Szrot</mat-checkbox>

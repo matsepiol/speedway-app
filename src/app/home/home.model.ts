@@ -14,6 +14,7 @@ export interface Player {
 	bonus?: number;
 	ratio?: number;
 	szrot?: boolean;
+	u24?: boolean;
 }
 
 export interface PlayerResult {

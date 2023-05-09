@@ -58,7 +58,7 @@
           <span class="ksm">KSM: <b>{{player.ksm[(currentRound$ | async) - 1]}}</b></span>
         </h5>
         <p class="card-text" *ngIf="!filter.showMinimum">{{player.type}}</p>
-        <img *ngIf="!filter.showMinimum" src="../../../../assets/logos/{{ player.team }}.jpg" />
+        <img *ngIf="!filter.showMinimum" src="assets/logos/{{ player.team }}.jpg" />
       </div>
     </div>
   </div>
@@ -76,7 +76,7 @@
             <b>{{player.ksm[(currentRound$ | async) - 1]}}</b>
           </h5>
           <p class="card-text">{{player.type}}</p>
-          <img src="../../../../assets/logos/{{ player.team }}.jpg" />
+          <img src="assets/logos/{{ player.team }}.jpg" />
         </div>
       </div>
     </div>

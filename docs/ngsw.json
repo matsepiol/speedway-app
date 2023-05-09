@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1683640479624,
+  "timestamp": 1683640994072,
   "index": "/speedway-app/index.html",
   "assetGroups": [
     {
@@ -15,8 +15,8 @@
         "/speedway-app/5-es5.6058ccf7fe585323a1f7.js",
         "/speedway-app/favicon.ico",
         "/speedway-app/index.html",
-        "/speedway-app/main-es2015.5155d1a3a05b4b1b0a94.js",
-        "/speedway-app/main-es5.5155d1a3a05b4b1b0a94.js",
+        "/speedway-app/main-es2015.d35c6579d882f259a884.js",
+        "/speedway-app/main-es5.d35c6579d882f259a884.js",
         "/speedway-app/polyfills-es2015.7c8b864776fcbdd079aa.js",
         "/speedway-app/polyfills-es5.d29163f7a6d459e5c32d.js",
         "/speedway-app/runtime-es2015.366cd03f5fa1d33c5881.js",
@@ -66,9 +66,9 @@
     "/speedway-app/assets/logos/Zielona Góra.jpg": "6b815f3560c67d9f11b4ae55060811508a9873b2",
     "/speedway-app/assets/logos/rybnik.jpg": "449b20a95e4fb3931a652a6f966316a15a7edcbe",
     "/speedway-app/favicon.ico": "4faf4a3acf81eb02fd479cef8136eb85dd6cbcbb",
-    "/speedway-app/index.html": "5a700ff4f395a4a63a8c19766b41fa5b3f81deeb",
-    "/speedway-app/main-es2015.5155d1a3a05b4b1b0a94.js": "a9b31d427a0b8782c6587f31a02ab044eeb5ccca",
-    "/speedway-app/main-es5.5155d1a3a05b4b1b0a94.js": "135aac3c8b711535df61a0651cf11580a7f0b847",
+    "/speedway-app/index.html": "6a2ab736bb851f7acb52f50d05cd723b67a4c709",
+    "/speedway-app/main-es2015.d35c6579d882f259a884.js": "7ec2d7727e0cc4d0dc93b1f668d1ac75d85a821f",
+    "/speedway-app/main-es5.d35c6579d882f259a884.js": "9c25212193c6163d58f5c3ae9c820aa18f0ae32b",
     "/speedway-app/polyfills-es2015.7c8b864776fcbdd079aa.js": "ec7fbbb21d60ed745a935ee42a55cb3e10ba1aa9",
     "/speedway-app/polyfills-es5.d29163f7a6d459e5c32d.js": "f0e43fdc096a533677da9e0da704fcf81f961e7e",
     "/speedway-app/runtime-es2015.366cd03f5fa1d33c5881.js": "fbff6a51b5f27a37ae2189f4a0dfe6adae6d3f6e",

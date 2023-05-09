@@ -18,7 +18,7 @@ import { Store } from "../home/services/store.service";
   styleUrls: ["./history.component.scss"],
 })
 export class HistoryComponent implements OnInit {
-  public seasonIterable = [2018, 2019, 2020, 2021];
+  public seasonIterable = [2018, 2019, 2020, 2021, 2022];
   public roundsIterable = ROUNDS_ITERABLE;
   public users = Users;
   public loadingMessage = "Wczytywanie...";

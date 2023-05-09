@@ -93,6 +93,7 @@ export class ResultsComponent implements OnInit {
           }
         });
 
+        //this.store.sendNewHistory(playersResult, round);
         return playersResult;
       }),
       tap(() => this._isLoadingSubject.next(false))

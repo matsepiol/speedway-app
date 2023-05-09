@@ -25,7 +25,7 @@
       Tryb minimalistyczny
     </mat-checkbox>
 
-    <div class="ksm-counter" [ngClass]="{ 'is-wrong': (store.ksmSum$ | async) > 45 }">
+    <div class="ksm-counter" [ngClass]="{ 'is-wrong': (store.ksmSum$ | async) > maxKsm }">
       <span>{{ store.ksmSum$ | async}}</span>
       <p>Pozostały KSM: {{ store.ksmLeft$ | async}}</p>
     </div>
@@ -68,7 +68,7 @@
       <div class="card" [ngClass]="{ 'placeholder': player.placeholder }">
 
         <div *ngIf="player.placeholder">
-          <p class="card-text">{{player.type === 'Obcokrajowiec' && i === 3 ? 'U-24' : player.type}}</p>
+          <p class="card-text">{{player.type}}</p>
         </div>
 
         <div class="card-body" *ngIf="!player.placeholder" (click)="unselectPlayer(player, i)">
@@ -88,7 +88,7 @@
     <div class="card" [ngClass]="{ 'placeholder': player.placeholder }">
 
       <div *ngIf="player.placeholder">
-        <p class="card-text">{{player.type === 'Obcokrajowiec' && i === 3 ? 'U-24' : player.type}}</p>
+        <p class="card-text">{{player.type}}</p>
       </div>
 
       <div class="card-body" *ngIf="!player.placeholder" (click)="unselectPlayer(player, i)">
@@ -101,7 +101,7 @@
     </div>
   </div>
 
-  <div class="ksm-counter" [ngClass]="{ 'is-wrong': (store.ksmSum$ | async) > 45 }">
+  <div class="ksm-counter" [ngClass]="{ 'is-wrong': (store.ksmSum$ | async) > maxKsm }">
     <span>{{ store.ksmSum$ | async}}</span>
   </div>
 

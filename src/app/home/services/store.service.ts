@@ -23,7 +23,7 @@ import { find, cloneDeep } from "lodash";
   providedIn: "root",
 })
 export class Store {
-  private maxKsm = 45;
+  private maxKsm = 43;
 
   private ksmSumSubject = new BehaviorSubject<number>(0);
   private ksmLeftSubject = new BehaviorSubject<number>(this.maxKsm);
@@ -136,8 +136,8 @@ export class Store {
     return this.db.object<any>(`/history`).set(data);
   }
 
-  // public sendNewHistory(data: any) {
-  //   return this.db.object<any>(`/history/2021/table`).set(data);
+  // public sendNewHistory(data: any, round: number) {
+  //   return this.db.object<any>(`/history/2022/squads/${round}`).set(data);
   // }
 
   public getHistoryTable(season: number): Observable<TableData[]> {
@@ -146,7 +146,7 @@ export class Store {
 
   public sendSquad(playersToSend: string[], round: number): Promise<void> {
     const id = this.authenticationService.userDetails.uid;
-    // const id = 'irHsihWshPXjcoEhmD3ryogcJCo1';
+    // const id = 'd77n8QjyECcc9DcQAQmf3pOjlTs1';
 
     return this.db.object(`squads/${round}/${id}`).set(playersToSend);
   }
@@ -195,7 +195,7 @@ export class Store {
 
     if (index === 0 || index === 4) {
       for (let i = 1; i < 4; i++) {
-        if (selectedPlayers[i].type === PlayerType.SENIOR && !selectedPlayers[i].u24) {
+        if (selectedPlayers[i].type === PlayerType.SENIOR) {
           selectedPlayers[index] = selectedPlayers[i];
           selectedPlayers[i] = obcokrajowiecPlaceholder;
           this.setSelection(selectedPlayers);
@@ -244,6 +244,16 @@ export class Store {
 
   private findSquadIndex(player: Player): number {
     const selectedPlayers = this.selectedPlayersSubject.getValue();
+    const isU24Taken = selectedPlayers.some((player) => player.u24 && player.type !== PlayerType.JUNIOR);
+    const emptyForeignersSlots = selectedPlayers.filter(
+      (item) => item.type === PlayerType.OBCOKRAJOWIEC && item.placeholder
+    ).length;
+    const emptyPoleSlots = selectedPlayers.filter((item) => item.type === PlayerType.SENIOR && item.placeholder).length;
+    const emptySeniorSlots = emptyForeignersSlots + emptyPoleSlots;
+
+    // console.log(isU24Taken);
+    // console.log(emptyForeignersSlots, "emptyForeignersSlots");
+    // console.log(emptyPoleSlots, "emptyPoleSlots");
     let index;
 
     index = selectedPlayers.findIndex((item) => item.placeholder);
@@ -253,7 +263,7 @@ export class Store {
     }
 
     if (player.type === PlayerType.OBCOKRAJOWIEC) {
-      if (player.u24) {
+      if (player.u24 && !isU24Taken) {
         index = selectedPlayers.findIndex(
           (item, i) => item.type === PlayerType.OBCOKRAJOWIEC && item.placeholder && i === 3
         );
@@ -264,12 +274,15 @@ export class Store {
           );
         }
       } else {
-        index = selectedPlayers.findIndex(
-          (item, i) => item.type === PlayerType.OBCOKRAJOWIEC && i !== 3 && item.placeholder
-        );
+        if (emptySeniorSlots === 1 && !player.u24 && !isU24Taken) {
+          console.log("KUAAAAA");
+          index = -1;
+        } else {
+          index = selectedPlayers.findIndex((item, i) => item.type === PlayerType.OBCOKRAJOWIEC && item.placeholder);
+        }
       }
 
-      if (index === -1 && selectedPlayers[3].placeholder) {
+      if (index === -1 && !isU24Taken) {
         this.snackBarService.messageError("Musisz dodać zawodnika U24");
       } else if (index === -1) {
         this.snackBarService.messageError("Za dużo obcokrajowców");
@@ -277,25 +290,27 @@ export class Store {
     }
 
     if (player.type === PlayerType.SENIOR) {
-      if (player.u24) {
-        index = selectedPlayers.findIndex(
-          (item, i) => item.type === PlayerType.OBCOKRAJOWIEC && item.placeholder && i === 3
-        );
+      if (player.u24 && isU24Taken) {
+        index = selectedPlayers.findIndex((item) => item.type === PlayerType.SENIOR && item.placeholder);
 
         if (index === -1) {
-          index = selectedPlayers.findIndex((item) => item.type === PlayerType.SENIOR && item.placeholder);
+          index = selectedPlayers.findIndex(
+            (item, i) => item.type === PlayerType.OBCOKRAJOWIEC && item.placeholder && i === 3
+          );
         }
       } else {
-        index = selectedPlayers.findIndex((item) => item.type === PlayerType.SENIOR && item.placeholder);
+        if (emptySeniorSlots === 1 && !player.u24 && !isU24Taken) {
+          index = -1;
+        } else {
+          index = selectedPlayers.findIndex((item) => item.type === PlayerType.SENIOR && item.placeholder);
+        }
       }
 
       if (index === -1) {
-        index = selectedPlayers.findIndex(
-          (item, i) => item.type === PlayerType.OBCOKRAJOWIEC && i !== 3 && item.placeholder
-        );
+        index = selectedPlayers.findIndex((item, i) => item.type === PlayerType.OBCOKRAJOWIEC && item.placeholder);
       }
 
-      if (index === -1 && selectedPlayers[3].placeholder) {
+      if (index === -1 && !isU24Taken) {
         this.snackBarService.messageError("Musisz dodać zawodnika U24");
       } else if (index === -1) {
         this.snackBarService.messageError("Musisz dodać juniora");

@@ -10,13 +10,13 @@ export class GameComponent {
   @Input() away: string;
 
   public teamMapping = {
-    Toruń: "eWinner Apator Toruń",
-    Ostrów: "Arged Malesa Ostrów",
-    Wrocław: "Betard Sparta Wrocław",
-    Lublin: "Speed Car Motor Lublin",
-    Gorzów: "Truly.Work Stal Gorzów",
-    Grudziądz: "MRGARDEN GKM Grudziądz",
-    Częstochowa: "forBET Włókniarz Częstochowa",
-    Leszno: "Fogo Unia Leszno",
+    Toruń: "Apator Toruń",
+    Krosno: "Wilki Krosno",
+    Wrocław: "Sparta Wrocław",
+    Lublin: "Motor Lublin",
+    Gorzów: "Stal Gorzów",
+    Grudziądz: "GKM Grudziądz",
+    Częstochowa: "Włókniarz Częstochowa",
+    Leszno: "Unia Leszno",
   };
 }
